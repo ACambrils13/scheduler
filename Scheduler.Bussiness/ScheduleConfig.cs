@@ -8,29 +8,101 @@ namespace Scheduler
 {
     public abstract class ScheduleConfig
     {
-        public ScheduleConfig() { }
+        public ScheduleConfig(DateTime CurrentDate, ScheduleType Type, LimitsConfig Limits) 
+        {
+            Auxiliar.ValidateDate(CurrentDate);
+            this.CurrentDate = CurrentDate;
+            this.Type = Type;
+            this.Limits = Limits;
+        }
 
-        public static abstract ScheduleEvent ScheduleNextExecution(DateTime CurrentDate) { }
+        public abstract ScheduleEvent ScheduleNextExecution();
 
-        public ScheduleType Type { get; private set; }
-        public string ExecutionDescription { get; private set; }
+        internal DateTime CurrentDate { get; private set; }
+        internal ScheduleType Type { get; private set; }
+        internal LimitsConfig Limits { get; private set; }
+        internal DateTime ScheduleDate { get; set; }
+        internal OccurrencyPeriod PeriodType { get; set; }
+        internal int Period { get; set; }
     }
 
     public class ScheduleConfigOnce : ScheduleConfig
     {
 
+        public ScheduleConfigOnce(DateTime CurrentDate, ScheduleType Type, LimitsConfig Limits, DateTime ExecutionDate)
+            : base(CurrentDate, Type, Limits) 
+        {
+            Auxiliar.ValidateDate(ExecutionDate);
+            this.ScheduleDate = ExecutionDate;
+        }
+
+        public override ScheduleEvent ScheduleNextExecution()
+        {
+            return new ScheduleEvent(this.ScheduleDate, this.Type, this.Limits);
+        }
     }
 
     public class ScheduleConfigRecurring : ScheduleConfig
     {
+        public ScheduleConfigRecurring(DateTime CurrentDate, ScheduleType Type, LimitsConfig Limits, OccurrencyPeriod PeriodType, int Period)
+            : base(CurrentDate, Type, Limits)
+        {
+            this.PeriodType = PeriodType;
+            this.Period = Period;
+        }
 
+        public override ScheduleEvent ScheduleNextExecution()
+        {
+            switch (this.PeriodType)
+            {
+                case OccurrencyPeriod.Daily:
+                    this.ScheduleDate = this.CurrentDate.AddDays(this.Period);
+                    break;
+                case OccurrencyPeriod.Monthly:
+                    this.ScheduleDate = this.CurrentDate.AddMonths(this.Period);
+                    break;
+                case OccurrencyPeriod.Weekly:
+                    this.ScheduleDate = this.CurrentDate.AddDays(this.Period * 7);
+                    break;
+                case OccurrencyPeriod.Yearly:
+                    this.ScheduleDate = this.CurrentDate.AddYears(this.Period);
+                    break;
+            }
+            return new ScheduleEvent(this.ScheduleDate, this.Type, this.Limits);
+        }
     }
 
     public class Scheduler
     {
+        private ScheduleConfig Configurator;
+
         public Scheduler() { }
 
-        public ScheduleConfig SetConfig (ScheduleType Type, OccurrencyPeriod )
+        public void SetConfig (DateTime CurrentDate, ScheduleType Type, DateTime ExecutionDate, OccurrencyPeriod PeriodType, int Period, DateTime Start, DateTime End)
+        {
+            LimitsConfig Limits = new LimitsConfig(Start, End);
+            switch (Type)
+            {
+                case ScheduleType.Once:
+                    this.Configurator = new ScheduleConfigOnce(CurrentDate, Type, Limits, ExecutionDate);
+                    break;
+                case ScheduleType.Recurring:
+                    this.Configurator = new ScheduleConfigRecurring(CurrentDate, Type, Limits, PeriodType, Period);
+                    break;
+            }
+        }
+    }
+
+    public class LimitsConfig
+    {
+        public LimitsConfig(DateTime Start, DateTime End)
+        {
+            this.StartDate = Start;
+            this.EndDate = End;
+        }
+
+        public DateTime StartDate { get; private set; }
+        public DateTime EndDate { get; private set; }
     }
 
     public enum ScheduleType
@@ -41,8 +113,8 @@ namespace Scheduler
 
     public enum OccurrencyPeriod
     {
-        Daily = 1,
-        Weekly = 7,
+        Daily,
+        Weekly,
         Monthly,
         Yearly
     }
