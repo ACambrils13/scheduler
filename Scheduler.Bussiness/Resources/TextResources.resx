@@ -120,7 +120,10 @@
   <data name="EventScheduleDescription" xml:space="preserve">
     <value>Occurs {0}. Schedule will be used on {1} at {2} starting on {3}.</value>
   </data>
-  <data name="ExcDate" xml:space="preserve">
-    <value>An error ocurred with Schedule Event DateTime Output.</value>
+  <data name="ExcNull" xml:space="preserve">
+    <value>A Configuration Element hasn't got value.</value>
+  </data>
+  <data name="NotDefined" xml:space="preserve">
+    <value>Not Defined</value>
   </data>
 </root>

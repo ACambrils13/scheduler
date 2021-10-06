@@ -13,16 +13,18 @@ namespace Scheduler
             this.FormatEventDescription(); 
         }
 
-        public DateTime ExecutionTime { get; private set; }
-        public ScheduleType ExecutionType { get; private set; }
-        public string ExecutionDescription { get; private set; }
-        public LimitsConfig Limits { get; private set; }
+        public DateTime ExecutionTime { get; }
+        public ScheduleType ExecutionType { get; }
+        public string ExecutionDescription { get; set; }
+        public LimitsConfig Limits { get; }
 
         private void FormatEventDescription()
         {
             string ExectionDate = this.ExecutionTime.ToString("d");
             string ExecutionHour = this.ExecutionTime.ToString("t");
-            this.ExecutionDescription = string.Format(TextResources.EventScheduleDescription, this.ExecutionType.ToString(), ExectionDate, ExecutionHour, this.Limits.StartDate.ToString("d"));
+            string StartDate = this.Limits.StartDate.Value.ToString("d") ?? TextResources.NotDefined;
+            this.ExecutionDescription = string.Format(TextResources.EventScheduleDescription, 
+                this.ExecutionType.ToString(), ExectionDate, ExecutionHour, StartDate);
         }
     }
 }

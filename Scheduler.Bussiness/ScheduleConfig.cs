@@ -10,7 +10,6 @@ namespace Scheduler
     {
         public ScheduleConfig(DateTime CurrentDate, ScheduleType Type, LimitsConfig Limits) 
         {
-            Auxiliar.ValidateDate(CurrentDate);
             this.CurrentDate = CurrentDate;
             this.Type = Type;
             this.Limits = Limits;
@@ -29,11 +28,11 @@ namespace Scheduler
     public class ScheduleConfigOnce : ScheduleConfig
     {
 
-        public ScheduleConfigOnce(DateTime CurrentDate, ScheduleType Type, LimitsConfig Limits, DateTime ExecutionDate)
+        public ScheduleConfigOnce(DateTime CurrentDate, ScheduleType Type, LimitsConfig Limits, DateTime? ExecutionDate)
             : base(CurrentDate, Type, Limits) 
         {
-            Auxiliar.ValidateDate(ExecutionDate);
-            this.ScheduleDate = ExecutionDate;
+            Auxiliary.CheckNotNull(ExecutionDate);
+            this.ScheduleDate = ExecutionDate.Value;
         }
 
         public override ScheduleEvent ScheduleNextExecution()
@@ -44,11 +43,12 @@ namespace Scheduler
 
     public class ScheduleConfigRecurring : ScheduleConfig
     {
-        public ScheduleConfigRecurring(DateTime CurrentDate, ScheduleType Type, LimitsConfig Limits, OccurrencyPeriod PeriodType, int Period)
+        public ScheduleConfigRecurring(DateTime CurrentDate, ScheduleType Type, LimitsConfig Limits, OccurrencyPeriod PeriodType, int? Period)
             : base(CurrentDate, Type, Limits)
         {
+            Auxiliary.CheckNotNull(Period);
             this.PeriodType = PeriodType;
-            this.Period = Period;
+            this.Period = Period.Value;
         }
 
         public override ScheduleEvent ScheduleNextExecution()
@@ -70,52 +70,5 @@ namespace Scheduler
             }
             return new ScheduleEvent(this.ScheduleDate, this.Type, this.Limits);
         }
-    }
-
-    public class Scheduler
-    {
-        private ScheduleConfig Configurator;
-
-        public Scheduler() { }
-
-        public void SetConfig (DateTime CurrentDate, ScheduleType Type, DateTime ExecutionDate, OccurrencyPeriod PeriodType, int Period, DateTime Start, DateTime End)
-        {
-            LimitsConfig Limits = new LimitsConfig(Start, End);
-            switch (Type)
-            {
-                case ScheduleType.Once:
-                    this.Configurator = new ScheduleConfigOnce(CurrentDate, Type, Limits, ExecutionDate);
-                    break;
-                case ScheduleType.Recurring:
-                    this.Configurator = new ScheduleConfigRecurring(CurrentDate, Type, Limits, PeriodType, Period);
-                    break;
-            }
-        }
-    }
-
-    public class LimitsConfig
-    {
-        public LimitsConfig(DateTime Start, DateTime End)
-        {
-            this.StartDate = Start;
-            this.EndDate = End;
-        }
-
-        public DateTime StartDate { get; private set; }
-        public DateTime EndDate { get; private set; }
-    }
-
-    public enum ScheduleType
-    {
-        Once,
-        Recurring
-    }
-
-    public enum OccurrencyPeriod
-    {
-        Daily,
-        Weekly,
-        Monthly,
-        Yearly
     }
 }
