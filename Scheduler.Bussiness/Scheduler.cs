@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Scheduler
 {
@@ -12,8 +8,9 @@ namespace Scheduler
 
         public Scheduler() { }
 
-        public ScheduleEvent GetNextExecution(DateTime CurrentDate, ScheduleType Type, DateTime? ExecutionDate, OccurrencyPeriod PeriodType, int? Period, DateTime? Start, DateTime? End)
+        public ScheduleEvent GetNextExecution(DateTime CurrentDate, ScheduleType Type, DateTime? ExecutionDate, OccurrencyPeriod? PeriodType, int? Period, DateTime? Start, DateTime? End)
         {
+
             LimitsConfig Limits = new(Start, End);
             switch (Type)
             {

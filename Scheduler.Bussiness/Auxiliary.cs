@@ -5,11 +5,14 @@ namespace Scheduler
 {
     public class Auxiliary
     {
-        public static void CheckNotNull(object Element)
+        public static void CheckNotNull(object[] Elements)
         {
-            if (Element == null)
+            foreach (object Element in Elements)
             {
-                throw new Exception(TextResources.ExcNull);
+                if (Element == null)
+                {
+                    throw new Exception(TextResources.ExcNull);
+                }
             }
         }
     }

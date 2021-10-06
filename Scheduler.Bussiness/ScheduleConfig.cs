@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Scheduler
 {
@@ -31,7 +27,7 @@ namespace Scheduler
         public ScheduleConfigOnce(DateTime CurrentDate, ScheduleType Type, LimitsConfig Limits, DateTime? ExecutionDate)
             : base(CurrentDate, Type, Limits) 
         {
-            Auxiliary.CheckNotNull(ExecutionDate);
+            Auxiliary.CheckNotNull(new object[] { ExecutionDate });
             this.ScheduleDate = ExecutionDate.Value;
         }
 
@@ -43,11 +39,11 @@ namespace Scheduler
 
     public class ScheduleConfigRecurring : ScheduleConfig
     {
-        public ScheduleConfigRecurring(DateTime CurrentDate, ScheduleType Type, LimitsConfig Limits, OccurrencyPeriod PeriodType, int? Period)
+        public ScheduleConfigRecurring(DateTime CurrentDate, ScheduleType Type, LimitsConfig Limits, OccurrencyPeriod? PeriodType, int? Period)
             : base(CurrentDate, Type, Limits)
         {
-            Auxiliary.CheckNotNull(Period);
-            this.PeriodType = PeriodType;
+            Auxiliary.CheckNotNull(new object[] { Period, PeriodType });
+            this.PeriodType = PeriodType.Value;
             this.Period = Period.Value;
         }
 

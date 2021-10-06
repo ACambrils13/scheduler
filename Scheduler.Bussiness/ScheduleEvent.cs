@@ -22,7 +22,7 @@ namespace Scheduler
         {
             string ExectionDate = this.ExecutionTime.ToString("d");
             string ExecutionHour = this.ExecutionTime.ToString("t");
-            string StartDate = this.Limits.StartDate.Value.ToString("d") ?? TextResources.NotDefined;
+            string StartDate = this.Limits.StartDate?.ToString("d") ?? TextResources.NotDefined;
             this.ExecutionDescription = string.Format(TextResources.EventScheduleDescription, 
                 this.ExecutionType.ToString(), ExectionDate, ExecutionHour, StartDate);
         }
