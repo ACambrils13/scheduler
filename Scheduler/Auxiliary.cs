@@ -31,7 +31,8 @@ namespace Scheduler
     public enum ScheduleType
     {
         Once,
-        Recurring
+        Recurring,
+        Undefined
     }
 
     public enum OccurrencyPeriod
@@ -39,6 +40,7 @@ namespace Scheduler
         Daily,
         Weekly,
         Monthly,
-        Yearly
+        Yearly,
+        Undefined = 99
     }
 }
