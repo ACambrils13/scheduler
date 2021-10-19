@@ -2,29 +2,48 @@
 
 namespace Scheduler
 {
-    public abstract class ScheduleConfig
+    public class ScheduleConfigurator
     {
-        public ScheduleConfig(DateTime CurrentDate, ScheduleType Type, LimitsConfig Limits) 
+        public ScheduleConfigurator() { }
+
+        public DateTime CurrentDate { get; set; }
+        public ScheduleTypeEnum Type { get; set; }
+        public LimitsConfig DateLimits { get; set; }
+        public DateTime? ScheduleDate { get; set; }
+        public DateTime? ScheduleDateHour { get; set; }
+        public OccurrencyPeriodEnum? PeriodType { get; set; }
+        public int? OcurrencyPeriod { get; set; }
+        public Week? WeeklyDays { get; set; }
+        public DailyFrecuencyEnum? DailyFrecuency { get; set; }
+        public int? DailyFrecuencyPeriod { get; set; }
+        public LimitsConfig? DailyLimits { get; set; }
+        public DateTime ExecutionDate { get; private set; }
+        public string ExecutionDescripcion { get; private set; }
+
+        public 
+
+        private void FormatEventDescription(ScheduleTypeEnum ExecutionType, DateTime? StartLimit)
         {
-            this.CurrentDate = CurrentDate;
-            this.Type = Type;
-            this.Limits = Limits;
+            string ExecutionDate = this.ExecutionTime.ToString("d");
+            string ExecutionHour = this.ExecutionTime.ToString("t");
+            string StartDate = StartLimit?.ToString("d") ?? TextResources.NotDefined;
+
+            switch (ExecutionType)
+            {
+                case ScheduleTypeEnum.Once:
+                    this.ExecutionDescription = string.Format(TextResources.EventScheduleDescOnce, ExecutionDate, ExecutionHour, StartDate);
+                    break;
+                case ScheduleTypeEnum.Recurring:
+                    this.ExecutionDescription = string.Format(TextResources.EventScheduleDescRecurring, ExecutionDate, ExecutionHour, StartDate);
+                    break;
+            }
         }
-
-        public abstract ScheduleEvent ScheduleNextExecution();
-
-        internal DateTime CurrentDate { get; private set; }
-        internal ScheduleType Type { get; private set; }
-        internal LimitsConfig Limits { get; private set; }
-        internal DateTime ScheduleDate { get; set; }
-        internal OccurrencyPeriod PeriodType { get; set; }
-        internal int Period { get; set; }
     }
 
     public class ScheduleConfigOnce : ScheduleConfig
     {
 
-        public ScheduleConfigOnce(DateTime CurrentDate, ScheduleType Type, LimitsConfig Limits, DateTime? ExecutionDate)
+        public ScheduleConfigOnce(DateTime CurrentDate, ScheduleTypeEnum Type, LimitsConfig Limits, DateTime? ExecutionDate)
             : base(CurrentDate, Type, Limits) 
         {
             Auxiliary.CheckNotNull(new object[] { ExecutionDate });
@@ -33,38 +52,38 @@ namespace Scheduler
 
         public override ScheduleEvent ScheduleNextExecution()
         {
-            return new ScheduleEvent(this.ScheduleDate, this.Type, this.Limits);
+            return new ScheduleEvent(this.ScheduleDate, this.Type, this.DateLimits);
         }
     }
 
     public class ScheduleConfigRecurring : ScheduleConfig
     {
-        public ScheduleConfigRecurring(DateTime CurrentDate, ScheduleType Type, LimitsConfig Limits, OccurrencyPeriod? PeriodType, int? Period)
+        public ScheduleConfigRecurring(DateTime CurrentDate, ScheduleTypeEnum Type, LimitsConfig Limits, OccurrencyPeriodEnum? PeriodType, int? Period)
             : base(CurrentDate, Type, Limits)
         {
             Auxiliary.CheckNotNull(new object[] { Period, PeriodType });
             this.PeriodType = PeriodType.Value;
-            this.Period = Period.Value;
+            this.OcurrencyPeriod = Period.Value;
         }
 
         public override ScheduleEvent ScheduleNextExecution()
         {
             switch (this.PeriodType)
             {
-                case OccurrencyPeriod.Daily:
-                    this.ScheduleDate = this.CurrentDate.AddDays(this.Period);
+                case OccurrencyPeriodEnum.Daily:
+                    this.ScheduleDate = this.CurrentDate.AddDays(this.OcurrencyPeriod);
                     break;
-                case OccurrencyPeriod.Monthly:
-                    this.ScheduleDate = this.CurrentDate.AddMonths(this.Period);
+                case OccurrencyPeriodEnum.Monthly:
+                    this.ScheduleDate = this.CurrentDate.AddMonths(this.OcurrencyPeriod);
                     break;
-                case OccurrencyPeriod.Weekly:
-                    this.ScheduleDate = this.CurrentDate.AddDays(this.Period * 7);
+                case OccurrencyPeriodEnum.Weekly:
+                    this.ScheduleDate = this.CurrentDate.AddDays(this.OcurrencyPeriod * 7);
                     break;
-                case OccurrencyPeriod.Yearly:
-                    this.ScheduleDate = this.CurrentDate.AddYears(this.Period);
+                case OccurrencyPeriodEnum.Yearly:
+                    this.ScheduleDate = this.CurrentDate.AddYears(this.OcurrencyPeriod);
                     break;
             }
-            return new ScheduleEvent(this.ScheduleDate, this.Type, this.Limits);
+            return new ScheduleEvent(this.ScheduleDate, this.Type, this.DateLimits);
         }
     }
 }

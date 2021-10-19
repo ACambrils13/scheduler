@@ -61,11 +61,20 @@ namespace Scheduler.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Occurs {0}. Schedule will be used on {1} at {2} starting on {3}..
+        ///   Looks up a localized string similar to Occurs once. Schedule will be used on {0} at {1} starting on {2}..
         /// </summary>
-        internal static string EventScheduleDescription {
+        internal static string EventScheduleDescOnce {
             get {
-                return ResourceManager.GetString("EventScheduleDescription", resourceCulture);
+                return ResourceManager.GetString("EventScheduleDescOnce", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Occurs every {0} on {1} every {2} starting on {3}.
+        /// </summary>
+        internal static string EventScheduleDescRecurring {
+            get {
+                return ResourceManager.GetString("EventScheduleDescRecurring", resourceCulture);
             }
         }
         

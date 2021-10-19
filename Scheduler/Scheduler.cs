@@ -4,20 +4,25 @@ namespace Scheduler
 {
     public class Scheduler
     {
-        private ScheduleConfig Configurator;
+        private ScheduleConfig configurator;
 
-        public Scheduler() { }
+        public Scheduler() 
+        {
+            this.configurator = new ScheduleConfig();
+        }
 
-        public ScheduleEvent GetNextExecution(DateTime CurrentDate, ScheduleType Type, DateTime? ExecutionDate, OccurrencyPeriod? PeriodType, int? Period, DateTime? Start, DateTime? End)
+        public void ConfigureScheduler (DateTime CurrentDate, ScheduleTypeEnum Type, DateTime? ExecutionDate, OccurrencyPeriodEnum? RecPeriodType, )
+
+        public ScheduleEvent GetNextExecution(DateTime CurrentDate, ScheduleTypeEnum Type, DateTime? ExecutionDate, OccurrencyPeriodEnum? PeriodType, int? Period, DateTime? Start, DateTime? End)
         {
 
             LimitsConfig Limits = new(Start, End);
             switch (Type)
             {
-                case ScheduleType.Once:
+                case ScheduleTypeEnum.Once:
                     this.Configurator = new ScheduleConfigOnce(CurrentDate, Type, Limits, ExecutionDate);
                     break;
-                case ScheduleType.Recurring:
+                case ScheduleTypeEnum.Recurring:
                     this.Configurator = new ScheduleConfigRecurring(CurrentDate, Type, Limits, PeriodType, Period);
                     break;
             }

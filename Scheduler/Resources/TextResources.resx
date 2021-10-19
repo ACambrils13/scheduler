@@ -117,8 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="EventScheduleDescription" xml:space="preserve">
-    <value>Occurs {0}. Schedule will be used on {1} at {2} starting on {3}.</value>
+  <data name="EventScheduleDescOnce" xml:space="preserve">
+    <value>Occurs once. Schedule will be used on {0} at {1} starting on {2}.</value>
+  </data>
+  <data name="EventScheduleDescRecurring" xml:space="preserve">
+    <value>Occurs every {0} on {1} every {2} starting on {3}</value>
   </data>
   <data name="ExcNull" xml:space="preserve">
     <value>A Configuration Element hasn't got value.</value>
