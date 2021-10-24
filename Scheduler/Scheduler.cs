@@ -4,30 +4,25 @@ namespace Scheduler
 {
     public class Scheduler
     {
-        private ScheduleConfig configurator;
 
-        public Scheduler() 
+        public Scheduler() { }
+
+        public DateTime? CurrentDate { get; set; }
+        public ScheduleTypeEnum? Type { get; set; }
+        public LimitsConfig? DateLimits { get; set; }
+        public DateTime? ScheduleDate { get; set; }
+        public DateTime? ScheduleDateHour { get; set; }
+        public OccurrencyPeriodEnum? PeriodType { get; set; }
+        public int? OcurrencyPeriod { get; set; }
+        public Week? WeeklyDays { get; set; }
+        public DailyFrecuencyEnum? DailyFrecuency { get; set; }
+        public int? DailyFrecuencyPeriod { get; set; }
+        public LimitsConfig? DailyLimits { get; set; }
+
+        public ScheduleEvent GetNextExecution()
         {
-            this.configurator = new ScheduleConfig();
-        }
-
-        public void ConfigureScheduler (DateTime CurrentDate, ScheduleTypeEnum Type, DateTime? ExecutionDate, OccurrencyPeriodEnum? RecPeriodType, )
-
-        public ScheduleEvent GetNextExecution(DateTime CurrentDate, ScheduleTypeEnum Type, DateTime? ExecutionDate, OccurrencyPeriodEnum? PeriodType, int? Period, DateTime? Start, DateTime? End)
-        {
-
-            LimitsConfig Limits = new(Start, End);
-            switch (Type)
-            {
-                case ScheduleTypeEnum.Once:
-                    this.Configurator = new ScheduleConfigOnce(CurrentDate, Type, Limits, ExecutionDate);
-                    break;
-                case ScheduleTypeEnum.Recurring:
-                    this.Configurator = new ScheduleConfigRecurring(CurrentDate, Type, Limits, PeriodType, Period);
-                    break;
-            }
-
-            return this.Configurator.ScheduleNextExecution();
+            ScheduleConfigurator Configurator = new ScheduleConfigurator(this);
+            return Configurator.ScheduleNextExecution();
         }
     }
 }

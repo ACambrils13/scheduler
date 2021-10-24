@@ -20,6 +20,7 @@ namespace Scheduler
     {
         public LimitsConfig(DateTime? Start, DateTime? End)
         {
+            ScheduleConfigValidator.ValidateLimits(Start, End);
             this.StartLimit = Start;
             this.EndLimit = End;
         }
@@ -53,8 +54,7 @@ namespace Scheduler
     public enum ScheduleTypeEnum
     {
         Once,
-        Recurring,
-        Undefined = 99
+        Recurring
     }
 
     public enum OccurrencyPeriodEnum
