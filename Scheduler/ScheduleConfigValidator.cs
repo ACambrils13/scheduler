@@ -1,49 +1,103 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Scheduler.Resources;
+using System;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Scheduler
 {
-    public class ScheduleConfigValidator
+    internal class ScheduleConfigValidator
     {
-        public static void ValidateDate (DateTime Date, string PropertyName)
+        internal static void ValidateBasicProperties(Scheduler properties)
         {
-            if (Date == DateTime.MaxValue)
-            {
-                throw new ValidationException("propertyname maxvalue");
-            }
+            ValidateDateNullable(properties.CurrentDate, nameof(properties.CurrentDate));
+            ValidateEnum<ScheduleTypeEnum>(properties.Type, nameof(properties.Type));
         }
 
-        public static void ValidateDateNullable (DateTime? Date, string PropertyName)
+        internal static void ValidateRecurringSchedule(Scheduler properties)
         {
-            if (Date.HasValue == false)
+            ValidateEnum<OccurrencyPeriodEnum>(properties.PeriodType, nameof(properties.PeriodType));
+            ValidatePeriod(properties.OcurrencyPeriod, nameof(properties.OcurrencyPeriod));
+            ValidateDailySelection(properties.DailyScheduleHour, properties.DailyFrecuency, properties.DailyFrecuencyPeriod);
+        }
+
+        private static void ValidateDailySelection(DateTime? dailyScheduleHour, DailyFrecuencyEnum? dailyFrecuency, int? dailyFrecuencyPeriod)
+        {
+            if (dailyScheduleHour.HasValue)
             {
-                throw new ValidationException("propertyname nulo");
+                ValidateDate(dailyScheduleHour.Value, nameof(dailyScheduleHour));
+            }
+            else if (dailyFrecuency.HasValue && dailyFrecuencyPeriod.HasValue)
+            {
+                ValidateEnum<OccurrencyPeriodEnum>(dailyFrecuency, nameof(dailyFrecuency));
+                ValidatePeriod(dailyFrecuencyPeriod, nameof(dailyFrecuencyPeriod));
             }
             else
             {
-                ScheduleConfigValidator.ValidateDate(Date.Value, PropertyName);
+                throw new ValidationException(FormatConfigExcMessage(TextResources.ExcDailyConfig));
             }
         }
 
-        public static void ValidateLimits(DateTime? Start, DateTime? End)
+        internal static void ValidateDateNullable(DateTime? date, string propertyName)
         {
-            if (Start.HasValue && End.HasValue)
+            if (date.HasValue == false)
             {
-                ScheduleConfigValidator.ValidateDate(Start.Value, nameof(Start));
-                ScheduleConfigValidator.ValidateDate(End.Value, nameof(End));
-                if (DateTime.Compare(Start.Value, End.Value) < 0)
-                {
-                    throw new ValidationException("End mayor que start");
-                }
-            } 
-            else if (Start.HasValue == false && End.HasValue)
-            {
-                throw new ValidationException("End sin Start");
+                throw new ValidationException(FormatConfigExcMessage(string.Format(TextResources.ExcObjectNull, propertyName)));
             }
+            ValidateDate(date.Value, propertyName);
+        }
+
+        internal static void ValidateDate (DateTime date, string propertyName)
+        {
+
+            if (date == DateTime.MaxValue)
+            {
+                throw new ValidationException(FormatConfigExcMessage(string.Format(TextResources.ExcDateMaxValue, propertyName)));
+            }
+        }
+
+        internal static void ValidateEnum<TEnum>(Enum enumValue, string propertyName)
+        {
+            if (enumValue == null || Enum.IsDefined(typeof(TEnum), enumValue) == false)
+            {
+                throw new ValidationException(FormatConfigExcMessage(string.Format(TextResources.ExcEnumError, propertyName)));
+            }
+        }
+
+        internal static void ValidateDailyConfig(Scheduler config)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal static void ValidatePeriod(int? period, string propertyName)
+        {
+            if (period.HasValue == false || period.Value < 0)
+            {
+                throw new ValidationException(FormatConfigExcMessage(string.Format(TextResources.ExcPeriod, propertyName)));
+            }
+        }
+
+        internal static void ValidateLimits(DateTime? start, DateTime? end)
+        {
+            if (start.HasValue == false && end.HasValue)
+            {
+                throw new ValidationException(FormatConfigExcMessage(TextResources.ExcLimitsEndBeforeStart));
+            }
+            else if (start.HasValue)
+            {
+                ValidateDate(start.Value, nameof(start));
+                if (end.HasValue)
+                {
+                    ValidateDate(end.Value, nameof(end));
+                    if (DateTime.Compare(start.Value, end.Value) >= 0)
+                    {
+                        throw new ValidationException(FormatConfigExcMessage(TextResources.ExcLimitsEndBeforeStart));
+                    }
+                }
+            }
+        }
+
+        internal static string FormatConfigExcMessage(string exc)
+        {
+            return string.Format(TextResources.ConfError, exc);
         }
     }
 }

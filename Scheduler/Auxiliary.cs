@@ -3,19 +3,6 @@ using System;
 
 namespace Scheduler
 {
-    public class Auxiliary
-    {
-        public static void CheckNotNull(object[] Elements)
-        {
-            foreach (object Element in Elements)
-            {
-                if (Element == null)
-                {
-                    throw new Exception(TextResources.ExcNull);
-                }
-            }
-        }
-    }
     public struct LimitsConfig
     {
         public LimitsConfig(DateTime? Start, DateTime? End)
@@ -62,15 +49,13 @@ namespace Scheduler
         Daily,
         Weekly,
         Monthly,
-        Yearly,
-        Undefined = 99
+        Yearly
     }
 
     public enum DailyFrecuencyEnum
     {
         Hours,
         Minutes,
-        Seconds,
-        Undefined = 99
+        Seconds
     }
 }

@@ -22,7 +22,7 @@ namespace Scheduler.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class TextResources {
+    public class TextResources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace Scheduler.Resources {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Scheduler.Resources.TextResources", typeof(TextResources).Assembly);
@@ -51,7 +51,7 @@ namespace Scheduler.Resources {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,36 +61,135 @@ namespace Scheduler.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Occurs once. Schedule will be used on {0} at {1} starting on {2}..
+        ///   Looks up a localized string similar to Configuration Error: {0}.
         /// </summary>
-        internal static string EventScheduleDescOnce {
+        public static string ConfError {
             get {
-                return ResourceManager.GetString("EventScheduleDescOnce", resourceCulture);
+                return ResourceManager.GetString("ConfError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to to {0}.
+        /// </summary>
+        public static string EventDescLimitsEnd {
+            get {
+                return ResourceManager.GetString("EventDescLimitsEnd", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to starting on {0}.
+        /// </summary>
+        public static string EventDescLimitsStart {
+            get {
+                return ResourceManager.GetString("EventDescLimitsStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Occurs once..
+        /// </summary>
+        public static string EventDescOnce {
+            get {
+                return ResourceManager.GetString("EventDescOnce", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Schedule will be used on {0} at {1}.
+        /// </summary>
+        public static string EventDescSchedule {
+            get {
+                return ResourceManager.GetString("EventDescSchedule", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Occurs every {0} on {1} every {2} starting on {3}.
         /// </summary>
-        internal static string EventScheduleDescRecurring {
+        public static string EventScheduleDescRecurring {
             get {
                 return ResourceManager.GetString("EventScheduleDescRecurring", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Daily Frecuency configuration has errors..
+        /// </summary>
+        public static string ExcDailyConfig {
+            get {
+                return ResourceManager.GetString("ExcDailyConfig", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} can&apos;t be a Maximun DateTime value..
+        /// </summary>
+        public static string ExcDateMaxValue {
+            get {
+                return ResourceManager.GetString("ExcDateMaxValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} hasn&apos;t be a valid option..
+        /// </summary>
+        public static string ExcEnumError {
+            get {
+                return ResourceManager.GetString("ExcEnumError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to End Limit should be after Start Limit. .
+        /// </summary>
+        public static string ExcLimitsEndBeforeStart {
+            get {
+                return ResourceManager.GetString("ExcLimitsEndBeforeStart", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} should be a Date value..
+        /// </summary>
+        public static string ExcNoDate {
+            get {
+                return ResourceManager.GetString("ExcNoDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A Configuration Element hasn&apos;t got value..
         /// </summary>
-        internal static string ExcNull {
+        public static string ExcNull {
             get {
                 return ResourceManager.GetString("ExcNull", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} hasn&apos;t got any value..
+        /// </summary>
+        public static string ExcObjectNull {
+            get {
+                return ResourceManager.GetString("ExcObjectNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} should be a positive number..
+        /// </summary>
+        public static string ExcPeriod {
+            get {
+                return ResourceManager.GetString("ExcPeriod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Not Defined.
         /// </summary>
-        internal static string NotDefined {
+        public static string NotDefined {
             get {
                 return ResourceManager.GetString("NotDefined", resourceCulture);
             }

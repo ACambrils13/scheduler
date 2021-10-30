@@ -1,37 +1,25 @@
 using FluentAssertions;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Xunit;
+using Scheduler.Resources;
+using System.Text;
 
 namespace Scheduler.Test
 {
     public class SchedulerTest
     {
-        [Theory]
-        [InlineData("25/10/2021")]
-        [InlineData("25-10-21")]
-        [InlineData("25/10/21 10:02:05")]
-        public void CurrentDate_Correct_Asignation(string Date)
+        [Fact]
+        public void CurrentDate_Correct_Asignation()
         {
-            Scheduler scheduler = new Scheduler()
+            string Date = DateTime.Now.ToString();
+            Scheduler SchedulerObj = new Scheduler()
             {
                 CurrentDate = DateTime.Parse(Date)
             };
 
-            Assert.Equal(scheduler.CurrentDate.ToString(), DateTime.Parse(Date).ToString());
-        }
-
-        [Theory]
-        [InlineData("2510/2021")]
-        [InlineData("error")]
-        [InlineData("31/09/21 10:02")]
-        public void CurrentDate_Incorrect_Asignation(string Date)
-        {
-            Scheduler scheduler = new Scheduler();
-
-            Assert.Throws<FormatException>(() =>
-                scheduler.CurrentDate = DateTime.Parse(Date)
-            );
+            Assert.Equal(SchedulerObj.CurrentDate.ToString(), DateTime.Parse(Date).ToString());
         }
 
         [Theory]
@@ -40,26 +28,216 @@ namespace Scheduler.Test
         [InlineData(null)]
         public void ScheduleTypeEnum_Correct_Asignation(ScheduleTypeEnum? ScheduleType)
         {
-            Scheduler scheduler = new Scheduler()
+            Scheduler SchedulerObj = new Scheduler()
             {
                 Type = ScheduleType
             };
 
-            Assert.Equal(scheduler.Type, ScheduleType);
+            Assert.Equal(SchedulerObj.Type, ScheduleType);
         }
-        
 
-        [Theory]
-        [InlineData("25/10/2021")]
-        [InlineData("25-10-21")]
-        [InlineData("25/10/21 10:02:05")]
-        public void Limits_StartDate_Correct_Asignation(string Date)
+        [Fact]
+        public void Limits_StartDate_Correct_Asignation()
         {
+            string Date = DateTime.Now.ToString();
             LimitsConfig limits = new LimitsConfig(DateTime.Parse(Date), null);
 
             Assert.Equal(limits.StartLimit.ToString(), DateTime.Parse(Date).ToString());
         }
 
+        [Fact]
+        public void Limits_StartDate_EndDate_Correct_Asignation()
+        {
+            string StartDate = DateTime.Now.ToString();
+            string EndDate = DateTime.Now.AddDays(1).ToString();
+            LimitsConfig limits = new LimitsConfig(DateTime.Parse(StartDate), DateTime.Parse(EndDate));
+
+            Assert.Equal(limits.StartLimit.ToString(), DateTime.Parse(StartDate).ToString());
+            Assert.Equal(limits.EndLimit.ToString(), DateTime.Parse(EndDate).ToString());        
+        }
+
+        [Fact]
+        public void Limits_Only_EndDate_Failed()
+        {
+            Assert.Throws<ValidationException>(() =>
+                new LimitsConfig(null, DateTime.Now));
+        }
+
+        [Fact]
+        public void Limit_EndDate_Before_StartDate_Failed()
+        {
+            Assert.Throws<ValidationException>(() =>
+                new LimitsConfig(DateTime.Now, DateTime.Now.AddDays(-1)));
+        }
+
+        [Fact]
+        public void  ScheduleDate_Correct_Asignation()
+        {
+            string Date = DateTime.Now.ToString();
+            Scheduler SchedulerObj = new Scheduler()
+            {
+                ScheduleDate = DateTime.Parse(Date)
+            };
+
+            Assert.Equal(SchedulerObj.ScheduleDate.ToString(), DateTime.Parse(Date).ToString());
+        }
+
+        [Theory]
+        [InlineData(OccurrencyPeriodEnum.Daily)]
+        [InlineData(OccurrencyPeriodEnum.Weekly)]
+        [InlineData(OccurrencyPeriodEnum.Monthly)]
+        [InlineData(OccurrencyPeriodEnum.Yearly)]
+        [InlineData(null)]
+        public void OccurrencyPeriodEnum_Correct_Asignation(OccurrencyPeriodEnum? OcurrencyPeriod)
+        {
+            Scheduler SchedulerObj = new Scheduler()
+            {
+                PeriodType = OcurrencyPeriod
+            };
+
+            Assert.Equal(SchedulerObj.PeriodType, OcurrencyPeriod);
+        }
+
+        [Fact]
+        public void DailyScheduleHour_Correct_Asignation()
+        {
+            string Date = DateTime.Now.ToString();
+            Scheduler SchedulerObj = new Scheduler()
+            {
+                DailyScheduleHour = DateTime.Parse(Date)
+            };
+
+            Assert.Equal(SchedulerObj.DailyScheduleHour.ToString(), DateTime.Parse(Date).ToString());
+        }
+
+        [Fact]
+        public void Configuration_Once_CurrentDate_Null_Failed()
+        {
+            Scheduler SchedulerObj = new Scheduler()
+            {
+                CurrentDate = null,
+                Type = ScheduleTypeEnum.Once,
+                ScheduleDate = DateTime.Now.AddDays(1)
+            };
+
+            Assert.Throws<ValidationException>(() =>
+               SchedulerObj.GetNextExecution());
+        }
+
+        [Fact]
+        public void Configuration_Once_CurrentDate_MaxValue_Failed()
+        {
+            Scheduler SchedulerObj = new Scheduler()
+            {
+                CurrentDate = DateTime.MaxValue,
+                Type = ScheduleTypeEnum.Once,
+                ScheduleDate = DateTime.Now.AddDays(1)
+            };
+
+            Assert.Throws<ValidationException>(() =>
+               SchedulerObj.GetNextExecution());
+        }
+
+
+        [Fact]
+        public void Configuration_Once_Type_Null_Failed()
+        {
+            Scheduler SchedulerObj = new Scheduler()
+            {
+                CurrentDate = DateTime.Now,
+                Type = null,
+                ScheduleDate = DateTime.Now.AddDays(1)
+            };
+
+            Assert.Throws<ValidationException>(() =>
+               SchedulerObj.GetNextExecution());
+        }
+
+        [Fact]
+        public void Configuration_Once_ScheduleDate_Null_Failed()
+        {
+            Scheduler SchedulerObj = new Scheduler()
+            {
+                CurrentDate = DateTime.Now,
+                Type = ScheduleTypeEnum.Once,
+                ScheduleDate = null
+            };
+
+            Assert.Throws<ValidationException>(() =>
+               SchedulerObj.GetNextExecution());
+        }
+
+        [Fact]
+        public void Configuration_Once_Next_Execution_Without_Limits_Correct()
+        {
+            string ScheduleDateEx = DateTime.Now.AddDays(1).ToString();
+            string ExecScheduleDate = DateTime.Parse(ScheduleDateEx).ToShortDateString();
+            string ExecScheduleHour = DateTime.Parse(ScheduleDateEx).ToString("HH:mm");
+            string ExecDescription = string.Concat(TextResources.EventDescOnce, " ", string.Format(TextResources.EventDescSchedule, ExecScheduleDate, ExecScheduleHour));
+
+            Scheduler SchedulerObj = new Scheduler()
+            {
+                CurrentDate = DateTime.Now,
+                Type = ScheduleTypeEnum.Once,
+                ScheduleDate = DateTime.Parse(ScheduleDateEx)
+            };
+            ScheduleEvent NextExec = SchedulerObj.GetNextExecution();
+
+            Assert.Equal(NextExec.ExecutionDate.ToString(), ScheduleDateEx);
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+        }
+
+        [Fact]
+        public void Configuration_Once_Next_Execution_Limits_Start_Correct()
+        {
+            string ScheduleDateEx = DateTime.Now.AddDays(1).ToString();
+            string DateLimitsStart = DateTime.Now.AddDays(-10).ToString();
+            string ExecScheduleDate = DateTime.Parse(ScheduleDateEx).ToShortDateString();
+            string ExecScheduleHour = DateTime.Parse(ScheduleDateEx).ToString("HH:mm");
+            string ExecScheduleLimitStart = DateTime.Parse(DateLimitsStart).ToShortDateString();
+            StringBuilder ExecDescription = new StringBuilder();
+            ExecDescription.AppendJoin(" ", TextResources.EventDescOnce, string.Format(TextResources.EventDescSchedule, ExecScheduleDate, ExecScheduleHour),
+                string.Format(TextResources.EventDescLimitsStart, ExecScheduleLimitStart));
+
+            Scheduler SchedulerObj = new Scheduler()
+            {
+                CurrentDate = DateTime.Now,
+                Type = ScheduleTypeEnum.Once,
+                ScheduleDate = DateTime.Parse(ScheduleDateEx),
+                DateLimits = new LimitsConfig(DateTime.Parse(ExecScheduleLimitStart),null)
+            };
+            ScheduleEvent NextExec = SchedulerObj.GetNextExecution();
+
+            Assert.Equal(NextExec.ExecutionDate.ToString(), ScheduleDateEx);
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription.ToString());
+        }
+
+        [Fact]
+        public void Configuration_Once_Next_Execution_Limits_Correct()
+        {
+            string ScheduleDateEx = DateTime.Now.AddDays(1).ToString();
+            string DateLimitsStart = DateTime.Now.AddDays(-10).ToString();
+            string DateLimitsEnd = DateTime.Now.AddDays(10).ToString();
+            string ExecScheduleDate = DateTime.Parse(ScheduleDateEx).ToShortDateString();
+            string ExecScheduleHour = DateTime.Parse(ScheduleDateEx).ToString("HH:mm");
+            string ExecScheduleLimitStart = DateTime.Parse(DateLimitsStart).ToShortDateString();
+            string ExecScheduleLimitEnd = DateTime.Parse(DateLimitsEnd).ToShortDateString();
+            StringBuilder ExecDescription = new StringBuilder();
+            ExecDescription.AppendJoin(" ", TextResources.EventDescOnce, string.Format(TextResources.EventDescSchedule, ExecScheduleDate, ExecScheduleHour),
+                string.Format(TextResources.EventDescLimitsStart, ExecScheduleLimitStart), string.Format(TextResources.EventDescLimitsEnd,ExecScheduleLimitEnd));
+
+            Scheduler SchedulerObj = new Scheduler()
+            {
+                CurrentDate = DateTime.Now,
+                Type = ScheduleTypeEnum.Once,
+                ScheduleDate = DateTime.Parse(ScheduleDateEx),
+                DateLimits = new LimitsConfig(DateTime.Parse(ExecScheduleLimitStart), DateTime.Parse(ExecScheduleLimitEnd))
+            };
+            ScheduleEvent NextExec = SchedulerObj.GetNextExecution();
+
+            Assert.Equal(NextExec.ExecutionDate.ToString(), ScheduleDateEx);
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription.ToString());
+        }
 
 
         //public static readonly object[][] TestDataOk =

@@ -1,5 +1,4 @@
-﻿using Scheduler.Resources;
-using System;
+﻿using System;
 
 namespace Scheduler
 {

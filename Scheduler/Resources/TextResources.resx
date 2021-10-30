@@ -117,14 +117,47 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="EventScheduleDescOnce" xml:space="preserve">
-    <value>Occurs once. Schedule will be used on {0} at {1} starting on {2}.</value>
+  <data name="ConfError" xml:space="preserve">
+    <value>Configuration Error: {0}</value>
+  </data>
+  <data name="EventDescLimitsEnd" xml:space="preserve">
+    <value>to {0}</value>
+  </data>
+  <data name="EventDescLimitsStart" xml:space="preserve">
+    <value>starting on {0}</value>
+  </data>
+  <data name="EventDescOnce" xml:space="preserve">
+    <value>Occurs once.</value>
+  </data>
+  <data name="EventDescSchedule" xml:space="preserve">
+    <value>Schedule will be used on {0} at {1}</value>
   </data>
   <data name="EventScheduleDescRecurring" xml:space="preserve">
     <value>Occurs every {0} on {1} every {2} starting on {3}</value>
   </data>
+  <data name="ExcDailyConfig" xml:space="preserve">
+    <value>Daily Frecuency configuration has errors.</value>
+  </data>
+  <data name="ExcDateMaxValue" xml:space="preserve">
+    <value>{0} can't be a Maximun DateTime value.</value>
+  </data>
+  <data name="ExcEnumError" xml:space="preserve">
+    <value>{0} hasn't be a valid option.</value>
+  </data>
+  <data name="ExcLimitsEndBeforeStart" xml:space="preserve">
+    <value>End Limit should be after Start Limit. </value>
+  </data>
+  <data name="ExcNoDate" xml:space="preserve">
+    <value>{0} should be a Date value.</value>
+  </data>
   <data name="ExcNull" xml:space="preserve">
     <value>A Configuration Element hasn't got value.</value>
+  </data>
+  <data name="ExcObjectNull" xml:space="preserve">
+    <value>{0} hasn't got any value.</value>
+  </data>
+  <data name="ExcPeriod" xml:space="preserve">
+    <value>{0} should be a positive number.</value>
   </data>
   <data name="NotDefined" xml:space="preserve">
     <value>Not Defined</value>
