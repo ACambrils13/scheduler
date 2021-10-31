@@ -15,14 +15,13 @@ namespace Scheduler
         public int? OcurrencyPeriod { get; set; }
         public Week? WeeklyDays { get; set; }
         public DailyFrecuencyEnum? DailyFrecuency { get; set; }
-
         public DateTime? DailyScheduleHour { get; set; }
         public int? DailyFrecuencyPeriod { get; set; }
         public LimitsConfig? DailyLimits { get; set; }
 
         public ScheduleEvent GetNextExecution()
         {
-            ScheduleConfigurator Configurator = new ScheduleConfigurator(this);
+            ScheduleConfigurator Configurator = new (this);
             return Configurator.ScheduleNextExecution();
         }
     }

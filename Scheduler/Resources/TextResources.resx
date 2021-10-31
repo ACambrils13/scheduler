@@ -120,6 +120,9 @@
   <data name="ConfError" xml:space="preserve">
     <value>Configuration Error: {0}</value>
   </data>
+  <data name="EventDescDailyLimits" xml:space="preserve">
+    <value>between {0} and {1}</value>
+  </data>
   <data name="EventDescLimitsEnd" xml:space="preserve">
     <value>to {0}</value>
   </data>
@@ -128,6 +131,9 @@
   </data>
   <data name="EventDescOnce" xml:space="preserve">
     <value>Occurs once.</value>
+  </data>
+  <data name="EventDescRecurring" xml:space="preserve">
+    <value>Occurs every {0} {1}</value>
   </data>
   <data name="EventDescSchedule" xml:space="preserve">
     <value>Schedule will be used on {0} at {1}</value>

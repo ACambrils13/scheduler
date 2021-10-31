@@ -70,6 +70,15 @@ namespace Scheduler.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to between {0} and {1}.
+        /// </summary>
+        public static string EventDescDailyLimits {
+            get {
+                return ResourceManager.GetString("EventDescDailyLimits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to to {0}.
         /// </summary>
         public static string EventDescLimitsEnd {
@@ -93,6 +102,15 @@ namespace Scheduler.Resources {
         public static string EventDescOnce {
             get {
                 return ResourceManager.GetString("EventDescOnce", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Occurs every {0} {1}.
+        /// </summary>
+        public static string EventDescRecurring {
+            get {
+                return ResourceManager.GetString("EventDescRecurring", resourceCulture);
             }
         }
         

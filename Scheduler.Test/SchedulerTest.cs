@@ -14,7 +14,7 @@ namespace Scheduler.Test
         public void CurrentDate_Correct_Asignation()
         {
             string Date = DateTime.Now.ToString();
-            Scheduler SchedulerObj = new Scheduler()
+            Scheduler SchedulerObj = new ()
             {
                 CurrentDate = DateTime.Parse(Date)
             };
@@ -28,7 +28,7 @@ namespace Scheduler.Test
         [InlineData(null)]
         public void ScheduleTypeEnum_Correct_Asignation(ScheduleTypeEnum? ScheduleType)
         {
-            Scheduler SchedulerObj = new Scheduler()
+            Scheduler SchedulerObj = new ()
             {
                 Type = ScheduleType
             };
@@ -40,7 +40,7 @@ namespace Scheduler.Test
         public void Limits_StartDate_Correct_Asignation()
         {
             string Date = DateTime.Now.ToString();
-            LimitsConfig limits = new LimitsConfig(DateTime.Parse(Date), null);
+            LimitsConfig limits = new (DateTime.Parse(Date), null);
 
             Assert.Equal(limits.StartLimit.ToString(), DateTime.Parse(Date).ToString());
         }
@@ -50,7 +50,7 @@ namespace Scheduler.Test
         {
             string StartDate = DateTime.Now.ToString();
             string EndDate = DateTime.Now.AddDays(1).ToString();
-            LimitsConfig limits = new LimitsConfig(DateTime.Parse(StartDate), DateTime.Parse(EndDate));
+            LimitsConfig limits = new (DateTime.Parse(StartDate), DateTime.Parse(EndDate));
 
             Assert.Equal(limits.StartLimit.ToString(), DateTime.Parse(StartDate).ToString());
             Assert.Equal(limits.EndLimit.ToString(), DateTime.Parse(EndDate).ToString());        
@@ -74,7 +74,7 @@ namespace Scheduler.Test
         public void  ScheduleDate_Correct_Asignation()
         {
             string Date = DateTime.Now.ToString();
-            Scheduler SchedulerObj = new Scheduler()
+            Scheduler SchedulerObj = new ()
             {
                 ScheduleDate = DateTime.Parse(Date)
             };
@@ -90,7 +90,7 @@ namespace Scheduler.Test
         [InlineData(null)]
         public void OccurrencyPeriodEnum_Correct_Asignation(OccurrencyPeriodEnum? OcurrencyPeriod)
         {
-            Scheduler SchedulerObj = new Scheduler()
+            Scheduler SchedulerObj = new ()
             {
                 PeriodType = OcurrencyPeriod
             };
@@ -102,7 +102,7 @@ namespace Scheduler.Test
         public void DailyScheduleHour_Correct_Asignation()
         {
             string Date = DateTime.Now.ToString();
-            Scheduler SchedulerObj = new Scheduler()
+            Scheduler SchedulerObj = new ()
             {
                 DailyScheduleHour = DateTime.Parse(Date)
             };
@@ -113,7 +113,7 @@ namespace Scheduler.Test
         [Fact]
         public void Configuration_Once_CurrentDate_Null_Failed()
         {
-            Scheduler SchedulerObj = new Scheduler()
+            Scheduler SchedulerObj = new ()
             {
                 CurrentDate = null,
                 Type = ScheduleTypeEnum.Once,
@@ -127,7 +127,7 @@ namespace Scheduler.Test
         [Fact]
         public void Configuration_Once_CurrentDate_MaxValue_Failed()
         {
-            Scheduler SchedulerObj = new Scheduler()
+            Scheduler SchedulerObj = new ()
             {
                 CurrentDate = DateTime.MaxValue,
                 Type = ScheduleTypeEnum.Once,
@@ -142,7 +142,7 @@ namespace Scheduler.Test
         [Fact]
         public void Configuration_Once_Type_Null_Failed()
         {
-            Scheduler SchedulerObj = new Scheduler()
+            Scheduler SchedulerObj = new ()
             {
                 CurrentDate = DateTime.Now,
                 Type = null,
@@ -156,7 +156,7 @@ namespace Scheduler.Test
         [Fact]
         public void Configuration_Once_ScheduleDate_Null_Failed()
         {
-            Scheduler SchedulerObj = new Scheduler()
+            Scheduler SchedulerObj = new ()
             {
                 CurrentDate = DateTime.Now,
                 Type = ScheduleTypeEnum.Once,
@@ -175,7 +175,7 @@ namespace Scheduler.Test
             string ExecScheduleHour = DateTime.Parse(ScheduleDateEx).ToString("HH:mm");
             string ExecDescription = string.Concat(TextResources.EventDescOnce, " ", string.Format(TextResources.EventDescSchedule, ExecScheduleDate, ExecScheduleHour));
 
-            Scheduler SchedulerObj = new Scheduler()
+            Scheduler SchedulerObj = new ()
             {
                 CurrentDate = DateTime.Now,
                 Type = ScheduleTypeEnum.Once,
@@ -195,11 +195,11 @@ namespace Scheduler.Test
             string ExecScheduleDate = DateTime.Parse(ScheduleDateEx).ToShortDateString();
             string ExecScheduleHour = DateTime.Parse(ScheduleDateEx).ToString("HH:mm");
             string ExecScheduleLimitStart = DateTime.Parse(DateLimitsStart).ToShortDateString();
-            StringBuilder ExecDescription = new StringBuilder();
+            StringBuilder ExecDescription = new ();
             ExecDescription.AppendJoin(" ", TextResources.EventDescOnce, string.Format(TextResources.EventDescSchedule, ExecScheduleDate, ExecScheduleHour),
                 string.Format(TextResources.EventDescLimitsStart, ExecScheduleLimitStart));
 
-            Scheduler SchedulerObj = new Scheduler()
+            Scheduler SchedulerObj = new ()
             {
                 CurrentDate = DateTime.Now,
                 Type = ScheduleTypeEnum.Once,
@@ -222,11 +222,11 @@ namespace Scheduler.Test
             string ExecScheduleHour = DateTime.Parse(ScheduleDateEx).ToString("HH:mm");
             string ExecScheduleLimitStart = DateTime.Parse(DateLimitsStart).ToShortDateString();
             string ExecScheduleLimitEnd = DateTime.Parse(DateLimitsEnd).ToShortDateString();
-            StringBuilder ExecDescription = new StringBuilder();
+            StringBuilder ExecDescription = new ();
             ExecDescription.AppendJoin(" ", TextResources.EventDescOnce, string.Format(TextResources.EventDescSchedule, ExecScheduleDate, ExecScheduleHour),
                 string.Format(TextResources.EventDescLimitsStart, ExecScheduleLimitStart), string.Format(TextResources.EventDescLimitsEnd,ExecScheduleLimitEnd));
 
-            Scheduler SchedulerObj = new Scheduler()
+            Scheduler SchedulerObj = new ()
             {
                 CurrentDate = DateTime.Now,
                 Type = ScheduleTypeEnum.Once,

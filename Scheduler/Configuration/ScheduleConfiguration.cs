@@ -1,8 +1,11 @@
-﻿namespace Scheduler
+﻿using Scheduler.Creators;
+
+namespace Scheduler
 {
     public class ScheduleConfigurator
     {
         private readonly Scheduler scheduleProperties;
+        private ScheduleEventCreator eventCreator;
         public ScheduleConfigurator(Scheduler scheduleProperties) 
         {
             this.scheduleProperties = scheduleProperties;
@@ -14,12 +17,14 @@
             switch (this.scheduleProperties.Type)
             {
                 case ScheduleTypeEnum.Once:
-                    return ScheduleOnce.GetNextExecution(this.scheduleProperties);
+                    this.eventCreator = new ScheduleOnceCreator(this.scheduleProperties);
+                    break;
                 case ScheduleTypeEnum.Recurring:
-                    return ScheduleRecurring.GetNextExecution(this.scheduleProperties);
-                default:
-                    return null;
+                    this.eventCreator = new ScheduleRecurringCreator(this.scheduleProperties);
+                    break;
             }
+
+            return this.eventCreator.GetNextExecution();
         }
     }
 
