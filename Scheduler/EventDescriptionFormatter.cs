@@ -31,16 +31,52 @@ namespace Scheduler
 
         internal static string GetScheduleRecurrentDesc(Scheduler configuration)
         {
-            StringBuilder Description = new(string.Format(TextResources.EventDescRecurring,configuration.OcurrencyPeriod.ToString(),configuration.PeriodType.ToString()));
+            string PeriodString = string.Empty;
+            switch (configuration.PeriodType)
+            {
+                case OccurrencyPeriodEnum.Daily:
+                    PeriodString = TextResources.Days;
+                    break;
+                case OccurrencyPeriodEnum.Weekly:
+                    PeriodString = TextResources.Weeks;
+                    break;
+                case OccurrencyPeriodEnum.Monthly:
+                    PeriodString = TextResources.Months;
+                    break;
+                case OccurrencyPeriodEnum.Yearly:
+                    PeriodString = TextResources.Years;
+                    break;
+            }
+
+            StringBuilder Description = new(string.Format(TextResources.EventDescRecurring,configuration.OcurrencyPeriod,PeriodString));
             if (configuration.PeriodType.Value == OccurrencyPeriodEnum.Weekly)
             {
                 // poner los días
             }
-            if (configuration.DailyLimits.HasValue)
+            if (configuration.DailyScheduleHour.HasValue)
             {
-                string StartLimit = configuration.DailyLimits.Value.StartLimit?.ToShortTimeString() ?? "0:00";
-                string EndLimit = configuration.DailyLimits.Value.EndLimit?.ToShortTimeString() ?? "23:59";
-                Description.Append(String.Concat(" ", string.Format(TextResources.EventDescDailyLimits, StartLimit, EndLimit)));
+                Description.Append(string.Concat(" ", string.Format(TextResources.EventDescRecurringHour, configuration.DailyScheduleHour.Value.ToShortTimeString())));
+            }
+            else if (configuration.DailyLimits.HasValue)
+            {
+                switch (configuration.DailyFrecuency)
+                {
+                    case DailyFrecuencyEnum.Hours:
+                        Description.Append(string.Concat(" ", string.Format(TextResources.EventDescRecurringEvery, configuration.DailyFrecuencyPeriod, TextResources.Hours)));
+                        break;
+                    case DailyFrecuencyEnum.Minutes:
+                        Description.Append(string.Concat(" ", string.Format(TextResources.EventDescRecurringEvery, configuration.DailyFrecuencyPeriod, TextResources.Minutes)));
+                        break;
+                    case DailyFrecuencyEnum.Seconds:
+                        Description.Append(string.Concat(" ", string.Format(TextResources.EventDescRecurringEvery, configuration.DailyFrecuencyPeriod, TextResources.Seconds)));
+                        break;
+                }
+                if (configuration.DailyLimits.HasValue)
+                {
+                    string StartLimit = configuration.DailyLimits.Value.StartLimit?.ToShortTimeString() ?? "0:00";
+                    string EndLimit = configuration.DailyLimits.Value.EndLimit?.ToShortTimeString() ?? "23:59";
+                    Description.Append(String.Concat(" ", string.Format(TextResources.EventDescDailyLimits, StartLimit, EndLimit)));
+                }
             }
             if (configuration.DateLimits.HasValue)
             {

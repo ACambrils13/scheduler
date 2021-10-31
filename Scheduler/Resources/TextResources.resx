@@ -120,6 +120,9 @@
   <data name="ConfError" xml:space="preserve">
     <value>Configuration Error: {0}</value>
   </data>
+  <data name="Days" xml:space="preserve">
+    <value>days</value>
+  </data>
   <data name="EventDescDailyLimits" xml:space="preserve">
     <value>between {0} and {1}</value>
   </data>
@@ -134,6 +137,12 @@
   </data>
   <data name="EventDescRecurring" xml:space="preserve">
     <value>Occurs every {0} {1}</value>
+  </data>
+  <data name="EventDescRecurringEvery" xml:space="preserve">
+    <value>every {0} {1}</value>
+  </data>
+  <data name="EventDescRecurringHour" xml:space="preserve">
+    <value>at {0}</value>
   </data>
   <data name="EventDescSchedule" xml:space="preserve">
     <value>Schedule will be used on {0} at {1}</value>
@@ -150,6 +159,9 @@
   <data name="ExcEnumError" xml:space="preserve">
     <value>{0} hasn't be a valid option.</value>
   </data>
+  <data name="ExcLimits" xml:space="preserve">
+    <value>Next schedule event isn't between date limits.</value>
+  </data>
   <data name="ExcLimitsEndBeforeStart" xml:space="preserve">
     <value>End Limit should be after Start Limit. </value>
   </data>
@@ -165,7 +177,25 @@
   <data name="ExcPeriod" xml:space="preserve">
     <value>{0} should be a positive number.</value>
   </data>
+  <data name="Hours" xml:space="preserve">
+    <value>hours</value>
+  </data>
+  <data name="Minutes" xml:space="preserve">
+    <value>minutes</value>
+  </data>
+  <data name="Months" xml:space="preserve">
+    <value>months</value>
+  </data>
   <data name="NotDefined" xml:space="preserve">
     <value>Not Defined</value>
+  </data>
+  <data name="Seconds" xml:space="preserve">
+    <value>seconds</value>
+  </data>
+  <data name="Weeks" xml:space="preserve">
+    <value>weeks</value>
+  </data>
+  <data name="Years" xml:space="preserve">
+    <value>years</value>
   </data>
 </root>

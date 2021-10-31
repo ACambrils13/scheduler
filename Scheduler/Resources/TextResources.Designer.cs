@@ -70,6 +70,15 @@ namespace Scheduler.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to days.
+        /// </summary>
+        public static string Days {
+            get {
+                return ResourceManager.GetString("Days", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to between {0} and {1}.
         /// </summary>
         public static string EventDescDailyLimits {
@@ -115,20 +124,29 @@ namespace Scheduler.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to every {0} {1}.
+        /// </summary>
+        public static string EventDescRecurringEvery {
+            get {
+                return ResourceManager.GetString("EventDescRecurringEvery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to at {0}.
+        /// </summary>
+        public static string EventDescRecurringHour {
+            get {
+                return ResourceManager.GetString("EventDescRecurringHour", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Schedule will be used on {0} at {1}.
         /// </summary>
         public static string EventDescSchedule {
             get {
                 return ResourceManager.GetString("EventDescSchedule", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Occurs every {0} on {1} every {2} starting on {3}.
-        /// </summary>
-        public static string EventScheduleDescRecurring {
-            get {
-                return ResourceManager.GetString("EventScheduleDescRecurring", resourceCulture);
             }
         }
         
@@ -160,29 +178,20 @@ namespace Scheduler.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Next schedule event isn&apos;t between date limits..
+        /// </summary>
+        public static string ExcLimits {
+            get {
+                return ResourceManager.GetString("ExcLimits", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to End Limit should be after Start Limit. .
         /// </summary>
         public static string ExcLimitsEndBeforeStart {
             get {
                 return ResourceManager.GetString("ExcLimitsEndBeforeStart", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} should be a Date value..
-        /// </summary>
-        public static string ExcNoDate {
-            get {
-                return ResourceManager.GetString("ExcNoDate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A Configuration Element hasn&apos;t got value..
-        /// </summary>
-        public static string ExcNull {
-            get {
-                return ResourceManager.GetString("ExcNull", resourceCulture);
             }
         }
         
@@ -205,11 +214,56 @@ namespace Scheduler.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Not Defined.
+        ///   Looks up a localized string similar to hours.
         /// </summary>
-        public static string NotDefined {
+        public static string Hours {
             get {
-                return ResourceManager.GetString("NotDefined", resourceCulture);
+                return ResourceManager.GetString("Hours", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to minutes.
+        /// </summary>
+        public static string Minutes {
+            get {
+                return ResourceManager.GetString("Minutes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to months.
+        /// </summary>
+        public static string Months {
+            get {
+                return ResourceManager.GetString("Months", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to seconds.
+        /// </summary>
+        public static string Seconds {
+            get {
+                return ResourceManager.GetString("Seconds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to weeks.
+        /// </summary>
+        public static string Weeks {
+            get {
+                return ResourceManager.GetString("Weeks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to years.
+        /// </summary>
+        public static string Years {
+            get {
+                return ResourceManager.GetString("Years", resourceCulture);
             }
         }
     }

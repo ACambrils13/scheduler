@@ -6,7 +6,7 @@
 
         internal override ScheduleEvent GetNextExecution()
         {
-            ScheduleConfigValidator.ValidateDateNullable(this.configuration.ScheduleDate, nameof(this.configuration.ScheduleDate));
+            ScheduleConfigValidator.ValidateOnceSchedule(this.configuration);
             string Description = EventDescriptionFormatter.GetScheduleOnceDesc(this.configuration.ScheduleDate.Value, this.configuration.DateLimits);
             return new ScheduleEvent()
             {

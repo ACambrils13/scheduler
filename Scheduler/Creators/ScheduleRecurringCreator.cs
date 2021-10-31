@@ -15,27 +15,23 @@ namespace Scheduler.Creators
         internal override ScheduleEvent GetNextExecution()
         {
             ScheduleConfigValidator.ValidateRecurringSchedule(this.configuration);
-
+            ScheduleEvent NextEvent = new();
             switch (this.configuration.PeriodType)
             {
                 case OccurrencyPeriodEnum.Daily:
-                    return this.GetNextExecutionDaily();
+                    NextEvent = this.GetNextExecutionDaily();
+                    break;
                 case OccurrencyPeriodEnum.Weekly:
                     break;
                 case OccurrencyPeriodEnum.Monthly:
-                    return this.GetNextExecutionMonthly();
+                    NextEvent = this.GetNextExecutionMonthly();
+                    break;
                 case OccurrencyPeriodEnum.Yearly:
-                    return this.GetNextExecutionYearly();
+                    NextEvent = this.GetNextExecutionYearly();
+                    break;
             }
-
-
-            ScheduleConfigValidator.ValidateDateNullable(configuration.ScheduleDate, nameof(configuration.ScheduleDate));
-            string Description = EventDescriptionFormatter.GetScheduleOnceDesc(configuration.ScheduleDate.Value, configuration.DateLimits);
-            return new ScheduleEvent()
-            {
-                ExecutionDate = configuration.ScheduleDate.Value,
-                ExecutionDescription = Description
-            };
+            ScheduleConfigValidator.ValidateLimits(NextEvent.ExecutionDate, this.configuration.DateLimits);
+            return NextEvent;
         }
 
         private ScheduleEvent GetNextExecutionDaily()
@@ -47,6 +43,7 @@ namespace Scheduler.Creators
                 this.NextExecutionDate.AddDays(this.configuration.OcurrencyPeriod.Value);
                 NewDate = this.CalculateDailyConfigHour(this.NextExecutionDate);
             }
+            this.NextExecutionDate = NewDate;
             string Description = EventDescriptionFormatter.GetScheduleRecurrentDesc(this.configuration);
             return new ScheduleEvent()
             {
@@ -64,6 +61,7 @@ namespace Scheduler.Creators
                 this.NextExecutionDate.AddMonths(this.configuration.OcurrencyPeriod.Value);
                 NewDate = this.CalculateDailyConfigHour(this.NextExecutionDate);
             }
+            this.NextExecutionDate = NewDate;
             string Description = EventDescriptionFormatter.GetScheduleRecurrentDesc(this.configuration);
             return new ScheduleEvent()
             {
@@ -81,6 +79,7 @@ namespace Scheduler.Creators
                 this.NextExecutionDate.AddYears(this.configuration.OcurrencyPeriod.Value);
                 NewDate = this.CalculateDailyConfigHour(this.NextExecutionDate);
             }
+            this.NextExecutionDate = NewDate;
             string Description = EventDescriptionFormatter.GetScheduleRecurrentDesc(this.configuration);
             return new ScheduleEvent()
             {
@@ -108,16 +107,18 @@ namespace Scheduler.Creators
         {
             DateTime NewDate = ExecDate.Date;
             DateTime StartLimit = ExecDate.Date;
-            DateTime EndLimit = ExecDate.Date;
+            DateTime EndLimit = ExecDate.Date.AddDays(1);
 
             if (this.configuration.DailyLimits.HasValue)
             {
-                StartLimit.Add(this.configuration.DailyLimits.Value.StartLimit.HasValue
-                    ? this.configuration.DailyLimits.Value.StartLimit.Value.TimeOfDay
-                    : TimeSpan.Zero);
-                EndLimit.Add(this.configuration.DailyLimits.Value.EndLimit.HasValue
-                    ? this.configuration.DailyLimits.Value.EndLimit.Value.TimeOfDay
-                    : TimeSpan.FromDays(1));
+                if (this.configuration.DailyLimits.Value.StartLimit.HasValue)
+                {
+                    StartLimit = StartLimit.Add(this.configuration.DailyLimits.Value.StartLimit.Value.TimeOfDay);
+                }
+                if (this.configuration.DailyLimits.Value.EndLimit.HasValue)
+                {
+                    EndLimit = ExecDate.Date.Add(this.configuration.DailyLimits.Value.EndLimit.Value.TimeOfDay);
+                }
                 NewDate = StartLimit;
             }
             while (DateTime.Compare(ExecDate, NewDate) > 0)
@@ -144,31 +145,3 @@ namespace Scheduler.Creators
         }
     }
 }
-
-//public ScheduleConfigRecurring(DateTime CurrentDate, ScheduleTypeEnum Type, LimitsConfig Limits, OccurrencyPeriodEnum? PeriodType, int? Period)
-    //        : base(CurrentDate, Type, Limits)
-    //    {
-    //        Auxiliary.CheckNotNull(new object[] { Period, PeriodType });
-    //        this.PeriodType = PeriodType.Value;
-    //        this.OcurrencyPeriod = Period.Value;
-    //    }
-
-//    public override ScheduleEvent ScheduleNextExecution()
-//    {
-//        switch (this.PeriodType)
-//        {
-//            case OccurrencyPeriodEnum.Daily:
-//                this.ScheduleDate = this.CurrentDate.AddDays(this.OcurrencyPeriod);
-//                break;
-//            case OccurrencyPeriodEnum.Monthly:
-//                this.ScheduleDate = this.CurrentDate.AddMonths(this.OcurrencyPeriod);
-//                break;
-//            case OccurrencyPeriodEnum.Weekly:
-//                this.ScheduleDate = this.CurrentDate.AddDays(this.OcurrencyPeriod * 7);
-//                break;
-//            case OccurrencyPeriodEnum.Yearly:
-//                this.ScheduleDate = this.CurrentDate.AddYears(this.OcurrencyPeriod);
-//                break;
-//        }
-//        return new ScheduleEvent(this.ScheduleDate, this.Type, this.DateLimits);
-//    }
