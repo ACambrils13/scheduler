@@ -15,30 +15,31 @@ namespace Scheduler
         internal static void ValidateOnceSchedule(Scheduler properties)
         {
             ValidateDateNullable(properties.ScheduleDate, nameof(properties.ScheduleDate));
-            ValidateLimits(properties.ScheduleDate.Value, properties.DateLimits);
+            ValidateLimits(properties.ScheduleDate.Value, properties.DateLimits, true);
         }
 
         internal static void ValidateRecurringSchedule(Scheduler properties)
         {
+            ValidateLimits(properties.CurrentDate.Value, properties.DateLimits, false);
             ValidateEnum<OccurrencyPeriodEnum>(properties.PeriodType, nameof(properties.PeriodType));
             ValidatePeriod(properties.OcurrencyPeriod, nameof(properties.OcurrencyPeriod));
             ValidateDailySelection(properties.DailyScheduleHour, properties.DailyFrecuency, properties.DailyFrecuencyPeriod);
         }
 
-        internal static void ValidateLimits(DateTime scheduleDate, LimitsConfig? limits)
+        internal static void ValidateLimits(DateTime date, LimitsConfig? limits, bool validateBefore)
         {
             if (limits.HasValue)
             {
-                if (limits.Value.StartLimit.HasValue)
+                if (limits.Value.EndLimit.HasValue)
                 {
-                    if (DateTime.Compare(scheduleDate, limits.Value.StartLimit.Value) < 0)
+                    if (DateTime.Compare(date, limits.Value.EndLimit.Value) > 0)
                     {
                         throw new ValidationException(FormatConfigExcMessage(TextResources.ExcLimits));
                     }
                 }
-                if (limits.Value.EndLimit.HasValue)
+                if (validateBefore && limits.Value.StartLimit.HasValue)
                 {
-                    if (DateTime.Compare(scheduleDate, limits.Value.EndLimit.Value) > 0)
+                    if (DateTime.Compare(date, limits.Value.StartLimit.Value) < 0)
                     {
                         throw new ValidationException(FormatConfigExcMessage(TextResources.ExcLimits));
                     }

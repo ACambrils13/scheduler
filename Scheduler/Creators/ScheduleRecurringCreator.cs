@@ -15,77 +15,63 @@ namespace Scheduler.Creators
         internal override ScheduleEvent GetNextExecution()
         {
             ScheduleConfigValidator.ValidateRecurringSchedule(this.configuration);
-            ScheduleEvent NextEvent = new();
-            switch (this.configuration.PeriodType)
+            this.NextExecutionDate = this.configuration.CurrentDate.Value;
+            if (this.configuration.DateLimits?.StartLimit != null
+                && DateTime.Compare(this.NextExecutionDate,this.configuration.DateLimits.Value.StartLimit.Value) < 0)
             {
-                case OccurrencyPeriodEnum.Daily:
-                    NextEvent = this.GetNextExecutionDaily();
-                    break;
-                case OccurrencyPeriodEnum.Weekly:
-                    break;
-                case OccurrencyPeriodEnum.Monthly:
-                    NextEvent = this.GetNextExecutionMonthly();
-                    break;
-                case OccurrencyPeriodEnum.Yearly:
-                    NextEvent = this.GetNextExecutionYearly();
-                    break;
+                this.NextExecutionDate = this.configuration.DateLimits.Value.StartLimit.Value;
             }
-            ScheduleConfigValidator.ValidateLimits(NextEvent.ExecutionDate, this.configuration.DateLimits);
-            return NextEvent;
-        }
-
-        private ScheduleEvent GetNextExecutionDaily()
-        {
-            this.NextExecutionDate = this.configuration.CurrentDate.Value.AddDays(this.configuration.OcurrencyPeriod.Value);
-            DateTime NewDate = this.CalculateDailyConfigHour(this.NextExecutionDate.Date);
-            while (DateTime.Compare(this.NextExecutionDate, NewDate) > 0)
+            DateTime NewDate = this.CalculateDailyConfigHour(this.NextExecutionDate);
+            if (DateTime.Compare(this.NextExecutionDate, NewDate) > 0)
             {
-                this.NextExecutionDate.AddDays(this.configuration.OcurrencyPeriod.Value);
+                switch (this.configuration.PeriodType)
+                {
+                    case OccurrencyPeriodEnum.Daily:
+                        this.GetNextExecutionDaily();
+                        break;
+                    case OccurrencyPeriodEnum.Weekly:
+                        this.GetNextExecutionWeekly();
+                        break;
+                    case OccurrencyPeriodEnum.Monthly:
+                        this.GetNextExecutionMonthly();
+                        break;
+                    case OccurrencyPeriodEnum.Yearly:
+                        this.GetNextExecutionYearly();
+                        break;
+                }
                 NewDate = this.CalculateDailyConfigHour(this.NextExecutionDate);
-            }
+            } 
             this.NextExecutionDate = NewDate;
+            ScheduleConfigValidator.ValidateLimits(this.NextExecutionDate, this.configuration.DateLimits, false);
+
             string Description = EventDescriptionFormatter.GetScheduleRecurrentDesc(this.configuration);
             return new ScheduleEvent()
             {
                 ExecutionDate = this.NextExecutionDate,
                 ExecutionDescription = Description
             };
+            
         }
 
-        private ScheduleEvent GetNextExecutionMonthly()
+        private void GetNextExecutionDaily()
         {
-            this.NextExecutionDate = this.configuration.CurrentDate.Value.AddMonths(this.configuration.OcurrencyPeriod.Value);
-            DateTime NewDate = this.CalculateDailyConfigHour(this.NextExecutionDate.Date);
-            while (DateTime.Compare(this.NextExecutionDate, NewDate) > 0)
-            {
-                this.NextExecutionDate.AddMonths(this.configuration.OcurrencyPeriod.Value);
-                NewDate = this.CalculateDailyConfigHour(this.NextExecutionDate);
-            }
-            this.NextExecutionDate = NewDate;
-            string Description = EventDescriptionFormatter.GetScheduleRecurrentDesc(this.configuration);
-            return new ScheduleEvent()
-            {
-                ExecutionDate = this.NextExecutionDate,
-                ExecutionDescription = Description
-            };
+            this.NextExecutionDate = this.NextExecutionDate.AddDays(this.configuration.OcurrencyPeriod.Value).Date;
         }
 
-        private ScheduleEvent GetNextExecutionYearly()
+        private void GetNextExecutionWeekly()
         {
-            this.NextExecutionDate = this.configuration.CurrentDate.Value.AddYears(this.configuration.OcurrencyPeriod.Value);
-            DateTime NewDate = this.CalculateDailyConfigHour(this.NextExecutionDate.Date);
-            while (DateTime.Compare(this.NextExecutionDate, NewDate) > 0)
-            {
-                this.NextExecutionDate.AddYears(this.configuration.OcurrencyPeriod.Value);
-                NewDate = this.CalculateDailyConfigHour(this.NextExecutionDate);
-            }
-            this.NextExecutionDate = NewDate;
-            string Description = EventDescriptionFormatter.GetScheduleRecurrentDesc(this.configuration);
-            return new ScheduleEvent()
-            {
-                ExecutionDate = this.NextExecutionDate,
-                ExecutionDescription = Description
-            };
+            this.NextExecutionDate = this.NextExecutionDate.AddDays(this.configuration.OcurrencyPeriod.Value * 7).Date;
+        }
+
+
+        private void GetNextExecutionMonthly()
+        {
+            this.NextExecutionDate = this.NextExecutionDate.AddMonths(this.configuration.OcurrencyPeriod.Value).Date;
+        }
+
+        private void GetNextExecutionYearly()
+        {
+            this.NextExecutionDate = this.NextExecutionDate.AddYears(this.configuration.OcurrencyPeriod.Value).Date;
         }
 
 
@@ -105,7 +91,7 @@ namespace Scheduler.Creators
 
         private DateTime CalculateDailyConfigHourReccurent(DateTime ExecDate)
         {
-            DateTime NewDate = ExecDate.Date;
+            DateTime NewDate = ExecDate;
             DateTime StartLimit = ExecDate.Date;
             DateTime EndLimit = ExecDate.Date.AddDays(1);
 
@@ -126,13 +112,13 @@ namespace Scheduler.Creators
                 switch (this.configuration.DailyFrecuency)
                 {
                     case DailyFrecuencyEnum.Hours:
-                        NewDate.AddHours(this.configuration.DailyFrecuencyPeriod.Value);
+                        NewDate = NewDate.AddHours(this.configuration.DailyFrecuencyPeriod.Value);
                         break;
                     case DailyFrecuencyEnum.Minutes:
-                        NewDate.AddMinutes(this.configuration.DailyFrecuencyPeriod.Value);
+                        NewDate = NewDate.AddMinutes(this.configuration.DailyFrecuencyPeriod.Value);
                         break;
                     case DailyFrecuencyEnum.Seconds:
-                        NewDate.AddSeconds(this.configuration.DailyFrecuencyPeriod.Value);
+                        NewDate = NewDate.AddSeconds(this.configuration.DailyFrecuencyPeriod.Value);
                         break;
                 }
                 if (DateTime.Compare(NewDate, EndLimit) > 0)
