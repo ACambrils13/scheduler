@@ -73,7 +73,7 @@ namespace Scheduler
             ValidateDate(date.Value, propertyName);
         }
 
-        internal static void ValidateDate (DateTime date, string propertyName)
+        internal static void ValidateDate(DateTime date, string propertyName)
         {
 
             if (date == DateTime.MaxValue)

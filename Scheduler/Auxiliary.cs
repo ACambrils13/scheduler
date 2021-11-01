@@ -1,5 +1,4 @@
-﻿using Scheduler.Resources;
-using System;
+﻿using System;
 
 namespace Scheduler
 {
@@ -14,28 +13,6 @@ namespace Scheduler
 
         public DateTime? StartLimit { get; }
         public DateTime? EndLimit { get; }
-    }
-
-    public struct Week
-    {
-        public Week(bool Mo, bool Tu, bool We, bool Th, bool Fr, bool Sa, bool Su)
-        {
-            this.Monday = Mo;
-            this.Tuesday = Tu;
-            this.Wednesday = We;
-            this.Thursday = Th;
-            this.Friday = Fr;
-            this.Saturday = Sa;
-            this.Sunday = Su;
-        }
-
-        public bool Monday { get; }
-        public bool Tuesday { get; }
-        public bool Wednesday { get; }
-        public bool Thursday { get; }
-        public bool Friday { get; }
-        public bool Saturday { get; }
-        public bool Sunday { get; }
     }
 
     public enum ScheduleTypeEnum

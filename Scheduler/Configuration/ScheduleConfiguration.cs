@@ -6,7 +6,7 @@ namespace Scheduler
     {
         private readonly Scheduler scheduleProperties;
         private ScheduleEventCreator eventCreator;
-        public ScheduleConfigurator(Scheduler scheduleProperties) 
+        public ScheduleConfigurator(Scheduler scheduleProperties)
         {
             this.scheduleProperties = scheduleProperties;
         }

@@ -17,11 +17,11 @@ namespace Scheduler
         public DailyFrecuencyEnum? DailyFrecuency { get; set; }
         public int? DailyFrecuencyPeriod { get; set; }
         public LimitsConfig? DailyLimits { get; set; }
-        public Week? WeeklyDays { get; set; }
+        public DayOfWeek[] WeeklyDays { get; set; }
 
         public ScheduleEvent GetNextExecution()
         {
-            ScheduleConfigurator Configurator = new (this);
+            ScheduleConfigurator Configurator = new(this);
             return Configurator.ScheduleNextExecution();
         }
     }

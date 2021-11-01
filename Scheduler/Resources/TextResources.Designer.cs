@@ -61,6 +61,15 @@ namespace Scheduler.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to and.
+        /// </summary>
+        public static string And {
+            get {
+                return ResourceManager.GetString("And", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Configuration Error: {0}.
         /// </summary>
         public static string ConfError {
@@ -142,11 +151,29 @@ namespace Scheduler.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to on {0}.
+        /// </summary>
+        public static string EventDescRecurringWeekly {
+            get {
+                return ResourceManager.GetString("EventDescRecurringWeekly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Schedule will be used on {0} at {1}.
         /// </summary>
         public static string EventDescSchedule {
             get {
                 return ResourceManager.GetString("EventDescSchedule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Occurs every {0} on {1} every {2} starting on {3}.
+        /// </summary>
+        public static string EventScheduleDescRecurring {
+            get {
+                return ResourceManager.GetString("EventScheduleDescRecurring", resourceCulture);
             }
         }
         
@@ -196,6 +223,24 @@ namespace Scheduler.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} should be a Date value..
+        /// </summary>
+        public static string ExcNoDate {
+            get {
+                return ResourceManager.GetString("ExcNoDate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A Configuration Element hasn&apos;t got value..
+        /// </summary>
+        public static string ExcNull {
+            get {
+                return ResourceManager.GetString("ExcNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} hasn&apos;t got any value..
         /// </summary>
         public static string ExcObjectNull {
@@ -237,6 +282,15 @@ namespace Scheduler.Resources {
         public static string Months {
             get {
                 return ResourceManager.GetString("Months", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not Defined.
+        /// </summary>
+        public static string NotDefined {
+            get {
+                return ResourceManager.GetString("NotDefined", resourceCulture);
             }
         }
         

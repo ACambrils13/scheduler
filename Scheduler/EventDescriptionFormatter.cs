@@ -11,19 +11,19 @@ namespace Scheduler
             string Date = scheduleDate.ToShortDateString();
             string Hour = scheduleDate.ToString("HH:mm");
 
-            StringBuilder Description = new (TextResources.EventDescOnce);
-            Description.Append(string.Concat(" ",string.Format(TextResources.EventDescSchedule, Date, Hour)));
+            StringBuilder Description = new(TextResources.EventDescOnce);
+            Description.Append(string.Concat(" ", string.Format(TextResources.EventDescSchedule, Date, Hour)));
             if (dateLimits.HasValue)
             {
                 if (dateLimits.Value.StartLimit.HasValue)
                 {
                     string StartDate = dateLimits.Value.StartLimit.Value.ToShortDateString();
-                    Description.Append(string.Concat(" ",string.Format(TextResources.EventDescLimitsStart, StartDate)));
+                    Description.Append(string.Concat(" ", string.Format(TextResources.EventDescLimitsStart, StartDate)));
                 }
                 if (dateLimits.Value.EndLimit.HasValue)
                 {
                     string EndDate = dateLimits.Value.EndLimit.Value.ToShortDateString();
-                    Description.Append(string.Concat(" ",string.Format(TextResources.EventDescLimitsEnd, EndDate)));
+                    Description.Append(string.Concat(" ", string.Format(TextResources.EventDescLimitsEnd, EndDate)));
                 }
             }
             return Description.ToString();
@@ -48,10 +48,16 @@ namespace Scheduler
                     break;
             }
 
-            StringBuilder Description = new(string.Format(TextResources.EventDescRecurring,configuration.OcurrencyPeriod,PeriodString));
-            if (configuration.PeriodType.Value == OccurrencyPeriodEnum.Weekly)
+            StringBuilder Description = new(string.Format(TextResources.EventDescRecurring, configuration.OcurrencyPeriod, PeriodString));
+            if (configuration.PeriodType.Value == OccurrencyPeriodEnum.Weekly && configuration.WeeklyDays != null && configuration.WeeklyDays.Length > 0)
             {
-                // poner los días
+                string WeeklyDays = string.Join(", ", configuration.WeeklyDays);
+                if (WeeklyDays.LastIndexOf(",") >= 0)
+                {
+                    int Place = WeeklyDays.LastIndexOf(",");
+                    WeeklyDays = WeeklyDays.Remove(Place, 1).Insert(Place, string.Concat(" ", TextResources.And));
+                }
+                Description.Append(string.Concat(" ", string.Format(TextResources.EventDescRecurringWeekly, WeeklyDays)));
             }
             if (configuration.DailyScheduleHour.HasValue)
             {
