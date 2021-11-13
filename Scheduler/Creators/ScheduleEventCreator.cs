@@ -2,13 +2,10 @@
 {
     internal abstract class ScheduleEventCreator
     {
-        internal readonly Scheduler configuration;
 
-        internal ScheduleEventCreator(Scheduler scheduler)
-        {
-            this.configuration = scheduler;
-        }
+        internal ScheduleEventCreator()
+        { }
 
-        internal abstract ScheduleEvent GetNextExecution();
+        internal abstract ScheduleEvent GetNextExecution(SchedulerConfigurator config);
     }
 }

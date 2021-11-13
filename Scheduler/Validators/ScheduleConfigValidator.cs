@@ -6,19 +6,19 @@ namespace Scheduler
 {
     internal class ScheduleConfigValidator
     {
-        internal static void ValidateBasicProperties(Scheduler properties)
+        internal static void ValidateBasicProperties(SchedulerConfigurator properties)
         {
             ValidateDateNullable(properties.CurrentDate, nameof(properties.CurrentDate));
             ValidateEnum<ScheduleTypeEnum>(properties.Type, nameof(properties.Type));
         }
 
-        internal static void ValidateOnceSchedule(Scheduler properties)
+        internal static void ValidateOnceSchedule(SchedulerConfigurator properties)
         {
             ValidateDateNullable(properties.ScheduleDate, nameof(properties.ScheduleDate));
             ValidateLimits(properties.ScheduleDate.Value, properties.DateLimits, true);
         }
 
-        internal static void ValidateRecurringSchedule(Scheduler properties)
+        internal static void ValidateRecurringSchedule(SchedulerConfigurator properties)
         {
             ValidateLimits(properties.CurrentDate.Value, properties.DateLimits, false);
             ValidateEnum<OccurrencyPeriodEnum>(properties.PeriodType, nameof(properties.PeriodType));

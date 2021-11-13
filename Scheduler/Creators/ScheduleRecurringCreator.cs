@@ -8,36 +8,34 @@ namespace Scheduler.Creators
     {
         private DateTime NextExecutionDate;
 
-        internal ScheduleRecurringCreator(Scheduler scheduler) : base(scheduler) { }
-
-        internal override ScheduleEvent GetNextExecution()
+        internal override ScheduleEvent GetNextExecution(SchedulerConfigurator config)
         {
-            ScheduleConfigValidator.ValidateRecurringSchedule(this.configuration);
-            this.NextExecutionDate = this.configuration.CurrentDate.Value;
-            if (this.configuration.DateLimits?.StartLimit != null
-                && DateTime.Compare(this.NextExecutionDate, this.configuration.DateLimits.Value.StartLimit.Value) < 0)
+            ScheduleConfigValidator.ValidateRecurringSchedule(config);
+            this.NextExecutionDate = config.CurrentDate.Value;
+            if (config.DateLimits?.StartLimit != null
+                && DateTime.Compare(this.NextExecutionDate, config.DateLimits.Value.StartLimit.Value) < 0)
             {
-                this.NextExecutionDate = this.configuration.DateLimits.Value.StartLimit.Value;
+                this.NextExecutionDate = config.DateLimits.Value.StartLimit.Value;
             }
 
-            switch (this.configuration.PeriodType)
+            switch (config.PeriodType)
             {
                 case OccurrencyPeriodEnum.Daily:
-                    this.GetNextExecutionDaily();
+                    this.GetNextExecutionDaily(config);
                     break;
                 case OccurrencyPeriodEnum.Weekly:
-                    this.GetNextExecutionWeekly();
+                    this.GetNextExecutionWeekly(config);
                     break;
                 case OccurrencyPeriodEnum.Monthly:
-                    this.GetNextExecutionMonthly();
+                    this.GetNextExecutionMonthly(config);
                     break;
                 case OccurrencyPeriodEnum.Yearly:
-                    this.GetNextExecutionYearly();
+                    this.GetNextExecutionYearly(config);
                     break;
             }
-            ScheduleConfigValidator.ValidateLimits(this.NextExecutionDate, this.configuration.DateLimits, false);
+            ScheduleConfigValidator.ValidateLimits(this.NextExecutionDate, config.DateLimits, false);
 
-            string Description = EventDescriptionFormatter.GetScheduleRecurrentDesc(this.configuration);
+            string Description = EventDescriptionFormatter.GetScheduleRecurrentDesc(config);
             return new ScheduleEvent()
             {
                 ExecutionDate = this.NextExecutionDate,
@@ -46,104 +44,104 @@ namespace Scheduler.Creators
 
         }
 
-        private void GetNextExecutionDaily()
+        private void GetNextExecutionDaily(SchedulerConfigurator config)
         {
-            DateTime NewDate = this.CalculateDailyConfigHour(this.NextExecutionDate);
+            DateTime NewDate = this.CalculateDailyConfigHour(config, this.NextExecutionDate);
             if (DateTime.Compare(this.NextExecutionDate, NewDate) > 0)
             {
-                this.NextExecutionDate = this.NextExecutionDate.AddDays(this.configuration.OcurrencyPeriod.Value).Date;
+                this.NextExecutionDate = this.NextExecutionDate.AddDays(config.OcurrencyPeriod.Value).Date;
             }
-            this.NextExecutionDate = this.CalculateDailyConfigHour(this.NextExecutionDate);
+            this.NextExecutionDate = this.CalculateDailyConfigHour(config, this.NextExecutionDate);
         }
 
-        private void GetNextExecutionWeekly()
+        private void GetNextExecutionWeekly(SchedulerConfigurator config)
         {
-            if (this.configuration.WeeklyDays != null && this.configuration.WeeklyDays.Length > 0)
+            if (config.WeeklyDays != null && config.WeeklyDays.Length > 0)
             {
-                this.NextExecutionDate = this.CalculateWeeklyConfigDay(this.NextExecutionDate);
-                DateTime NewDate = this.CalculateDailyConfigHour(this.NextExecutionDate);
+                this.NextExecutionDate = this.CalculateWeeklyConfigDay(config, this.NextExecutionDate);
+                DateTime NewDate = this.CalculateDailyConfigHour(config, this.NextExecutionDate);
                 if (DateTime.Compare(this.NextExecutionDate, NewDate) > 0)
                 {
-                    this.NextExecutionDate = this.CalculateWeeklyConfigDay(this.NextExecutionDate.AddDays(1).Date);
+                    this.NextExecutionDate = this.CalculateWeeklyConfigDay(config, this.NextExecutionDate.AddDays(1).Date);
                 }
-                this.NextExecutionDate = this.CalculateDailyConfigHour(this.NextExecutionDate);
+                this.NextExecutionDate = this.CalculateDailyConfigHour(config, this.NextExecutionDate);
             }
             else
             {
-                DateTime NewDate = this.CalculateDailyConfigHour(this.NextExecutionDate);
+                DateTime NewDate = this.CalculateDailyConfigHour(config, this.NextExecutionDate);
                 if (DateTime.Compare(this.NextExecutionDate, NewDate) > 0)
                 {
-                    this.NextExecutionDate = this.NextExecutionDate.AddDays(this.configuration.OcurrencyPeriod.Value * 7).Date;
+                    this.NextExecutionDate = this.NextExecutionDate.AddDays(config.OcurrencyPeriod.Value * 7).Date;
                 }
-                this.NextExecutionDate = this.CalculateDailyConfigHour(this.NextExecutionDate);
+                this.NextExecutionDate = this.CalculateDailyConfigHour(config, this.NextExecutionDate);
             }
         }
 
-        private void GetNextExecutionMonthly()
+        private void GetNextExecutionMonthly(SchedulerConfigurator config)
         {
-            DateTime NewDate = this.CalculateDailyConfigHour(this.NextExecutionDate);
+            DateTime NewDate = this.CalculateDailyConfigHour(config, this.NextExecutionDate);
             if (DateTime.Compare(this.NextExecutionDate, NewDate) > 0)
             {
-                this.NextExecutionDate = this.NextExecutionDate.AddMonths(this.configuration.OcurrencyPeriod.Value).Date;
+                this.NextExecutionDate = this.NextExecutionDate.AddMonths(config.OcurrencyPeriod.Value).Date;
             }
-            this.NextExecutionDate = this.CalculateDailyConfigHour(this.NextExecutionDate);
+            this.NextExecutionDate = this.CalculateDailyConfigHour(config, this.NextExecutionDate);
         }
 
-        private void GetNextExecutionYearly()
+        private void GetNextExecutionYearly(SchedulerConfigurator config)
         {
-            DateTime NewDate = this.CalculateDailyConfigHour(this.NextExecutionDate);
+            DateTime NewDate = this.CalculateDailyConfigHour(config, this.NextExecutionDate);
             if (DateTime.Compare(this.NextExecutionDate, NewDate) > 0)
             {
-                this.NextExecutionDate = this.NextExecutionDate.AddYears(this.configuration.OcurrencyPeriod.Value).Date;
+                this.NextExecutionDate = this.NextExecutionDate.AddYears(config.OcurrencyPeriod.Value).Date;
             }
-            this.NextExecutionDate = this.CalculateDailyConfigHour(this.NextExecutionDate);
+            this.NextExecutionDate = this.CalculateDailyConfigHour(config, this.NextExecutionDate);
         }
 
 
-        private DateTime CalculateDailyConfigHour(DateTime ExecDate)
+        private DateTime CalculateDailyConfigHour(SchedulerConfigurator config, DateTime ExecDate)
         {
             DateTime NewDate;
-            if (this.configuration.DailyScheduleHour.HasValue)
+            if (config.DailyScheduleHour.HasValue)
             {
-                NewDate = ExecDate.Date.Add(this.configuration.DailyScheduleHour.Value.TimeOfDay);
+                NewDate = ExecDate.Date.Add(config.DailyScheduleHour.Value.TimeOfDay);
             }
             else
             {
-                NewDate = this.CalculateDailyConfigHourReccurent(ExecDate);
+                NewDate = this.CalculateDailyConfigHourReccurent(config, ExecDate);
             }
             return NewDate;
         }
 
-        private DateTime CalculateDailyConfigHourReccurent(DateTime ExecDate)
+        private DateTime CalculateDailyConfigHourReccurent(SchedulerConfigurator config, DateTime ExecDate)
         {
             DateTime NewDate = ExecDate;
             DateTime StartLimit = ExecDate.Date;
             DateTime EndLimit = ExecDate.Date.AddDays(1);
 
-            if (this.configuration.DailyLimits.HasValue)
+            if (config.DailyLimits.HasValue)
             {
-                if (this.configuration.DailyLimits.Value.StartLimit.HasValue)
+                if (config.DailyLimits.Value.StartLimit.HasValue)
                 {
-                    StartLimit = StartLimit.Add(this.configuration.DailyLimits.Value.StartLimit.Value.TimeOfDay);
+                    StartLimit = StartLimit.Add(config.DailyLimits.Value.StartLimit.Value.TimeOfDay);
                 }
-                if (this.configuration.DailyLimits.Value.EndLimit.HasValue)
+                if (config.DailyLimits.Value.EndLimit.HasValue)
                 {
-                    EndLimit = ExecDate.Date.Add(this.configuration.DailyLimits.Value.EndLimit.Value.TimeOfDay);
+                    EndLimit = ExecDate.Date.Add(config.DailyLimits.Value.EndLimit.Value.TimeOfDay);
                 }
                 NewDate = StartLimit;
             }
             while (DateTime.Compare(ExecDate, NewDate) > 0)
             {
-                switch (this.configuration.DailyFrecuency)
+                switch (config.DailyFrecuency)
                 {
                     case DailyFrecuencyEnum.Hours:
-                        NewDate = NewDate.AddHours(this.configuration.DailyFrecuencyPeriod.Value);
+                        NewDate = NewDate.AddHours(config.DailyFrecuencyPeriod.Value);
                         break;
                     case DailyFrecuencyEnum.Minutes:
-                        NewDate = NewDate.AddMinutes(this.configuration.DailyFrecuencyPeriod.Value);
+                        NewDate = NewDate.AddMinutes(config.DailyFrecuencyPeriod.Value);
                         break;
                     case DailyFrecuencyEnum.Seconds:
-                        NewDate = NewDate.AddSeconds(this.configuration.DailyFrecuencyPeriod.Value);
+                        NewDate = NewDate.AddSeconds(config.DailyFrecuencyPeriod.Value);
                         break;
                 }
                 if (DateTime.Compare(NewDate, EndLimit) > 0)
@@ -155,49 +153,49 @@ namespace Scheduler.Creators
             return NewDate;
         }
 
-        private DateTime CalculateWeeklyConfigDay(DateTime ExecDate)
+        private DateTime CalculateWeeklyConfigDay(SchedulerConfigurator config, DateTime ExecDate)
         {
             DateTime NewDate = ExecDate;
-            if (this.configuration.WeeklyDays.Contains(ExecDate.DayOfWeek) == false)
+            if (config.WeeklyDays.Contains(ExecDate.DayOfWeek) == false)
             {
                 int? OffsetDays = null;
                 if (CultureInfo.CurrentCulture.DateTimeFormat.FirstDayOfWeek == DayOfWeek.Sunday)
                 {
                     try
                     {
-                        OffsetDays = (int)this.configuration.WeeklyDays.First(day => (int)day > (int)ExecDate.DayOfWeek);
+                        OffsetDays = (int)config.WeeklyDays.First(day => (int)day > (int)ExecDate.DayOfWeek);
                     }
                     catch
                     {
                         int DiffFirstDayOfWeek = (int)ExecDate.DayOfWeek - (int)DayOfWeek.Sunday;
-                        OffsetDays = (this.configuration.OcurrencyPeriod.Value * 7) - DiffFirstDayOfWeek;
-                        OffsetDays += (int)this.configuration.WeeklyDays.Min(day => (int)day);
+                        OffsetDays = (config.OcurrencyPeriod.Value * 7) - DiffFirstDayOfWeek;
+                        OffsetDays += (int)config.WeeklyDays.Min(day => (int)day);
                     }
                 }
                 else if (this.NextExecutionDate.DayOfWeek != DayOfWeek.Sunday)
                 {
                     try
                     {
-                        OffsetDays = (int)this.configuration.WeeklyDays.First(day => (int)day > (int)ExecDate.DayOfWeek);
+                        OffsetDays = (int)config.WeeklyDays.First(day => (int)day > (int)ExecDate.DayOfWeek);
                     }
                     catch
                     {
-                        if (this.configuration.WeeklyDays.Contains(DayOfWeek.Sunday))
+                        if (config.WeeklyDays.Contains(DayOfWeek.Sunday))
                         {
                             OffsetDays = 7 - (int)ExecDate.DayOfWeek;
                         }
                         else
                         {
                             int DiffFirstDayOfWeek = (int)ExecDate.DayOfWeek - (int)DayOfWeek.Monday;
-                            OffsetDays = (this.configuration.OcurrencyPeriod.Value * 7) - DiffFirstDayOfWeek;
-                            OffsetDays += ((int)this.configuration.WeeklyDays.Min(day => (int)day) - (int)DayOfWeek.Monday);
+                            OffsetDays = (config.OcurrencyPeriod.Value * 7) - DiffFirstDayOfWeek;
+                            OffsetDays += ((int)config.WeeklyDays.Min(day => (int)day) - (int)DayOfWeek.Monday);
                         }
                     }
                 }
                 else
                 {
-                    OffsetDays = (this.configuration.OcurrencyPeriod.Value * 7) - 6;
-                    OffsetDays += ((int)this.configuration.WeeklyDays.Min(day => (int)day) - (int)DayOfWeek.Monday);
+                    OffsetDays = (config.OcurrencyPeriod.Value * 7) - 6;
+                    OffsetDays += ((int)config.WeeklyDays.Min(day => (int)day) - (int)DayOfWeek.Monday);
                 }
 
                 NewDate = this.NextExecutionDate.AddDays(OffsetDays.Value).Date;

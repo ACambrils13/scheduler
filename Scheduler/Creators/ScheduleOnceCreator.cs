@@ -2,15 +2,14 @@
 {
     internal class ScheduleOnceCreator : ScheduleEventCreator
     {
-        internal ScheduleOnceCreator(Scheduler scheduler) : base(scheduler) { }
 
-        internal override ScheduleEvent GetNextExecution()
+        internal override ScheduleEvent GetNextExecution(SchedulerConfigurator config)
         {
-            ScheduleConfigValidator.ValidateOnceSchedule(this.configuration);
-            string Description = EventDescriptionFormatter.GetScheduleOnceDesc(this.configuration.ScheduleDate.Value, this.configuration.DateLimits);
+            ScheduleConfigValidator.ValidateOnceSchedule(config);
+            string Description = EventDescriptionFormatter.GetScheduleOnceDesc(config.ScheduleDate.Value, config.DateLimits);
             return new ScheduleEvent()
             {
-                ExecutionDate = this.configuration.ScheduleDate.Value,
+                ExecutionDate = config.ScheduleDate.Value,
                 ExecutionDescription = Description
             };
         }
