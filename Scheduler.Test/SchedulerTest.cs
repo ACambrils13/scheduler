@@ -1,3 +1,5 @@
+using Scheduler.Auxiliary;
+using Scheduler.Configuration;
 using Scheduler.Resources;
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -14,12 +16,12 @@ namespace Scheduler.Test
         public void CurrentDate_Correct_Asignation()
         {
             string Date = DateTime.Now.ToString();
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = DateTime.Parse(Date)
             };
 
-            Assert.Equal(SchedulerObj.CurrentDate.ToString(), DateTime.Parse(Date).ToString());
+            Assert.Equal(schedulerConfig.CurrentDate.ToString(), DateTime.Parse(Date).ToString());
         }
 
         [Theory]
@@ -28,12 +30,12 @@ namespace Scheduler.Test
         [InlineData(null)]
         public void ScheduleTypeEnum_Correct_Asignation(ScheduleTypeEnum? ScheduleType)
         {
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 Type = ScheduleType
             };
 
-            Assert.Equal(SchedulerObj.Type, ScheduleType);
+            Assert.Equal(schedulerConfig.Type, ScheduleType);
         }
 
         [Fact]
@@ -74,12 +76,12 @@ namespace Scheduler.Test
         public void ScheduleDate_Correct_Asignation()
         {
             string Date = DateTime.Now.ToString();
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 ScheduleDate = DateTime.Parse(Date)
             };
 
-            Assert.Equal(SchedulerObj.ScheduleDate.ToString(), DateTime.Parse(Date).ToString());
+            Assert.Equal(schedulerConfig.ScheduleDate.ToString(), DateTime.Parse(Date).ToString());
         }
 
         [Theory]
@@ -90,24 +92,24 @@ namespace Scheduler.Test
         [InlineData(null)]
         public void OccurrencyPeriodEnum_Correct_Asignation(OccurrencyPeriodEnum? OcurrencyPeriod)
         {
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 PeriodType = OcurrencyPeriod
             };
 
-            Assert.Equal(SchedulerObj.PeriodType, OcurrencyPeriod);
+            Assert.Equal(schedulerConfig.PeriodType, OcurrencyPeriod);
         }
 
         [Fact]
         public void DailyScheduleHour_Correct_Asignation()
         {
             string Date = DateTime.Now.ToString();
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 DailyScheduleHour = DateTime.Parse(Date)
             };
 
-            Assert.Equal(SchedulerObj.DailyScheduleHour.ToString(), DateTime.Parse(Date).ToString());
+            Assert.Equal(schedulerConfig.DailyScheduleHour.ToString(), DateTime.Parse(Date).ToString());
         }
 
         [Theory]
@@ -117,25 +119,25 @@ namespace Scheduler.Test
         [InlineData(null)]
         public void DailyPeriodEnum_Correct_Asignation(DailyFrecuencyEnum? OcurrencyPeriod)
         {
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 DailyFrecuency = OcurrencyPeriod
             };
 
-            Assert.Equal(SchedulerObj.DailyFrecuency, OcurrencyPeriod);
+            Assert.Equal(schedulerConfig.DailyFrecuency, OcurrencyPeriod);
         }
 
         [Fact]
         public void Configuration_Type_Null_Failed()
         {
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = DateTime.Now,
                 Type = null
             };
 
             Assert.Throws<ValidationException>(() =>
-               SchedulerObj.GetNextExecution());
+               Scheduler.GetNextExecution(schedulerConfig));
         }
         #endregion
 
@@ -143,7 +145,7 @@ namespace Scheduler.Test
         [Fact]
         public void Configuration_Once_CurrentDate_Null_Failed()
         {
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = null,
                 Type = ScheduleTypeEnum.Once,
@@ -151,13 +153,13 @@ namespace Scheduler.Test
             };
 
             Assert.Throws<ValidationException>(() =>
-               SchedulerObj.GetNextExecution());
+               Scheduler.GetNextExecution(schedulerConfig));
         }
 
         [Fact]
         public void Configuration_Once_CurrentDate_MaxValue_Failed()
         {
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = DateTime.MaxValue,
                 Type = ScheduleTypeEnum.Once,
@@ -165,13 +167,13 @@ namespace Scheduler.Test
             };
 
             Assert.Throws<ValidationException>(() =>
-               SchedulerObj.GetNextExecution());
+               Scheduler.GetNextExecution(schedulerConfig));
         }
 
         [Fact]
         public void Configuration_Once_ScheduleDate_Null_Failed()
         {
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = DateTime.Now,
                 Type = ScheduleTypeEnum.Once,
@@ -179,7 +181,7 @@ namespace Scheduler.Test
             };
 
             Assert.Throws<ValidationException>(() =>
-               SchedulerObj.GetNextExecution());
+               Scheduler.GetNextExecution(schedulerConfig));
         }
 
         [Fact]
@@ -190,13 +192,13 @@ namespace Scheduler.Test
             string ExecScheduleHour = DateTime.Parse(ScheduleDateEx).ToString("HH:mm");
             string ExecDescription = string.Concat(TextResources.EventDescOnce, " ", string.Format(TextResources.EventDescSchedule, ExecScheduleDate, ExecScheduleHour));
 
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = DateTime.Now,
                 Type = ScheduleTypeEnum.Once,
                 ScheduleDate = DateTime.Parse(ScheduleDateEx)
             };
-            ScheduleEvent NextExec = SchedulerObj.GetNextExecution();
+            ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
 
             Assert.Equal(NextExec.ExecutionDate.ToString(), ScheduleDateEx);
             Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
@@ -214,14 +216,14 @@ namespace Scheduler.Test
             ExecDescription.AppendJoin(" ", TextResources.EventDescOnce, string.Format(TextResources.EventDescSchedule, ExecScheduleDate, ExecScheduleHour),
                 string.Format(TextResources.EventDescLimitsStart, ExecScheduleLimitStart));
 
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = DateTime.Now,
                 Type = ScheduleTypeEnum.Once,
                 ScheduleDate = DateTime.Parse(ScheduleDateEx),
                 DateLimits = new LimitsConfig(DateTime.Parse(ExecScheduleLimitStart), null)
             };
-            ScheduleEvent NextExec = SchedulerObj.GetNextExecution();
+            ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
 
             Assert.Equal(NextExec.ExecutionDate.ToString(), ScheduleDateEx);
             Assert.Equal(NextExec.ExecutionDescription, ExecDescription.ToString());
@@ -241,14 +243,14 @@ namespace Scheduler.Test
             ExecDescription.AppendJoin(" ", TextResources.EventDescOnce, string.Format(TextResources.EventDescSchedule, ExecScheduleDate, ExecScheduleHour),
                 string.Format(TextResources.EventDescLimitsStart, ExecScheduleLimitStart), string.Format(TextResources.EventDescLimitsEnd, ExecScheduleLimitEnd));
 
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = DateTime.Now,
                 Type = ScheduleTypeEnum.Once,
                 ScheduleDate = DateTime.Parse(ScheduleDateEx),
                 DateLimits = new LimitsConfig(DateTime.Parse(ExecScheduleLimitStart), DateTime.Parse(ExecScheduleLimitEnd))
             };
-            ScheduleEvent NextExec = SchedulerObj.GetNextExecution();
+            ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
 
             Assert.Equal(NextExec.ExecutionDate.ToString(), ScheduleDateEx);
             Assert.Equal(NextExec.ExecutionDescription, ExecDescription.ToString());
@@ -260,7 +262,7 @@ namespace Scheduler.Test
             DateTime ScheduleDateEx = DateTime.Now.AddDays(-5);
             DateTime DateLimitsStart = DateTime.Now;
 
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = DateTime.Now.AddDays(-10),
                 Type = ScheduleTypeEnum.Once,
@@ -269,7 +271,7 @@ namespace Scheduler.Test
             };
 
             Assert.Throws<ValidationException>(() =>
-               SchedulerObj.GetNextExecution());
+               Scheduler.GetNextExecution(schedulerConfig));
         }
 
         [Fact]
@@ -279,7 +281,7 @@ namespace Scheduler.Test
             DateTime DateLimitsStart = DateTime.Now.AddDays(-10);
             DateTime DateLimitsEnd = DateTime.Now.AddDays(5);
 
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = DateTime.Now,
                 Type = ScheduleTypeEnum.Once,
@@ -288,7 +290,7 @@ namespace Scheduler.Test
             };
 
             Assert.Throws<ValidationException>(() =>
-               SchedulerObj.GetNextExecution());
+               Scheduler.GetNextExecution(schedulerConfig));
         }
         #endregion
 
@@ -296,7 +298,7 @@ namespace Scheduler.Test
         [Fact]
         public void Configuration_Recurring_CurrentDate_Null_Failed()
         {
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = null,
                 Type = ScheduleTypeEnum.Recurring,
@@ -306,13 +308,13 @@ namespace Scheduler.Test
             };
 
             Assert.Throws<ValidationException>(() =>
-               SchedulerObj.GetNextExecution());
+               Scheduler.GetNextExecution(schedulerConfig));
         }
 
         [Fact]
         public void Configuration_Recurring_CurrentDate_MaxValue_Failed()
         {
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = DateTime.MaxValue,
                 Type = ScheduleTypeEnum.Recurring,
@@ -322,13 +324,13 @@ namespace Scheduler.Test
             };
 
             Assert.Throws<ValidationException>(() =>
-               SchedulerObj.GetNextExecution());
+               Scheduler.GetNextExecution(schedulerConfig));
         }
 
         [Fact]
         public void Configuration_Recurring_OcurrencyPeriod_Null_Failed()
         {
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = DateTime.MaxValue,
                 Type = ScheduleTypeEnum.Recurring,
@@ -337,13 +339,13 @@ namespace Scheduler.Test
             };
 
             Assert.Throws<ValidationException>(() =>
-               SchedulerObj.GetNextExecution());
+               Scheduler.GetNextExecution(schedulerConfig));
         }
 
         [Fact]
         public void Configuration_Recurring_OcurrencyPeriod_Negative_Failed()
         {
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = DateTime.MaxValue,
                 Type = ScheduleTypeEnum.Recurring,
@@ -353,7 +355,7 @@ namespace Scheduler.Test
             };
 
             Assert.Throws<ValidationException>(() =>
-               SchedulerObj.GetNextExecution());
+               Scheduler.GetNextExecution(schedulerConfig));
         }
 
         [Fact]
@@ -363,7 +365,7 @@ namespace Scheduler.Test
             DateTime ExecScheduleLimitStart = DateTime.Parse("01/01/2021");
             DateTime ExecScheduleLimitEnd = DateTime.Parse("15/02/2021");
 
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
@@ -373,7 +375,7 @@ namespace Scheduler.Test
                 DateLimits = new LimitsConfig(ExecScheduleLimitStart, ExecScheduleLimitEnd)
             };
             Assert.Throws<ValidationException>(() =>
-               SchedulerObj.GetNextExecution());
+               Scheduler.GetNextExecution(schedulerConfig));
         }
 
         [Fact]
@@ -381,7 +383,7 @@ namespace Scheduler.Test
         {
             DateTime CurrentDateEx = DateTime.Parse("01/01/2021");
 
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
@@ -391,7 +393,7 @@ namespace Scheduler.Test
                 DailyLimits = new LimitsConfig(DateTime.Parse("04:00"), DateTime.Parse("08:00"))
             };
             Assert.Throws<ValidationException>(() =>
-               SchedulerObj.GetNextExecution());
+               Scheduler.GetNextExecution(schedulerConfig));
         }
 
         [Fact]
@@ -399,7 +401,7 @@ namespace Scheduler.Test
         {
             DateTime CurrentDateEx = DateTime.Parse("01/01/2021");
 
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
@@ -410,7 +412,7 @@ namespace Scheduler.Test
                 DailyLimits = new LimitsConfig(DateTime.Parse("04:00"), DateTime.Parse("08:00"))
             };
             Assert.Throws<ValidationException>(() =>
-               SchedulerObj.GetNextExecution());
+               Scheduler.GetNextExecution(schedulerConfig));
         }
 
         [Fact]
@@ -418,7 +420,7 @@ namespace Scheduler.Test
         {
             DateTime CurrentDateEx = DateTime.Parse("01/01/2021");
 
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
@@ -428,7 +430,7 @@ namespace Scheduler.Test
                 DailyLimits = new LimitsConfig(DateTime.Parse("04:00"), DateTime.Parse("08:00"))
             };
             Assert.Throws<ValidationException>(() =>
-               SchedulerObj.GetNextExecution());
+               Scheduler.GetNextExecution(schedulerConfig));
         }
 
         #region Daily
@@ -439,7 +441,7 @@ namespace Scheduler.Test
             DateTime ScheduleDateEx = DateTime.Parse("01/01/2021 05:00:00");
             string ExecDescription = "Occurs every 2 days at 5:00";
 
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
@@ -447,7 +449,7 @@ namespace Scheduler.Test
                 OcurrencyPeriod = 2,
                 DailyScheduleHour = DateTime.Parse("05:00")
             };
-            ScheduleEvent NextExec = SchedulerObj.GetNextExecution();
+            ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
 
             Assert.Equal(NextExec.ExecutionDate.ToString(), ScheduleDateEx.ToString());
             Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
@@ -461,7 +463,7 @@ namespace Scheduler.Test
             DateTime ExecScheduleLimitStart = DateTime.Parse("02/01/2021");
             string ExecDescription = "Occurs every 2 days at 5:00 starting on 02/01/2021";
 
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
@@ -470,7 +472,7 @@ namespace Scheduler.Test
                 DailyScheduleHour = DateTime.Parse("05:00"),
                 DateLimits = new LimitsConfig(ExecScheduleLimitStart, null)
             };
-            ScheduleEvent NextExec = SchedulerObj.GetNextExecution();
+            ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
 
             Assert.Equal(NextExec.ExecutionDate.ToString(), ScheduleDateEx.ToString());
             Assert.Equal(NextExec.ExecutionDescription, ExecDescription.ToString());
@@ -485,7 +487,7 @@ namespace Scheduler.Test
             DateTime ExecScheduleLimitEnd = DateTime.Parse("31/01/2021");
             string ExecDescription = "Occurs every 2 days at 5:00 starting on 01/01/2021 to 31/01/2021";
 
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
@@ -494,7 +496,7 @@ namespace Scheduler.Test
                 DailyScheduleHour = DateTime.Parse("05:00"),
                 DateLimits = new LimitsConfig(ExecScheduleLimitStart, ExecScheduleLimitEnd)
             };
-            ScheduleEvent NextExec = SchedulerObj.GetNextExecution();
+            ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
 
             Assert.Equal(NextExec.ExecutionDate.ToString(), ScheduleDateEx.ToString());
             Assert.Equal(NextExec.ExecutionDescription, ExecDescription.ToString());
@@ -509,7 +511,7 @@ namespace Scheduler.Test
             DateTime ExecScheduleLimitEnd = DateTime.Parse("31/01/2021");
             string ExecDescription = "Occurs every 2 days every 2 hours between 4:00 and 8:00 starting on 01/01/2021 to 31/01/2021";
 
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
@@ -520,7 +522,7 @@ namespace Scheduler.Test
                 DailyLimits = new LimitsConfig(DateTime.Parse("04:00"), DateTime.Parse("08:00")),
                 DateLimits = new LimitsConfig(ExecScheduleLimitStart, ExecScheduleLimitEnd)
             };
-            ScheduleEvent NextExec = SchedulerObj.GetNextExecution();
+            ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
 
             Assert.Equal(NextExec.ExecutionDate.ToString(), ScheduleDateEx.ToString());
             Assert.Equal(NextExec.ExecutionDescription, ExecDescription.ToString());
@@ -535,7 +537,7 @@ namespace Scheduler.Test
             DateTime ExecScheduleLimitEnd = DateTime.Parse("31/01/2021");
             string ExecDescription = "Occurs every 5 days every 1 hours between 4:00 and 8:00 starting on 01/01/2021 to 31/01/2021";
 
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
@@ -546,7 +548,7 @@ namespace Scheduler.Test
                 DailyLimits = new LimitsConfig(DateTime.Parse("04:00"), DateTime.Parse("08:00")),
                 DateLimits = new LimitsConfig(ExecScheduleLimitStart, ExecScheduleLimitEnd)
             };
-            ScheduleEvent NextExec = SchedulerObj.GetNextExecution();
+            ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
 
             Assert.Equal(NextExec.ExecutionDate.ToString(), ScheduleDateEx.ToString());
             Assert.Equal(NextExec.ExecutionDescription, ExecDescription.ToString());
@@ -561,7 +563,7 @@ namespace Scheduler.Test
             DateTime ScheduleDateEx = DateTime.Parse("01/01/2021 05:00:00");
             string ExecDescription = "Occurs every 1 months at 5:00";
 
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
@@ -569,7 +571,7 @@ namespace Scheduler.Test
                 OcurrencyPeriod = 1,
                 DailyScheduleHour = DateTime.Parse("05:00")
             };
-            ScheduleEvent NextExec = SchedulerObj.GetNextExecution();
+            ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
 
             Assert.Equal(NextExec.ExecutionDate.ToString(), ScheduleDateEx.ToString());
             Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
@@ -583,7 +585,7 @@ namespace Scheduler.Test
             DateTime ExecScheduleLimitStart = DateTime.Parse("01/01/2021");
             string ExecDescription = "Occurs every 1 months at 5:00 starting on 01/01/2021";
 
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
@@ -592,7 +594,7 @@ namespace Scheduler.Test
                 DailyScheduleHour = DateTime.Parse("05:00"),
                 DateLimits = new LimitsConfig(ExecScheduleLimitStart, null)
             };
-            ScheduleEvent NextExec = SchedulerObj.GetNextExecution();
+            ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
 
             Assert.Equal(NextExec.ExecutionDate.ToString(), ScheduleDateEx.ToString());
             Assert.Equal(NextExec.ExecutionDescription, ExecDescription.ToString());
@@ -607,7 +609,7 @@ namespace Scheduler.Test
             DateTime ExecScheduleLimitEnd = DateTime.Parse("31/12/2021");
             string ExecDescription = "Occurs every 1 months at 5:00 starting on 01/01/2021 to 31/12/2021";
 
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
@@ -616,7 +618,7 @@ namespace Scheduler.Test
                 DailyScheduleHour = DateTime.Parse("05:00"),
                 DateLimits = new LimitsConfig(ExecScheduleLimitStart, ExecScheduleLimitEnd)
             };
-            ScheduleEvent NextExec = SchedulerObj.GetNextExecution();
+            ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
 
             Assert.Equal(NextExec.ExecutionDate.ToString(), ScheduleDateEx.ToString());
             Assert.Equal(NextExec.ExecutionDescription, ExecDescription.ToString());
@@ -631,7 +633,7 @@ namespace Scheduler.Test
             DateTime ExecScheduleLimitEnd = DateTime.Parse("31/12/2021");
             string ExecDescription = "Occurs every 1 months every 30 minutes between 4:00 and 8:00 starting on 01/01/2021 to 31/12/2021";
 
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
@@ -642,7 +644,7 @@ namespace Scheduler.Test
                 DailyLimits = new LimitsConfig(DateTime.Parse("04:00"), DateTime.Parse("08:00")),
                 DateLimits = new LimitsConfig(ExecScheduleLimitStart, ExecScheduleLimitEnd)
             };
-            ScheduleEvent NextExec = SchedulerObj.GetNextExecution();
+            ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
 
             Assert.Equal(NextExec.ExecutionDate.ToString(), ScheduleDateEx.ToString());
             Assert.Equal(NextExec.ExecutionDescription, ExecDescription.ToString());
@@ -657,7 +659,7 @@ namespace Scheduler.Test
             DateTime ScheduleDateEx = DateTime.Parse("01/01/2021 05:00:00");
             string ExecDescription = "Occurs every 1 years at 5:00";
 
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
@@ -665,7 +667,7 @@ namespace Scheduler.Test
                 OcurrencyPeriod = 1,
                 DailyScheduleHour = DateTime.Parse("05:00")
             };
-            ScheduleEvent NextExec = SchedulerObj.GetNextExecution();
+            ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
 
             Assert.Equal(NextExec.ExecutionDate.ToString(), ScheduleDateEx.ToString());
             Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
@@ -679,7 +681,7 @@ namespace Scheduler.Test
             DateTime ExecScheduleLimitStart = DateTime.Parse("01/01/2021");
             string ExecDescription = "Occurs every 1 years at 5:00 starting on 01/01/2021";
 
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
@@ -688,7 +690,7 @@ namespace Scheduler.Test
                 DailyScheduleHour = DateTime.Parse("05:00"),
                 DateLimits = new LimitsConfig(ExecScheduleLimitStart, null)
             };
-            ScheduleEvent NextExec = SchedulerObj.GetNextExecution();
+            ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
 
             Assert.Equal(NextExec.ExecutionDate.ToString(), ScheduleDateEx.ToString());
             Assert.Equal(NextExec.ExecutionDescription, ExecDescription.ToString());
@@ -703,7 +705,7 @@ namespace Scheduler.Test
             DateTime ExecScheduleLimitEnd = DateTime.Parse("31/01/2022");
             string ExecDescription = "Occurs every 1 years at 5:00 starting on 01/01/2021 to 31/01/2022";
 
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
@@ -712,7 +714,7 @@ namespace Scheduler.Test
                 DailyScheduleHour = DateTime.Parse("05:00"),
                 DateLimits = new LimitsConfig(ExecScheduleLimitStart, ExecScheduleLimitEnd)
             };
-            ScheduleEvent NextExec = SchedulerObj.GetNextExecution();
+            ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
 
             Assert.Equal(NextExec.ExecutionDate.ToString(), ScheduleDateEx.ToString());
             Assert.Equal(NextExec.ExecutionDescription, ExecDescription.ToString());
@@ -727,7 +729,7 @@ namespace Scheduler.Test
             DateTime ExecScheduleLimitEnd = DateTime.Parse("31/01/2022");
             string ExecDescription = "Occurs every 1 years every 20 seconds between 4:00 and 8:00 starting on 01/01/2021 to 31/01/2022";
 
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
@@ -738,7 +740,7 @@ namespace Scheduler.Test
                 DailyLimits = new LimitsConfig(DateTime.Parse("04:00"), DateTime.Parse("08:00")),
                 DateLimits = new LimitsConfig(ExecScheduleLimitStart, ExecScheduleLimitEnd)
             };
-            ScheduleEvent NextExec = SchedulerObj.GetNextExecution();
+            ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
 
             Assert.Equal(NextExec.ExecutionDate.ToString(), ScheduleDateEx.ToString());
             Assert.Equal(NextExec.ExecutionDescription, ExecDescription.ToString());
@@ -753,7 +755,7 @@ namespace Scheduler.Test
             DateTime ScheduleDateEx = DateTime.Parse("01/01/2021 05:00:00");
             string ExecDescription = "Occurs every 2 weeks at 5:00";
 
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
@@ -761,7 +763,7 @@ namespace Scheduler.Test
                 OcurrencyPeriod = 2,
                 DailyScheduleHour = DateTime.Parse("05:00")
             };
-            ScheduleEvent NextExec = SchedulerObj.GetNextExecution();
+            ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
 
             Assert.Equal(NextExec.ExecutionDate.ToString(), ScheduleDateEx.ToString());
             Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
@@ -775,7 +777,7 @@ namespace Scheduler.Test
             DateTime ExecScheduleLimitStart = DateTime.Parse("01/01/2021");
             string ExecDescription = "Occurs every 3 weeks at 5:00 starting on 01/01/2021";
 
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
@@ -784,7 +786,7 @@ namespace Scheduler.Test
                 DailyScheduleHour = DateTime.Parse("05:00"),
                 DateLimits = new LimitsConfig(ExecScheduleLimitStart, null)
             };
-            ScheduleEvent NextExec = SchedulerObj.GetNextExecution();
+            ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
 
             Assert.Equal(NextExec.ExecutionDate.ToString(), ScheduleDateEx.ToString());
             Assert.Equal(NextExec.ExecutionDescription, ExecDescription.ToString());
@@ -799,7 +801,7 @@ namespace Scheduler.Test
             DateTime ExecScheduleLimitEnd = DateTime.Parse("31/12/2021");
             string ExecDescription = "Occurs every 1 weeks at 5:00 starting on 01/01/2021 to 31/12/2021";
 
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
@@ -808,7 +810,7 @@ namespace Scheduler.Test
                 DailyScheduleHour = DateTime.Parse("05:00"),
                 DateLimits = new LimitsConfig(ExecScheduleLimitStart, ExecScheduleLimitEnd)
             };
-            ScheduleEvent NextExec = SchedulerObj.GetNextExecution();
+            ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
 
             Assert.Equal(NextExec.ExecutionDate.ToString(), ScheduleDateEx.ToString());
             Assert.Equal(NextExec.ExecutionDescription, ExecDescription.ToString());
@@ -823,7 +825,7 @@ namespace Scheduler.Test
             DateTime ExecScheduleLimitEnd = DateTime.Parse("31/12/2021");
             string ExecDescription = "Occurs every 1 weeks every 30 minutes between 4:00 and 8:00 starting on 01/01/2021 to 31/12/2021";
 
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
@@ -834,7 +836,7 @@ namespace Scheduler.Test
                 DailyLimits = new LimitsConfig(DateTime.Parse("04:00"), DateTime.Parse("08:00")),
                 DateLimits = new LimitsConfig(ExecScheduleLimitStart, ExecScheduleLimitEnd)
             };
-            ScheduleEvent NextExec = SchedulerObj.GetNextExecution();
+            ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
 
             Assert.Equal(NextExec.ExecutionDate.ToString(), ScheduleDateEx.ToString());
             Assert.Equal(NextExec.ExecutionDescription, ExecDescription.ToString());
@@ -847,7 +849,7 @@ namespace Scheduler.Test
             DateTime ScheduleDateEx = DateTime.Parse("12/01/2021 05:00:00");
             string ExecDescription = "Occurs every 2 weeks on Tuesday and Thursday at 5:00";
 
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
@@ -856,7 +858,7 @@ namespace Scheduler.Test
                 WeeklyDays = new[] { DayOfWeek.Tuesday, DayOfWeek.Thursday },
                 DailyScheduleHour = DateTime.Parse("05:00")
             };
-            ScheduleEvent NextExec = SchedulerObj.GetNextExecution();
+            ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
 
             Assert.Equal(NextExec.ExecutionDate.ToString(), ScheduleDateEx.ToString());
             Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
@@ -870,7 +872,7 @@ namespace Scheduler.Test
             DateTime ExecScheduleLimitStart = DateTime.Parse("01/01/2021");
             string ExecDescription = "Occurs every 3 weeks on Friday, Saturday and Sunday at 5:00 starting on 01/01/2021";
 
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
@@ -880,7 +882,7 @@ namespace Scheduler.Test
                 DailyScheduleHour = DateTime.Parse("05:00"),
                 DateLimits = new LimitsConfig(ExecScheduleLimitStart, null)
             };
-            ScheduleEvent NextExec = SchedulerObj.GetNextExecution();
+            ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
 
             Assert.Equal(NextExec.ExecutionDate.ToString(), ScheduleDateEx.ToString());
             Assert.Equal(NextExec.ExecutionDescription, ExecDescription.ToString());
@@ -895,7 +897,7 @@ namespace Scheduler.Test
             DateTime ExecScheduleLimitEnd = DateTime.Parse("31/12/2021");
             string ExecDescription = "Occurs every 1 weeks on Wednesday at 5:00 starting on 07/01/2021 to 31/12/2021";
 
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
@@ -905,7 +907,7 @@ namespace Scheduler.Test
                 DailyScheduleHour = DateTime.Parse("05:00"),
                 DateLimits = new LimitsConfig(ExecScheduleLimitStart, ExecScheduleLimitEnd)
             };
-            ScheduleEvent NextExec = SchedulerObj.GetNextExecution();
+            ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
 
             Assert.Equal(NextExec.ExecutionDate.ToString(), ScheduleDateEx.ToString());
             Assert.Equal(NextExec.ExecutionDescription, ExecDescription.ToString());
@@ -920,7 +922,7 @@ namespace Scheduler.Test
             DateTime ExecScheduleLimitEnd = DateTime.Parse("31/12/2021");
             string ExecDescription = "Occurs every 1 weeks on Sunday every 30 minutes between 4:00 and 8:00 starting on 01/01/2021 to 31/12/2021";
 
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
@@ -932,7 +934,7 @@ namespace Scheduler.Test
                 DailyLimits = new LimitsConfig(DateTime.Parse("04:00"), DateTime.Parse("08:00")),
                 DateLimits = new LimitsConfig(ExecScheduleLimitStart, ExecScheduleLimitEnd)
             };
-            ScheduleEvent NextExec = SchedulerObj.GetNextExecution();
+            ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
 
             Assert.Equal(NextExec.ExecutionDate.ToString(), ScheduleDateEx.ToString());
             Assert.Equal(NextExec.ExecutionDescription, ExecDescription.ToString());
@@ -947,7 +949,7 @@ namespace Scheduler.Test
             DateTime ExecScheduleLimitEnd = DateTime.Parse("31/12/2021");
             string ExecDescription = "Occurs every 2 weeks on Thursday every 60 seconds between 4:00 and 5:00 starting on 03/01/2021 to 31/12/2021";
 
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
@@ -959,7 +961,7 @@ namespace Scheduler.Test
                 DailyLimits = new LimitsConfig(DateTime.Parse("04:00"), DateTime.Parse("05:00")),
                 DateLimits = new LimitsConfig(ExecScheduleLimitStart, ExecScheduleLimitEnd)
             };
-            ScheduleEvent NextExec = SchedulerObj.GetNextExecution();
+            ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
 
             Assert.Equal(NextExec.ExecutionDate.ToString(), ScheduleDateEx.ToString());
             Assert.Equal(NextExec.ExecutionDescription, ExecDescription.ToString());
@@ -975,7 +977,7 @@ namespace Scheduler.Test
             DateTime ExecScheduleLimitEnd = DateTime.Parse("31/12/2021");
             string ExecDescription = "Occurs every 1 weeks on Sunday every 30 minutes between 04:00 and 08:00 starting on 01/01/2021 to 31/12/2021";
 
-            Scheduler SchedulerObj = new()
+            SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
@@ -987,7 +989,7 @@ namespace Scheduler.Test
                 DailyLimits = new LimitsConfig(DateTime.Parse("04:00"), DateTime.Parse("08:00")),
                 DateLimits = new LimitsConfig(ExecScheduleLimitStart, ExecScheduleLimitEnd)
             };
-            ScheduleEvent NextExec = SchedulerObj.GetNextExecution();
+            ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
 
             Assert.Equal(NextExec.ExecutionDate.ToString(), ScheduleDateEx.ToString());
             Assert.Equal(NextExec.ExecutionDescription, ExecDescription.ToString());

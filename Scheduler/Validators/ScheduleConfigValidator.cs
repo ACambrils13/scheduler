@@ -1,8 +1,10 @@
-﻿using Scheduler.Resources;
+﻿using Scheduler.Auxiliary;
+using Scheduler.Configuration;
+using Scheduler.Resources;
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Scheduler
+namespace Scheduler.Validators
 {
     internal class ScheduleConfigValidator
     {

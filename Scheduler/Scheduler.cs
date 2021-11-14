@@ -1,27 +1,22 @@
-﻿using Scheduler.Creators;
+﻿using Scheduler.Auxiliary;
+using Scheduler.Configuration;
+using Scheduler.Creators;
+using Scheduler.Validators;
 
 namespace Scheduler
 {
     public class Scheduler
     {
-        private ScheduleEventCreator eventCreator;
-        public Scheduler()
-        { }
-
-        public ScheduleEvent ScheduleNextExecution(SchedulerConfigurator config)
+        public static ScheduleEvent GetNextExecution(SchedulerConfigurator config)
         {
             ScheduleConfigValidator.ValidateBasicProperties(config);
-            switch (config.Type)
+            ScheduleEventCreator eventCreator = config.Type switch
             {
-                case ScheduleTypeEnum.Once:
-                    this.eventCreator = new ScheduleOnceCreator();
-                    break;
-                case ScheduleTypeEnum.Recurring:
-                    this.eventCreator = new ScheduleRecurringCreator();
-                    break;
-            }
-
-            return this.eventCreator.GetNextExecution(config);
+                ScheduleTypeEnum.Once => new ScheduleOnceCreator(),
+                ScheduleTypeEnum.Recurring => new ScheduleRecurringCreator(),
+                _ => new ScheduleOnceCreator(),
+            };
+            return eventCreator.GetNextExecution(config);
         }
     }
 }

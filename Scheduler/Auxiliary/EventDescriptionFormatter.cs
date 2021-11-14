@@ -1,8 +1,9 @@
-﻿using Scheduler.Resources;
+﻿using Scheduler.Configuration;
+using Scheduler.Resources;
 using System;
 using System.Text;
 
-namespace Scheduler
+namespace Scheduler.Auxiliary
 {
     internal class EventDescriptionFormatter
     {

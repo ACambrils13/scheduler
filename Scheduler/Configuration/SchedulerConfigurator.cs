@@ -1,6 +1,7 @@
-﻿using System;
+﻿using Scheduler.Auxiliary;
+using System;
 
-namespace Scheduler
+namespace Scheduler.Configuration
 {
     public class SchedulerConfigurator
     {

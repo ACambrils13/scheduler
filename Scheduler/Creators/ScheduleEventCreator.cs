@@ -1,4 +1,6 @@
-﻿namespace Scheduler.Creators
+﻿using Scheduler.Configuration;
+
+namespace Scheduler.Creators
 {
     internal abstract class ScheduleEventCreator
     {

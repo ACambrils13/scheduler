@@ -1,6 +1,7 @@
-﻿using System;
+﻿using Scheduler.Validators;
+using System;
 
-namespace Scheduler
+namespace Scheduler.Auxiliary
 {
     public struct LimitsConfig
     {
