@@ -7,7 +7,7 @@ namespace Scheduler.Auxiliary
 {
     internal class EventDescriptionFormatter
     {
-        internal static string GetScheduleOnceDesc(DateTime scheduleDate, LimitsConfig? dateLimits)
+        internal static string GetScheduleOnceDesc(DateTime scheduleDate, DateLimitsConfig? dateLimits)
         {
             string Date = scheduleDate.ToShortDateString();
             string Hour = scheduleDate.ToString("HH:mm");
@@ -50,7 +50,7 @@ namespace Scheduler.Auxiliary
             }
 
             StringBuilder Description = new(string.Format(TextResources.EventDescRecurring, config.OcurrencyPeriod, PeriodString));
-            if (config.PeriodType.Value == OccurrencyPeriodEnum.Weekly && config.WeeklyDays != null && config.WeeklyDays.Length > 0)
+            if (config.PeriodType.Value == OccurrencyPeriodEnum.Weekly && config.WeeklyDays != null && config.WeeklyDays.Count > 0)
             {
                 string WeeklyDays = string.Join(", ", config.WeeklyDays);
                 if (WeeklyDays.LastIndexOf(",") >= 0)
@@ -62,7 +62,7 @@ namespace Scheduler.Auxiliary
             }
             if (config.DailyScheduleHour.HasValue)
             {
-                Description.Append(string.Concat(" ", string.Format(TextResources.EventDescRecurringHour, config.DailyScheduleHour.Value.ToShortTimeString())));
+                Description.Append(string.Concat(" ", string.Format(TextResources.EventDescRecurringHour, config.DailyScheduleHour.Value.ToString(@"hh\:mm"))));
             }
             else if (config.DailyLimits.HasValue)
             {
@@ -80,8 +80,8 @@ namespace Scheduler.Auxiliary
                 }
                 if (config.DailyLimits.HasValue)
                 {
-                    string StartLimit = config.DailyLimits.Value.StartLimit?.ToShortTimeString() ?? "0:00";
-                    string EndLimit = config.DailyLimits.Value.EndLimit?.ToShortTimeString() ?? "23:59";
+                    string StartLimit = config.DailyLimits.Value.StartLimit?.ToString(@"hh\:mm") ?? "0:00";
+                    string EndLimit = config.DailyLimits.Value.EndLimit?.ToString(@"hh\:mm") ?? "23:59";
                     Description.Append(String.Concat(" ", string.Format(TextResources.EventDescDailyLimits, StartLimit, EndLimit)));
                 }
             }

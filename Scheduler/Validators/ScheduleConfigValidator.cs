@@ -28,7 +28,7 @@ namespace Scheduler.Validators
             ValidateDailySelection(properties.DailyScheduleHour, properties.DailyFrecuency, properties.DailyFrecuencyPeriod);
         }
 
-        internal static void ValidateLimits(DateTime date, LimitsConfig? limits, bool validateBefore)
+        internal static void ValidateLimits(DateTime date, DateLimitsConfig? limits, bool validateBefore)
         {
             if (limits.HasValue)
             {
@@ -49,11 +49,11 @@ namespace Scheduler.Validators
             }
         }
 
-        private static void ValidateDailySelection(DateTime? dailyScheduleHour, DailyFrecuencyEnum? dailyFrecuency, int? dailyFrecuencyPeriod)
+        private static void ValidateDailySelection(TimeSpan? dailyScheduleHour, DailyFrecuencyEnum? dailyFrecuency, int? dailyFrecuencyPeriod)
         {
             if (dailyScheduleHour.HasValue)
             {
-                ValidateDate(dailyScheduleHour.Value, nameof(dailyScheduleHour));
+                ValidateHourOfDay(dailyScheduleHour.Value, nameof(dailyScheduleHour));
             }
             else if (dailyFrecuency.HasValue && dailyFrecuencyPeriod.HasValue)
             {
@@ -83,6 +83,15 @@ namespace Scheduler.Validators
                 throw new ValidationException(FormatConfigExcMessage(string.Format(TextResources.ExcDateMaxValue, propertyName)));
             }
         }
+        internal static void ValidateHourOfDay(TimeSpan hour, string propertyName)
+        {
+            TimeSpan Zero = new(0, 0, 0);
+            TimeSpan MidNigth = new(23, 59, 59);
+            if (hour < Zero || hour > MidNigth)
+            {
+                throw new ValidationException(FormatConfigExcMessage(string.Format(TextResources.ExcHoursValue, propertyName)));
+            }
+        }
 
         internal static void ValidateEnum<TEnum>(Enum enumValue, string propertyName)
         {
@@ -100,7 +109,7 @@ namespace Scheduler.Validators
             }
         }
 
-        internal static void ValidateLimits(DateTime? start, DateTime? end)
+        internal static void ValidateDateLimits(DateTime? start, DateTime? end)
         {
             if (start.HasValue == false && end.HasValue)
             {
@@ -113,6 +122,26 @@ namespace Scheduler.Validators
                 {
                     ValidateDate(end.Value, nameof(end));
                     if (DateTime.Compare(start.Value, end.Value) >= 0)
+                    {
+                        throw new ValidationException(FormatConfigExcMessage(TextResources.ExcLimitsEndBeforeStart));
+                    }
+                }
+            }
+        }
+
+        internal static void ValidateHourLimits(TimeSpan? start, TimeSpan? end)
+        {
+            if (start.HasValue == false && end.HasValue)
+            {
+                throw new ValidationException(FormatConfigExcMessage(TextResources.ExcLimitsEndBeforeStart));
+            }
+            else if (start.HasValue)
+            {
+                ValidateHourOfDay(start.Value, nameof(start));
+                if (end.HasValue)
+                {
+                    ValidateHourOfDay(end.Value, nameof(end));
+                    if (TimeSpan.Compare(start.Value, end.Value) >= 0)
                     {
                         throw new ValidationException(FormatConfigExcMessage(TextResources.ExcLimitsEndBeforeStart));
                     }

@@ -3,17 +3,30 @@ using System;
 
 namespace Scheduler.Auxiliary
 {
-    public struct LimitsConfig
+    public struct DateLimitsConfig
     {
-        public LimitsConfig(DateTime? Start, DateTime? End)
+        public DateLimitsConfig(DateTime? start, DateTime? end)
         {
-            ScheduleConfigValidator.ValidateLimits(Start, End);
-            this.StartLimit = Start;
-            this.EndLimit = End;
+            ScheduleConfigValidator.ValidateDateLimits(start, end);
+            this.StartLimit = start;
+            this.EndLimit = end;
         }
 
         public DateTime? StartLimit { get; }
         public DateTime? EndLimit { get; }
+    }
+
+    public struct HourLimitsConfig
+    {
+        public HourLimitsConfig(TimeSpan? start, TimeSpan? end)
+        {
+            ScheduleConfigValidator.ValidateHourLimits(start, end);
+            this.StartLimit = start;
+            this.EndLimit = end;
+        }
+
+        public TimeSpan? StartLimit { get; }
+        public TimeSpan? EndLimit { get; }
     }
 
     public enum ScheduleTypeEnum

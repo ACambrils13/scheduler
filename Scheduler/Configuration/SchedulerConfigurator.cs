@@ -1,5 +1,6 @@
 ﻿using Scheduler.Auxiliary;
 using System;
+using System.Collections.Generic;
 
 namespace Scheduler.Configuration
 {
@@ -10,14 +11,14 @@ namespace Scheduler.Configuration
 
         public DateTime? CurrentDate { get; set; }
         public ScheduleTypeEnum? Type { get; set; }
-        public LimitsConfig? DateLimits { get; set; }
+        public DateLimitsConfig? DateLimits { get; set; }
         public DateTime? ScheduleDate { get; set; }
         public OccurrencyPeriodEnum? PeriodType { get; set; }
         public int? OcurrencyPeriod { get; set; }
-        public DateTime? DailyScheduleHour { get; set; }
+        public TimeSpan? DailyScheduleHour { get; set; }
         public DailyFrecuencyEnum? DailyFrecuency { get; set; }
         public int? DailyFrecuencyPeriod { get; set; }
-        public LimitsConfig? DailyLimits { get; set; }
-        public DayOfWeek[] WeeklyDays { get; set; }
+        public HourLimitsConfig? DailyLimits { get; set; }
+        public List<DayOfWeek> WeeklyDays { get; set; }
     }
 }

@@ -165,6 +165,9 @@
   <data name="ExcEnumError" xml:space="preserve">
     <value>{0} hasn't be a valid option.</value>
   </data>
+  <data name="ExcHoursValue" xml:space="preserve">
+    <value>{0} ins't a valid Day Hour value.</value>
+  </data>
   <data name="ExcLimits" xml:space="preserve">
     <value>Next schedule event isn't between date limits.</value>
   </data>

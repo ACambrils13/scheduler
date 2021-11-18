@@ -205,6 +205,15 @@ namespace Scheduler.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} ins&apos;t a valid Day Hour value..
+        /// </summary>
+        public static string ExcHoursValue {
+            get {
+                return ResourceManager.GetString("ExcHoursValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Next schedule event isn&apos;t between date limits..
         /// </summary>
         public static string ExcLimits {
