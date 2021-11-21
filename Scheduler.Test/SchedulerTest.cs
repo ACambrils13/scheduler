@@ -62,15 +62,19 @@ namespace Scheduler.Test
         [Fact]
         public void Limits_Only_EndDate_Failed()
         {
-            Assert.Throws<ValidationException>(() =>
+            string expectedExcMsg = string.Format(TextResources.ConfError, TextResources.ExcLimitsEndBeforeStart);
+            var exception = Assert.Throws<ValidationException>(() =>
                 new DateLimitsConfig(null, DateTime.Now));
+            Assert.Equal(expectedExcMsg, exception.Message);
         }
 
         [Fact]
         public void Limit_EndDate_Before_StartDate_Failed()
         {
-            Assert.Throws<ValidationException>(() =>
+            string expectedExcMsg = string.Format(TextResources.ConfError, TextResources.ExcLimitsEndBeforeStart);
+            var exception = Assert.Throws<ValidationException>(() =>
                 new DateLimitsConfig(DateTime.Now, DateTime.Now.AddDays(-1)));
+            Assert.Equal(expectedExcMsg, exception.Message);
         }
 
         [Fact]
@@ -136,9 +140,10 @@ namespace Scheduler.Test
                 CurrentDate = DateTime.Now,
                 Type = null
             };
-
-            Assert.Throws<ValidationException>(() =>
+            string expectedExcMsg = string.Format(TextResources.ConfError, string.Format(TextResources.ExcEnumError, nameof(schedulerConfig.Type)));
+            var exception = Assert.Throws<ValidationException>(() =>
                Scheduler.GetNextExecution(schedulerConfig));
+            Assert.Equal(expectedExcMsg, exception.Message);
         }
         #endregion
 
@@ -153,8 +158,10 @@ namespace Scheduler.Test
                 ScheduleDate = DateTime.Now.AddDays(1)
             };
 
-            Assert.Throws<ValidationException>(() =>
+            string expectedExcMsg = string.Format(TextResources.ConfError, string.Format(TextResources.ExcObjectNull, nameof(schedulerConfig.CurrentDate)));
+            var exception = Assert.Throws<ValidationException>(() =>
                Scheduler.GetNextExecution(schedulerConfig));
+            Assert.Equal(expectedExcMsg, exception.Message);
         }
 
         [Fact]
@@ -167,8 +174,10 @@ namespace Scheduler.Test
                 ScheduleDate = DateTime.Now.AddDays(1)
             };
 
-            Assert.Throws<ValidationException>(() =>
+            string expectedExcMsg = string.Format(TextResources.ConfError, string.Format(TextResources.ExcDateMaxValue, nameof(schedulerConfig.CurrentDate)));
+            var exception = Assert.Throws<ValidationException>(() =>
                Scheduler.GetNextExecution(schedulerConfig));
+            Assert.Equal(expectedExcMsg, exception.Message);
         }
 
         [Fact]
@@ -181,8 +190,10 @@ namespace Scheduler.Test
                 ScheduleDate = null
             };
 
-            Assert.Throws<ValidationException>(() =>
+            string expectedExcMsg = string.Format(TextResources.ConfError, string.Format(TextResources.ExcObjectNull, nameof(schedulerConfig.ScheduleDate)));
+            var exception = Assert.Throws<ValidationException>(() =>
                Scheduler.GetNextExecution(schedulerConfig));
+            Assert.Equal(expectedExcMsg, exception.Message);
         }
 
         [Fact]
@@ -271,8 +282,10 @@ namespace Scheduler.Test
                 DateLimits = new DateLimitsConfig(DateLimitsStart, null)
             };
 
-            Assert.Throws<ValidationException>(() =>
+            string expectedExcMsg = string.Format(TextResources.ConfError, TextResources.ExcLimits);
+            var exception = Assert.Throws<ValidationException>(() =>
                Scheduler.GetNextExecution(schedulerConfig));
+            Assert.Equal(expectedExcMsg, exception.Message);
         }
 
         [Fact]
@@ -290,8 +303,10 @@ namespace Scheduler.Test
                 DateLimits = new DateLimitsConfig(DateLimitsStart, DateLimitsEnd)
             };
 
-            Assert.Throws<ValidationException>(() =>
+            string expectedExcMsg = string.Format(TextResources.ConfError, TextResources.ExcLimits);
+            var exception = Assert.Throws<ValidationException>(() =>
                Scheduler.GetNextExecution(schedulerConfig));
+            Assert.Equal(expectedExcMsg, exception.Message);
         }
         #endregion
 
@@ -308,8 +323,10 @@ namespace Scheduler.Test
                 DailyScheduleHour = new TimeSpan(DateTime.Now.Hour, 0, 0)
             };
 
-            Assert.Throws<ValidationException>(() =>
+            string expectedExcMsg = string.Format(TextResources.ConfError, string.Format(TextResources.ExcObjectNull, nameof(schedulerConfig.CurrentDate)));
+            var exception = Assert.Throws<ValidationException>(() =>
                Scheduler.GetNextExecution(schedulerConfig));
+            Assert.Equal(expectedExcMsg, exception.Message);
         }
 
         [Fact]
@@ -324,8 +341,10 @@ namespace Scheduler.Test
                 DailyScheduleHour = new TimeSpan(DateTime.Now.Hour, 0, 0)
             };
 
-            Assert.Throws<ValidationException>(() =>
+            string expectedExcMsg = string.Format(TextResources.ConfError, string.Format(TextResources.ExcDateMaxValue, nameof(schedulerConfig.CurrentDate)));
+            var exception = Assert.Throws<ValidationException>(() =>
                Scheduler.GetNextExecution(schedulerConfig));
+            Assert.Equal(expectedExcMsg, exception.Message);
         }
 
         [Fact]
@@ -333,14 +352,37 @@ namespace Scheduler.Test
         {
             SchedulerConfigurator schedulerConfig = new()
             {
-                CurrentDate = DateTime.MaxValue,
+                CurrentDate = DateTime.Now,
                 Type = ScheduleTypeEnum.Recurring,
                 PeriodType = OccurrencyPeriodEnum.Daily,
                 DailyScheduleHour = new TimeSpan(DateTime.Now.Hour, 0, 0)
             };
 
-            Assert.Throws<ValidationException>(() =>
+            string expectedExcMsg = string.Format(TextResources.ConfError, string.Format(TextResources.ExcPeriod, nameof(schedulerConfig.OcurrencyPeriod)));
+            var exception = Assert.Throws<ValidationException>(() =>
                Scheduler.GetNextExecution(schedulerConfig));
+            Assert.Equal(expectedExcMsg, exception.Message);
+        }
+
+        [Fact]
+        public void Configuration_Recurring_DailyLimits_End_Before_Start_Failed()
+        {
+            string expectedExcMsg = string.Format(TextResources.ConfError, TextResources.ExcLimitsEndBeforeStart);
+            var exception = Assert.Throws<ValidationException>(() =>
+               new SchedulerConfigurator()
+               {
+                   DailyLimits = new HourLimitsConfig(new TimeSpan(14, 0, 0), new TimeSpan(10, 0, 0))
+               }
+               );
+            Assert.Equal(expectedExcMsg, exception.Message);
+
+            exception = Assert.Throws<ValidationException>(() =>
+               new SchedulerConfigurator()
+               {
+                   DailyLimits = new HourLimitsConfig(null, new TimeSpan(10, 0, 0))
+               }
+               );
+            Assert.Equal(expectedExcMsg, exception.Message);
         }
 
         [Fact]
@@ -348,15 +390,17 @@ namespace Scheduler.Test
         {
             SchedulerConfigurator schedulerConfig = new()
             {
-                CurrentDate = DateTime.MaxValue,
+                CurrentDate = DateTime.Now,
                 Type = ScheduleTypeEnum.Recurring,
                 PeriodType = OccurrencyPeriodEnum.Daily,
                 OcurrencyPeriod = -1,
                 DailyScheduleHour = new TimeSpan(DateTime.Now.Hour, 0, 0)
             };
 
-            Assert.Throws<ValidationException>(() =>
+            string expectedExcMsg = string.Format(TextResources.ConfError, string.Format(TextResources.ExcPeriod, nameof(schedulerConfig.OcurrencyPeriod)));
+            var exception = Assert.Throws<ValidationException>(() =>
                Scheduler.GetNextExecution(schedulerConfig));
+            Assert.Equal(expectedExcMsg, exception.Message);
         }
 
         [Fact]
@@ -375,8 +419,10 @@ namespace Scheduler.Test
                 DailyScheduleHour = new TimeSpan(5, 0, 0),
                 DateLimits = new DateLimitsConfig(ExecScheduleLimitStart, ExecScheduleLimitEnd)
             };
-            Assert.Throws<ValidationException>(() =>
+            string expectedExcMsg = string.Format(TextResources.ConfError, TextResources.ExcLimits);
+            var exception = Assert.Throws<ValidationException>(() =>
                Scheduler.GetNextExecution(schedulerConfig));
+            Assert.Equal(expectedExcMsg, exception.Message);
         }
 
         [Fact]
@@ -393,8 +439,10 @@ namespace Scheduler.Test
                 DailyFrecuency = DailyFrecuencyEnum.Seconds,
                 DailyLimits = new HourLimitsConfig(new TimeSpan(4, 0, 0), new TimeSpan(8, 0, 0))
             };
-            Assert.Throws<ValidationException>(() =>
+            string expectedExcMsg = string.Format(TextResources.ConfError, TextResources.ExcDailyConfig);
+            var exception = Assert.Throws<ValidationException>(() =>
                Scheduler.GetNextExecution(schedulerConfig));
+            Assert.Equal(expectedExcMsg, exception.Message);
         }
 
         [Fact]
@@ -412,8 +460,10 @@ namespace Scheduler.Test
                 DailyFrecuencyPeriod = -40,
                 DailyLimits = new HourLimitsConfig(new TimeSpan(4, 0, 0), new TimeSpan(8, 0, 0))
             };
-            Assert.Throws<ValidationException>(() =>
+            string expectedExcMsg = string.Format(TextResources.ConfError, string.Format(TextResources.ExcPeriod, nameof(schedulerConfig.DailyFrecuencyPeriod)));
+            var exception = Assert.Throws<ValidationException>(() =>
                Scheduler.GetNextExecution(schedulerConfig));
+            Assert.Equal(expectedExcMsg, exception.Message);
         }
 
         [Fact]
@@ -430,8 +480,29 @@ namespace Scheduler.Test
                 DailyFrecuencyPeriod = -40,
                 DailyLimits = new HourLimitsConfig(new TimeSpan(4, 0, 0), new TimeSpan(8, 0, 0))
             };
-            Assert.Throws<ValidationException>(() =>
+            string expectedExcMsg = string.Format(TextResources.ConfError, TextResources.ExcDailyConfig);
+            var exception = Assert.Throws<ValidationException>(() =>
                Scheduler.GetNextExecution(schedulerConfig));
+            Assert.Equal(expectedExcMsg, exception.Message);
+        }
+
+        [Fact]
+        public void Configuration_Recurring_DailyOcurrency_Schedule_Hour_Fail()
+        {
+            DateTime CurrentDateEx = new(2021, 1, 1);
+
+            SchedulerConfigurator schedulerConfig = new()
+            {
+                CurrentDate = CurrentDateEx,
+                Type = ScheduleTypeEnum.Recurring,
+                PeriodType = OccurrencyPeriodEnum.Daily,
+                OcurrencyPeriod = 1,
+                DailyScheduleHour = new TimeSpan(-5, 0, 0)
+            };
+            string expectedExcMsg = string.Format(TextResources.ConfError, string.Format(TextResources.ExcHoursValue, nameof(schedulerConfig.DailyScheduleHour)));
+            var exception = Assert.Throws<ValidationException>(() =>
+               Scheduler.GetNextExecution(schedulerConfig));
+            Assert.Equal(expectedExcMsg, exception.Message);
         }
 
         #region Daily
@@ -460,7 +531,7 @@ namespace Scheduler.Test
         public void Recurring_Daily_Next_Execution_DateLimits_Start_Correct()
         {
             DateTime CurrentDateEx = new(2021, 1, 1, 7, 0, 0);
-            DateTime ScheduleDateEx = new(2021, 1, 2, 5, 0,0);
+            DateTime ScheduleDateEx = new(2021, 1, 2, 5, 0, 0);
             DateTime ExecScheduleLimitStart = new(2021, 1, 2);
             string ExecDescription = "Occurs every 2 days at 05:00 starting on 02/01/2021";
 

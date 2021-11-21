@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Scheduler.Resources;
+using System;
 using System.Globalization;
 
 namespace Scheduler.Auxiliary
@@ -69,6 +70,16 @@ namespace Scheduler.Auxiliary
             DayOfWeek firstDay = cultureInfo.DateTimeFormat.FirstDayOfWeek;
             int currentToFirst = firstDay - currentDate.DayOfWeek;
             return currentDate.AddDays(currentToFirst).Date;
+        }
+
+        public static string ChangeLastPeriodToAnd(this string joinedText)
+        {
+            int lastPeriod = joinedText.LastIndexOf(",");
+            if (lastPeriod >= 0)
+            {
+                joinedText = joinedText.Remove(lastPeriod, 1).Insert(lastPeriod, string.Concat(" ", TextResources.And));
+            }
+            return joinedText;
         }
     }
 }

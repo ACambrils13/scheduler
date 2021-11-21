@@ -13,8 +13,7 @@ namespace Scheduler
             ScheduleEventCreator eventCreator = config.Type switch
             {
                 ScheduleTypeEnum.Once => new ScheduleOnceCreator(),
-                ScheduleTypeEnum.Recurring => new ScheduleRecurringCreator(),
-                _ => new ScheduleOnceCreator(),
+                ScheduleTypeEnum.Recurring => new ScheduleRecurringCreator()
             };
             return eventCreator.GetNextExecution(config);
         }

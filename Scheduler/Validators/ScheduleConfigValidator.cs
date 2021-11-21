@@ -25,7 +25,7 @@ namespace Scheduler.Validators
             ValidateLimits(properties.CurrentDate.Value, properties.DateLimits, false);
             ValidateEnum<OccurrencyPeriodEnum>(properties.PeriodType, nameof(properties.PeriodType));
             ValidatePeriod(properties.OcurrencyPeriod, nameof(properties.OcurrencyPeriod));
-            ValidateDailySelection(properties.DailyScheduleHour, properties.DailyFrecuency, properties.DailyFrecuencyPeriod);
+            ValidateDailySelection(properties);
         }
 
         internal static void ValidateLimits(DateTime date, DateLimitsConfig? limits, bool validateBefore)
@@ -49,16 +49,16 @@ namespace Scheduler.Validators
             }
         }
 
-        private static void ValidateDailySelection(TimeSpan? dailyScheduleHour, DailyFrecuencyEnum? dailyFrecuency, int? dailyFrecuencyPeriod)
+        private static void ValidateDailySelection(SchedulerConfigurator config)
         {
-            if (dailyScheduleHour.HasValue)
+            if (config.DailyScheduleHour.HasValue)
             {
-                ValidateHourOfDay(dailyScheduleHour.Value, nameof(dailyScheduleHour));
+                ValidateHourOfDay(config.DailyScheduleHour.Value, nameof(config.DailyScheduleHour));
             }
-            else if (dailyFrecuency.HasValue && dailyFrecuencyPeriod.HasValue)
+            else if (config.DailyFrecuency.HasValue && config.DailyFrecuencyPeriod.HasValue)
             {
-                ValidateEnum<DailyFrecuencyEnum>(dailyFrecuency, nameof(dailyFrecuency));
-                ValidatePeriod(dailyFrecuencyPeriod, nameof(dailyFrecuencyPeriod));
+                ValidateEnum<DailyFrecuencyEnum>(config.DailyFrecuency, nameof(config.DailyFrecuency));
+                ValidatePeriod(config.DailyFrecuencyPeriod, nameof(config.DailyFrecuencyPeriod));
             }
             else
             {

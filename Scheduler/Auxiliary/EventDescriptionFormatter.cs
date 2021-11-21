@@ -9,96 +9,107 @@ namespace Scheduler.Auxiliary
     {
         internal static string GetScheduleOnceDesc(DateTime scheduleDate, DateLimitsConfig? dateLimits)
         {
-            string Date = scheduleDate.ToShortDateString();
-            string Hour = scheduleDate.ToString("HH:mm");
+            string date = scheduleDate.ToShortDateString();
+            string hour = scheduleDate.ToString("HH:mm");
 
-            StringBuilder Description = new(TextResources.EventDescOnce);
-            Description.Append(string.Concat(" ", string.Format(TextResources.EventDescSchedule, Date, Hour)));
-            if (dateLimits.HasValue)
-            {
-                if (dateLimits.Value.StartLimit.HasValue)
-                {
-                    string StartDate = dateLimits.Value.StartLimit.Value.ToShortDateString();
-                    Description.Append(string.Concat(" ", string.Format(TextResources.EventDescLimitsStart, StartDate)));
-                }
-                if (dateLimits.Value.EndLimit.HasValue)
-                {
-                    string EndDate = dateLimits.Value.EndLimit.Value.ToShortDateString();
-                    Description.Append(string.Concat(" ", string.Format(TextResources.EventDescLimitsEnd, EndDate)));
-                }
-            }
-            return Description.ToString();
+            StringBuilder description = new(TextResources.EventDescOnce);
+            description.Append(string.Concat(" ", string.Format(TextResources.EventDescSchedule, date, hour)));
+            description.Append(AddLimitsDesc(dateLimits));
+            return description.ToString();
         }
 
         internal static string GetScheduleRecurrentDesc(SchedulerConfigurator config)
         {
-            string PeriodString = string.Empty;
-            switch (config.PeriodType)
-            {
-                case OccurrencyPeriodEnum.Daily:
-                    PeriodString = TextResources.Days;
-                    break;
-                case OccurrencyPeriodEnum.Weekly:
-                    PeriodString = TextResources.Weeks;
-                    break;
-                case OccurrencyPeriodEnum.Monthly:
-                    PeriodString = TextResources.Months;
-                    break;
-                case OccurrencyPeriodEnum.Yearly:
-                    PeriodString = TextResources.Years;
-                    break;
-            }
+            string periodString = GetTypeName(config.PeriodType.Value);
+            StringBuilder description = new(string.Format(TextResources.EventDescRecurring, config.OcurrencyPeriod, periodString));
+            description.Append(GetWeeklyDesc(config));
+            description.Append(GetDailyDesc(config));
+            description.Append(AddLimitsDesc(config.DateLimits));
+            return description.ToString();
+        }
 
-            StringBuilder Description = new(string.Format(TextResources.EventDescRecurring, config.OcurrencyPeriod, PeriodString));
-            if (config.PeriodType.Value == OccurrencyPeriodEnum.Weekly && config.WeeklyDays != null && config.WeeklyDays.Count > 0)
-            {
-                string WeeklyDays = string.Join(", ", config.WeeklyDays);
-                if (WeeklyDays.LastIndexOf(",") >= 0)
-                {
-                    int Place = WeeklyDays.LastIndexOf(",");
-                    WeeklyDays = WeeklyDays.Remove(Place, 1).Insert(Place, string.Concat(" ", TextResources.And));
-                }
-                Description.Append(string.Concat(" ", string.Format(TextResources.EventDescRecurringWeekly, WeeklyDays)));
-            }
+        private static string GetDailyDesc(SchedulerConfigurator config)
+        {
+            StringBuilder dailyDesc = new();
             if (config.DailyScheduleHour.HasValue)
             {
-                Description.Append(string.Concat(" ", string.Format(TextResources.EventDescRecurringHour, config.DailyScheduleHour.Value.ToString(@"hh\:mm"))));
+                dailyDesc.Append(string.Concat(" ", string.Format(TextResources.EventDescRecurringHour, config.DailyScheduleHour.Value.ToString(@"hh\:mm"))));
             }
             else if (config.DailyLimits.HasValue)
             {
                 switch (config.DailyFrecuency)
                 {
                     case DailyFrecuencyEnum.Hours:
-                        Description.Append(string.Concat(" ", string.Format(TextResources.EventDescRecurringEvery, config.DailyFrecuencyPeriod, TextResources.Hours)));
+                        dailyDesc.Append(string.Concat(" ", string.Format(TextResources.EventDescRecurringEvery, config.DailyFrecuencyPeriod, TextResources.Hours)));
                         break;
                     case DailyFrecuencyEnum.Minutes:
-                        Description.Append(string.Concat(" ", string.Format(TextResources.EventDescRecurringEvery, config.DailyFrecuencyPeriod, TextResources.Minutes)));
+                        dailyDesc.Append(string.Concat(" ", string.Format(TextResources.EventDescRecurringEvery, config.DailyFrecuencyPeriod, TextResources.Minutes)));
                         break;
                     case DailyFrecuencyEnum.Seconds:
-                        Description.Append(string.Concat(" ", string.Format(TextResources.EventDescRecurringEvery, config.DailyFrecuencyPeriod, TextResources.Seconds)));
+                        dailyDesc.Append(string.Concat(" ", string.Format(TextResources.EventDescRecurringEvery, config.DailyFrecuencyPeriod, TextResources.Seconds)));
                         break;
                 }
                 if (config.DailyLimits.HasValue)
                 {
                     string StartLimit = config.DailyLimits.Value.StartLimit?.ToString(@"hh\:mm") ?? "0:00";
                     string EndLimit = config.DailyLimits.Value.EndLimit?.ToString(@"hh\:mm") ?? "23:59";
-                    Description.Append(String.Concat(" ", string.Format(TextResources.EventDescDailyLimits, StartLimit, EndLimit)));
+                    dailyDesc.Append(String.Concat(" ", string.Format(TextResources.EventDescDailyLimits, StartLimit, EndLimit)));
                 }
             }
-            if (config.DateLimits.HasValue)
-            {
-                if (config.DateLimits.Value.StartLimit.HasValue)
-                {
-                    string StartDate = config.DateLimits.Value.StartLimit.Value.ToShortDateString();
-                    Description.Append(string.Concat(" ", string.Format(TextResources.EventDescLimitsStart, StartDate)));
-                }
-                if (config.DateLimits.Value.EndLimit.HasValue)
-                {
-                    string EndDate = config.DateLimits.Value.EndLimit.Value.ToShortDateString();
-                    Description.Append(string.Concat(" ", string.Format(TextResources.EventDescLimitsEnd, EndDate)));
-                }
-            }
-            return Description.ToString();
+            return dailyDesc.ToString();
         }
+
+        private static string GetWeeklyDesc(SchedulerConfigurator config)
+        {
+            string weeklyDesc = string.Empty;
+            if (config.PeriodType.Value == OccurrencyPeriodEnum.Weekly && config.WeeklyDays != null && config.WeeklyDays.Count > 0)
+            {
+                string WeeklyDays = string.Join(", ", config.WeeklyDays);
+                WeeklyDays = WeeklyDays.ChangeLastPeriodToAnd();
+                weeklyDesc = string.Concat(" ", string.Format(TextResources.EventDescRecurringWeekly, WeeklyDays));
+            }
+            return weeklyDesc;
+        }
+
+        private static string AddLimitsDesc(DateLimitsConfig? dateLimits)
+        {
+            StringBuilder limitsDesc = new();
+            if (dateLimits.HasValue)
+            {
+                if (dateLimits.Value.StartLimit.HasValue)
+                {
+                    string StartDate = dateLimits.Value.StartLimit.Value.ToShortDateString();
+                    limitsDesc.Append(string.Concat(" ", string.Format(TextResources.EventDescLimitsStart, StartDate)));
+                }
+                if (dateLimits.Value.EndLimit.HasValue)
+                {
+                    string EndDate = dateLimits.Value.EndLimit.Value.ToShortDateString();
+                    limitsDesc.Append(string.Concat(" ", string.Format(TextResources.EventDescLimitsEnd, EndDate)));
+                }
+            }
+            return limitsDesc.ToString();
+        }
+
+        private static string GetTypeName(OccurrencyPeriodEnum type)
+        {
+            string typeString = string.Empty;
+            switch (type)
+            {
+                case OccurrencyPeriodEnum.Daily:
+                    typeString = TextResources.Days;
+                    break;
+                case OccurrencyPeriodEnum.Weekly:
+                    typeString = TextResources.Weeks;
+                    break;
+                case OccurrencyPeriodEnum.Monthly:
+                    typeString = TextResources.Months;
+                    break;
+                case OccurrencyPeriodEnum.Yearly:
+                    typeString = TextResources.Years;
+                    break;
+            }
+            return typeString;
+        }
+
     }
 }
