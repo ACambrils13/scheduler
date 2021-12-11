@@ -11,7 +11,7 @@ namespace Scheduler.Creators
         internal override ScheduleEvent GetNextExecution(SchedulerConfigurator config)
         {
             ScheduleConfigValidator.ValidateRecurringSchedule(config);
-            DateTime NextExecutionDate = config.CurrentDate.Value.CurrentDateOrStartLimit(config.DateLimits?.StartLimit);
+            DateTime NextExecutionDate = GetCurrentDate(config);
 
             switch (config.PeriodType)
             {
@@ -36,20 +36,27 @@ namespace Scheduler.Creators
                     break;
             }
             ScheduleConfigValidator.ValidateLimits(NextExecutionDate, config.DateLimits, false);
+            config.ScheduleDate = NextExecutionDate;
 
             string Description = EventDescriptionFormatter.GetScheduleRecurrentDesc(config);
             return new ScheduleEvent()
             {
-                ExecutionDate = NextExecutionDate,
+                ExecutionDate = config.ScheduleDate.Value,
                 ExecutionDescription = Description
             };
 
         }
 
+        private static DateTime GetCurrentDate(SchedulerConfigurator config)
+        {
+            DateTime startDate = config.ScheduleDate ?? config.CurrentDate.Value;
+            return startDate.CurrentDateOrStartLimit(config.DateLimits?.StartLimit);
+        }
+
         private static DateTime GetNextExecutionDaily(SchedulerConfigurator config, DateTime nextExec)
         {
             DateTime newDate = CalculateDailyConfigHour(config, nextExec);
-            while (DateTime.Compare(nextExec, newDate) > 0)
+            while (DateTime.Compare(nextExec, newDate) >= 0)
             {
                 nextExec = nextExec.AddDays(config.OcurrencyPeriod.Value).Date;
                 newDate = CalculateDailyConfigHour(config, nextExec);
@@ -60,7 +67,7 @@ namespace Scheduler.Creators
         private static DateTime GetNextExecutionWeeklyStandard(SchedulerConfigurator config, DateTime nextExec)
         {
             DateTime newDate = CalculateDailyConfigHour(config, nextExec);
-            while (DateTime.Compare(nextExec, newDate) > 0)
+            while (DateTime.Compare(nextExec, newDate) >= 0)
             {
                 nextExec = nextExec.AddWeeks(config.OcurrencyPeriod.Value).Date;
                 newDate = CalculateDailyConfigHour(config, nextExec);
@@ -71,33 +78,41 @@ namespace Scheduler.Creators
         private static DateTime GetNextExecutionWeekly(SchedulerConfigurator config, DateTime nextExec)
         {
             CultureInfo culture = CultureInfo.CurrentCulture;
-            nextExec = NextSelectedDay(config, nextExec, culture);
+            nextExec = NextSelectedDay(config, nextExec, culture, false);
             DateTime newDate = CalculateDailyConfigHour(config, nextExec);
-            while (DateTime.Compare(nextExec, newDate) > 0)
+            while (DateTime.Compare(nextExec, newDate) >= 0)
             {
-                nextExec = NextSelectedDay(config, nextExec.NextDay(), culture);
+                nextExec = NextSelectedDay(config, nextExec, culture, true);
                 newDate = CalculateDailyConfigHour(config, nextExec);
             }
             return newDate;
         }
 
-        private static DateTime NextSelectedDay(SchedulerConfigurator config, DateTime currentDate, CultureInfo culture)
+        private static DateTime NextSelectedDay(SchedulerConfigurator config, DateTime currentDate, CultureInfo culture, bool escapeCurrent)
         {
-            int currentWeek = currentDate.GetWeekOfYear(culture);
+            if (escapeCurrent)
+            {
+                currentDate = NextDayToCompare(config, currentDate, culture);
+            }
             while (config.WeeklyDays.Contains(currentDate.DayOfWeek) == false)
             {
-                DateTime nextDay = currentDate.NextDay();
-                if (nextDay.GetWeekOfYear(culture) == currentWeek)
-                {
-                    currentDate = nextDay;
-                }
-                else
-                {
-                    currentDate = GetFirstSelectedDayOfWeek(config, currentDate, culture);
-                    currentWeek = currentDate.GetWeekOfYear(culture);
-                }
+                currentDate = NextDayToCompare(config, currentDate, culture);
             }
             return currentDate;
+        }
+
+        private static DateTime NextDayToCompare(SchedulerConfigurator config, DateTime currentDate, CultureInfo culture)
+        {
+            int currentWeek = currentDate.GetWeekOfYear(culture);
+            DateTime nextDay = currentDate.NextDay();
+            if (nextDay.GetWeekOfYear(culture) == currentWeek)
+            {
+                return nextDay;
+            }
+            else
+            {
+                return GetFirstSelectedDayOfWeek(config, currentDate, culture);
+            }
         }
 
         private static DateTime GetFirstSelectedDayOfWeek(SchedulerConfigurator config, DateTime currentDate, CultureInfo culture)
@@ -113,7 +128,7 @@ namespace Scheduler.Creators
         private static DateTime GetNextExecutionMonthly(SchedulerConfigurator config, DateTime nextExec)
         {
             DateTime newDate = CalculateDailyConfigHour(config, nextExec);
-            while (DateTime.Compare(nextExec, newDate) > 0)
+            while (DateTime.Compare(nextExec, newDate) >= 0)
             {
                 nextExec = nextExec.AddMonths(config.OcurrencyPeriod.Value).Date;
                 newDate = CalculateDailyConfigHour(config, nextExec);
@@ -124,7 +139,7 @@ namespace Scheduler.Creators
         private static DateTime GetNextExecutionYearly(SchedulerConfigurator config, DateTime nextExec)
         {
             DateTime newDate = CalculateDailyConfigHour(config, nextExec);
-            while (DateTime.Compare(nextExec, newDate) > 0)
+            while (DateTime.Compare(nextExec, newDate) >= 0)
             {
                 nextExec = nextExec.AddYears(config.OcurrencyPeriod.Value).Date;
                 newDate = CalculateDailyConfigHour(config, nextExec);
@@ -149,7 +164,7 @@ namespace Scheduler.Creators
             DateTime EndLimit = execDate.EndDailyLimit(config.DailyLimits?.EndLimit);
             NewDate = StartLimit;
 
-            while (DateTime.Compare(execDate, NewDate) > 0)
+            while (DateTime.Compare(execDate, NewDate) >= 0)
             {
                 switch (config.DailyFrecuency)
                 {

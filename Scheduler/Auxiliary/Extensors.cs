@@ -65,11 +65,15 @@ namespace Scheduler.Auxiliary
             return currentDate.AddWeeks(numWeeks).FirstDayOfSameWeek(culture);
         }
 
-        public static DateTime FirstDayOfSameWeek(this DateTime currentDate, CultureInfo cultureInfo)
+        public static DateTime FirstDayOfSameWeek(this DateTime currentDate, CultureInfo culture)
         {
-            DayOfWeek firstDay = cultureInfo.DateTimeFormat.FirstDayOfWeek;
-            int currentToFirst = firstDay - currentDate.DayOfWeek;
-            return currentDate.AddDays(currentToFirst).Date;
+            DayOfWeek firstDay = culture.DateTimeFormat.FirstDayOfWeek;
+            int week = currentDate.GetWeekOfYear(culture);
+            while (currentDate.DayOfWeek != firstDay && currentDate.GetWeekOfYear(culture) == week)
+            {
+                currentDate = currentDate.AddDays(-1);
+            }
+            return currentDate;
         }
 
         public static string ChangeLastPeriodToAnd(this string joinedText)
