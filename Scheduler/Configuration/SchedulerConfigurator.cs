@@ -20,5 +20,9 @@ namespace Scheduler.Configuration
         public int? DailyFrecuencyPeriod { get; set; }
         public HourLimitsConfig? DailyLimits { get; set; }
         public List<DayOfWeek> WeeklyDays { get; set; }
+        public bool? MonthlyDaySelection { get; set; }
+        public int? MonthlyDay { get; set; }
+        public MonthlyFrecuencyEnum? MonthlyFrecuency { get; set; }
+        public MonthlyDayEnum? MonthlyWeekday { get; set; }
     }
 }

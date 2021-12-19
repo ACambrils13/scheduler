@@ -49,4 +49,27 @@ namespace Scheduler.Auxiliary
         Minutes,
         Seconds
     }
+
+    public enum MonthlyFrecuencyEnum
+    {
+        First,
+        Second,
+        Third,
+        Fourth,
+        Last
+    }
+
+    public enum MonthlyDayEnum
+    {
+        Monday,
+        Tuesday,
+        Wednesday,
+        Thursday,
+        Friday,
+        Saturday,
+        Sunday,
+        Day,
+        Weekday,
+        WeekendDay
+    }
 }

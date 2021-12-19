@@ -85,5 +85,27 @@ namespace Scheduler.Auxiliary
             }
             return joinedText;
         }
+
+        public static DateTime ExactDayOfMonth(this DateTime date, int day, int? addMonths)
+        {
+            if (addMonths.HasValue)
+            {
+                date = date.AddMonths(addMonths.Value);
+            }
+            return day.DayOfMonthOrLastDay(date.Month, date.Year);
+        }
+
+        public static DateTime DayOfMonthOrLastDay(this int day, int month, int year)
+        {
+            day = day.DayOrLastDayOfMonth(month, year);
+            return new DateTime(year, month, day);
+        }
+
+        public static int DayOrLastDayOfMonth(this int day, int month, int year)
+        {
+            int lastDayOfMonth = DateTime.DaysInMonth(year, month);
+            day = day <= lastDayOfMonth ? day : lastDayOfMonth;
+            return day;
+        }
     }
 }

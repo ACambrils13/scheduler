@@ -313,7 +313,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
-                PeriodType = OccurrencyPeriodEnum.Monthly,
+                PeriodType = OccurrencyPeriodEnum.Yearly,
                 OcurrencyPeriod = 2,
                 DailyScheduleHour = new TimeSpan(5, 0, 0),
                 DateLimits = new DateLimitsConfig(ExecScheduleLimitStart, ExecScheduleLimitEnd)
@@ -561,126 +561,126 @@ namespace Scheduler.Test
         }
         #endregion
 
-        #region Monthly
-        [Fact]
-        public void Recurring_Monthly_Next_Execution_Without_Limits_Correct()
-        {
-            DateTime CurrentDateEx = new(2021, 1, 1);
-            DateTime ScheduleDateEx = new(2021, 1, 1, 5, 0, 0);
-            string ExecDescription = "Occurs every 1 months at 05:00";
+        //#region Monthly
+        //[Fact]
+        //public void Recurring_Monthly_Next_Execution_Without_Limits_Correct()
+        //{
+        //    DateTime CurrentDateEx = new(2021, 1, 1);
+        //    DateTime ScheduleDateEx = new(2021, 1, 1, 5, 0, 0);
+        //    string ExecDescription = "Occurs every 1 months at 05:00";
 
-            SchedulerConfigurator schedulerConfig = new()
-            {
-                CurrentDate = CurrentDateEx,
-                Type = ScheduleTypeEnum.Recurring,
-                PeriodType = OccurrencyPeriodEnum.Monthly,
-                OcurrencyPeriod = 1,
-                DailyScheduleHour = new TimeSpan(5, 0, 0)
-            };
-            ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
+        //    SchedulerConfigurator schedulerConfig = new()
+        //    {
+        //        CurrentDate = CurrentDateEx,
+        //        Type = ScheduleTypeEnum.Recurring,
+        //        PeriodType = OccurrencyPeriodEnum.Monthly,
+        //        OcurrencyPeriod = 1,
+        //        DailyScheduleHour = new TimeSpan(5, 0, 0)
+        //    };
+        //    ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
 
-            Assert.Equal(NextExec.ExecutionDate, ScheduleDateEx);
-            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+        //    Assert.Equal(NextExec.ExecutionDate, ScheduleDateEx);
+        //    Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
 
-            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+        //    NextExec = Scheduler.GetNextExecution(schedulerConfig);
 
-            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 2, 1, 5, 0, 0));
-            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
-        }
+        //    Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 2, 1, 5, 0, 0));
+        //    Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+        //}
 
-        [Fact]
-        public void Recurring_Monthly_Next_Execution_DateLimits_Start_Correct()
-        {
-            DateTime CurrentDateEx = new(2021, 1, 1, 18, 0, 0);
-            DateTime ScheduleDateEx = new(2021, 2, 1, 5, 0, 0);
-            DateTime ExecScheduleLimitStart = new(2021, 1, 1);
-            string ExecDescription = "Occurs every 1 months at 05:00 starting on 01/01/2021";
+        //[Fact]
+        //public void Recurring_Monthly_Next_Execution_DateLimits_Start_Correct()
+        //{
+        //    DateTime CurrentDateEx = new(2021, 1, 1, 18, 0, 0);
+        //    DateTime ScheduleDateEx = new(2021, 2, 1, 5, 0, 0);
+        //    DateTime ExecScheduleLimitStart = new(2021, 1, 1);
+        //    string ExecDescription = "Occurs every 1 months at 05:00 starting on 01/01/2021";
 
-            SchedulerConfigurator schedulerConfig = new()
-            {
-                CurrentDate = CurrentDateEx,
-                Type = ScheduleTypeEnum.Recurring,
-                PeriodType = OccurrencyPeriodEnum.Monthly,
-                OcurrencyPeriod = 1,
-                DailyScheduleHour = new TimeSpan(5, 0, 0),
-                DateLimits = new DateLimitsConfig(ExecScheduleLimitStart, null)
-            };
-            ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
+        //    SchedulerConfigurator schedulerConfig = new()
+        //    {
+        //        CurrentDate = CurrentDateEx,
+        //        Type = ScheduleTypeEnum.Recurring,
+        //        PeriodType = OccurrencyPeriodEnum.Monthly,
+        //        OcurrencyPeriod = 1,
+        //        DailyScheduleHour = new TimeSpan(5, 0, 0),
+        //        DateLimits = new DateLimitsConfig(ExecScheduleLimitStart, null)
+        //    };
+        //    ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
 
-            Assert.Equal(NextExec.ExecutionDate, ScheduleDateEx);
-            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+        //    Assert.Equal(NextExec.ExecutionDate, ScheduleDateEx);
+        //    Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
 
-            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+        //    NextExec = Scheduler.GetNextExecution(schedulerConfig);
 
-            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 3, 1, 5, 0, 0));
-            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
-        }
+        //    Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 3, 1, 5, 0, 0));
+        //    Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+        //}
 
-        [Fact]
-        public void Recurring_Monthly_Next_Execution_DateLimits_Correct()
-        {
-            DateTime CurrentDateEx = new(2021, 1, 1);
-            DateTime ScheduleDateEx = new(2021, 1, 1, 5, 0, 0);
-            DateTime ExecScheduleLimitStart = new(2021, 1, 1);
-            DateTime ExecScheduleLimitEnd = new(2021, 12, 31);
-            string ExecDescription = "Occurs every 1 months at 05:00 starting on 01/01/2021 to 31/12/2021";
+        //[Fact]
+        //public void Recurring_Monthly_Next_Execution_DateLimits_Correct()
+        //{
+        //    DateTime CurrentDateEx = new(2021, 1, 1);
+        //    DateTime ScheduleDateEx = new(2021, 1, 1, 5, 0, 0);
+        //    DateTime ExecScheduleLimitStart = new(2021, 1, 1);
+        //    DateTime ExecScheduleLimitEnd = new(2021, 12, 31);
+        //    string ExecDescription = "Occurs every 1 months at 05:00 starting on 01/01/2021 to 31/12/2021";
 
-            SchedulerConfigurator schedulerConfig = new()
-            {
-                CurrentDate = CurrentDateEx,
-                Type = ScheduleTypeEnum.Recurring,
-                PeriodType = OccurrencyPeriodEnum.Monthly,
-                OcurrencyPeriod = 1,
-                DailyScheduleHour = new TimeSpan(5, 0, 0),
-                DateLimits = new DateLimitsConfig(ExecScheduleLimitStart, ExecScheduleLimitEnd)
-            };
-            ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
+        //    SchedulerConfigurator schedulerConfig = new()
+        //    {
+        //        CurrentDate = CurrentDateEx,
+        //        Type = ScheduleTypeEnum.Recurring,
+        //        PeriodType = OccurrencyPeriodEnum.Monthly,
+        //        OcurrencyPeriod = 1,
+        //        DailyScheduleHour = new TimeSpan(5, 0, 0),
+        //        DateLimits = new DateLimitsConfig(ExecScheduleLimitStart, ExecScheduleLimitEnd)
+        //    };
+        //    ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
 
-            Assert.Equal(NextExec.ExecutionDate, ScheduleDateEx);
-            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
-        }
+        //    Assert.Equal(NextExec.ExecutionDate, ScheduleDateEx);
+        //    Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+        //}
 
-        [Fact]
-        public void Recurring_Monthly_Next_Execution_DailyLimits_Correct()
-        {
-            DateTime CurrentDateEx = new(2021, 1, 1, 23, 0, 0);
-            DateTime ScheduleDateEx = new(2021, 2, 1, 4, 0, 0);
-            DateTime ExecScheduleLimitStart = new(2021, 1, 1);
-            DateTime ExecScheduleLimitEnd = new(2021, 12, 31);
-            string ExecDescription = "Occurs every 1 months every 30 minutes between 04:00 and 05:00 starting on 01/01/2021 to 31/12/2021";
+        //[Fact]
+        //public void Recurring_Monthly_Next_Execution_DailyLimits_Correct()
+        //{
+        //    DateTime CurrentDateEx = new(2021, 1, 1, 23, 0, 0);
+        //    DateTime ScheduleDateEx = new(2021, 2, 1, 4, 0, 0);
+        //    DateTime ExecScheduleLimitStart = new(2021, 1, 1);
+        //    DateTime ExecScheduleLimitEnd = new(2021, 12, 31);
+        //    string ExecDescription = "Occurs every 1 months every 30 minutes between 04:00 and 05:00 starting on 01/01/2021 to 31/12/2021";
 
-            SchedulerConfigurator schedulerConfig = new()
-            {
-                CurrentDate = CurrentDateEx,
-                Type = ScheduleTypeEnum.Recurring,
-                PeriodType = OccurrencyPeriodEnum.Monthly,
-                OcurrencyPeriod = 1,
-                DailyFrecuency = DailyFrecuencyEnum.Minutes,
-                DailyFrecuencyPeriod = 30,
-                DailyLimits = new HourLimitsConfig(new TimeSpan(4, 0, 0), new TimeSpan(5, 0, 0)),
-                DateLimits = new DateLimitsConfig(ExecScheduleLimitStart, ExecScheduleLimitEnd)
-            };
-            ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
+        //    SchedulerConfigurator schedulerConfig = new()
+        //    {
+        //        CurrentDate = CurrentDateEx,
+        //        Type = ScheduleTypeEnum.Recurring,
+        //        PeriodType = OccurrencyPeriodEnum.Monthly,
+        //        OcurrencyPeriod = 1,
+        //        DailyFrecuency = DailyFrecuencyEnum.Minutes,
+        //        DailyFrecuencyPeriod = 30,
+        //        DailyLimits = new HourLimitsConfig(new TimeSpan(4, 0, 0), new TimeSpan(5, 0, 0)),
+        //        DateLimits = new DateLimitsConfig(ExecScheduleLimitStart, ExecScheduleLimitEnd)
+        //    };
+        //    ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
 
-            Assert.Equal(NextExec.ExecutionDate, ScheduleDateEx);
-            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+        //    Assert.Equal(NextExec.ExecutionDate, ScheduleDateEx);
+        //    Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
 
-            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+        //    NextExec = Scheduler.GetNextExecution(schedulerConfig);
 
-            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 2, 1, 4, 30, 0));
-            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+        //    Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 2, 1, 4, 30, 0));
+        //    Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
 
-            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+        //    NextExec = Scheduler.GetNextExecution(schedulerConfig);
 
-            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 2, 1, 5, 0, 0));
-            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+        //    Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 2, 1, 5, 0, 0));
+        //    Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
 
-            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+        //    NextExec = Scheduler.GetNextExecution(schedulerConfig);
 
-            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 3, 1, 4, 0, 0));
-            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
-        }
-        #endregion
+        //    Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 3, 1, 4, 0, 0));
+        //    Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+        //}
+        //#endregion
 
         #region Yearly
         [Fact]
@@ -1138,6 +1138,446 @@ namespace Scheduler.Test
         }
 
 
+        #endregion
+
+        #region Monthly pt3
+        [Fact]
+        public void Recurring_Monthly_DaySelection_Null_Failed()
+        {
+            SchedulerConfigurator schedulerConfig = new()
+            {
+                CurrentDate = new DateTime(2021, 1, 1),
+                Type = ScheduleTypeEnum.Recurring,
+                PeriodType = OccurrencyPeriodEnum.Monthly,
+                OcurrencyPeriod = 3,
+                MonthlyDay = 8,
+                DailyScheduleHour = new TimeSpan(12,0,0),
+            };
+
+            string expectedExcMsg = string.Format(TextResources.ConfError, TextResources.ExcMonthlyTypeConfig);
+            var exception = Assert.Throws<ValidationException>(() =>
+               Scheduler.GetNextExecution(schedulerConfig));
+            Assert.Equal(expectedExcMsg, exception.Message);
+        }
+
+        [Fact]
+        public void Recurring_Monthly_DaySelection_False_Failed()
+        {
+            SchedulerConfigurator schedulerConfig = new()
+            {
+                CurrentDate = new DateTime(2021, 1, 1),
+                Type = ScheduleTypeEnum.Recurring,
+                PeriodType = OccurrencyPeriodEnum.Monthly,
+                OcurrencyPeriod = 3,
+                MonthlyDaySelection = false,
+                MonthlyDay = 8,
+                DailyScheduleHour = new TimeSpan(12, 0, 0),
+            };
+
+            string expectedExcMsg = string.Format(TextResources.ConfError, string.Format(TextResources.ExcEnumError, nameof(schedulerConfig.MonthlyFrecuency)));
+            var exception = Assert.Throws<ValidationException>(() =>
+               Scheduler.GetNextExecution(schedulerConfig));
+            Assert.Equal(expectedExcMsg, exception.Message);
+        }
+
+        [Fact]
+        public void Recurring_Monthly_DaySelection_True_Failed()
+        {
+            SchedulerConfigurator schedulerConfig = new()
+            {
+                CurrentDate = new DateTime(2021, 1, 1),
+                Type = ScheduleTypeEnum.Recurring,
+                PeriodType = OccurrencyPeriodEnum.Monthly,
+                OcurrencyPeriod = 3,
+                MonthlyDaySelection = true,
+                MonthlyFrecuency = MonthlyFrecuencyEnum.First,
+                MonthlyWeekday = MonthlyDayEnum.Day,
+                DailyScheduleHour = new TimeSpan(12, 0, 0),
+            };
+
+            string expectedExcMsg = string.Format(TextResources.ConfError, TextResources.ExcMonthlyDay);
+            var exception = Assert.Throws<ValidationException>(() =>
+               Scheduler.GetNextExecution(schedulerConfig));
+            Assert.Equal(expectedExcMsg, exception.Message);
+        }
+
+        [Fact]
+        public void Recurring_Monthly_Day_Negative_Failed()
+        {
+            SchedulerConfigurator schedulerConfig = new()
+            {
+                CurrentDate = new DateTime(2021, 1, 1),
+                Type = ScheduleTypeEnum.Recurring,
+                PeriodType = OccurrencyPeriodEnum.Monthly,
+                OcurrencyPeriod = 3,
+                MonthlyDaySelection = true,
+                MonthlyDay = -3,
+                DailyScheduleHour = new TimeSpan(12, 0, 0),
+            };
+
+            string expectedExcMsg = string.Format(TextResources.ConfError, TextResources.ExcMonthlyDay);
+            var exception = Assert.Throws<ValidationException>(() =>
+               Scheduler.GetNextExecution(schedulerConfig));
+            Assert.Equal(expectedExcMsg, exception.Message);
+        }
+
+        [Fact]
+        public void Recurring_Monthly_Day_UpTo31_Failed()
+        {
+            SchedulerConfigurator schedulerConfig = new()
+            {
+                CurrentDate = new DateTime(2021, 1, 1),
+                Type = ScheduleTypeEnum.Recurring,
+                PeriodType = OccurrencyPeriodEnum.Monthly,
+                OcurrencyPeriod = 3,
+                MonthlyDaySelection = true,
+                MonthlyDay = 45,
+                DailyScheduleHour = new TimeSpan(12, 0, 0),
+            };
+
+            string expectedExcMsg = string.Format(TextResources.ConfError, TextResources.ExcMonthlyDay);
+            var exception = Assert.Throws<ValidationException>(() =>
+               Scheduler.GetNextExecution(schedulerConfig));
+            Assert.Equal(expectedExcMsg, exception.Message);
+        }
+
+        [Fact]
+        public void Recurring_Monthly_DaySelection_False_Without_Frecuency_Failed()
+        {
+            SchedulerConfigurator schedulerConfig = new()
+            {
+                CurrentDate = new DateTime(2021, 1, 1),
+                Type = ScheduleTypeEnum.Recurring,
+                PeriodType = OccurrencyPeriodEnum.Monthly,
+                OcurrencyPeriod = 3,
+                MonthlyDaySelection = false,
+                MonthlyWeekday= MonthlyDayEnum.Day,
+                DailyScheduleHour = new TimeSpan(12, 0, 0),
+            };
+
+            string expectedExcMsg = string.Format(TextResources.ConfError, string.Format(TextResources.ExcEnumError, nameof(schedulerConfig.MonthlyFrecuency)));
+            var exception = Assert.Throws<ValidationException>(() =>
+               Scheduler.GetNextExecution(schedulerConfig));
+            Assert.Equal(expectedExcMsg, exception.Message);
+        }
+
+        [Fact]
+        public void Recurring_Monthly_DaySelection_False_Without_Weekday_Failed()
+        {
+            SchedulerConfigurator schedulerConfig = new()
+            {
+                CurrentDate = new DateTime(2021, 1, 1),
+                Type = ScheduleTypeEnum.Recurring,
+                PeriodType = OccurrencyPeriodEnum.Monthly,
+                OcurrencyPeriod = 3,
+                MonthlyDaySelection = false,
+                MonthlyFrecuency = MonthlyFrecuencyEnum.Third,
+                DailyScheduleHour = new TimeSpan(12, 0, 0),
+            };
+
+            string expectedExcMsg = string.Format(TextResources.ConfError, string.Format(TextResources.ExcEnumError, nameof(schedulerConfig.MonthlyWeekday)));
+            var exception = Assert.Throws<ValidationException>(() =>
+               Scheduler.GetNextExecution(schedulerConfig));
+            Assert.Equal(expectedExcMsg, exception.Message);
+        }
+
+        [Fact]
+        public void Recurring_Monthly_Next_Execution_Day_Of_Month_Correct()
+        {
+            string ExecDescription = "Occurs the day 8 of every 3 months every 2 hours between 10:00 and 12:00 starting on 01/01/2021 to 31/12/2021";
+
+            SchedulerConfigurator schedulerConfig = new()
+            {
+                CurrentDate = new DateTime(2021, 1, 1),
+                Type = ScheduleTypeEnum.Recurring,
+                PeriodType = OccurrencyPeriodEnum.Monthly,
+                OcurrencyPeriod = 3,
+                MonthlyDaySelection = true,
+                MonthlyDay = 8,
+                DailyFrecuency = DailyFrecuencyEnum.Hours,
+                DailyFrecuencyPeriod = 2,
+                DailyLimits = new HourLimitsConfig(new TimeSpan(10, 0, 0), new TimeSpan(12, 0, 0)),
+                DateLimits = new DateLimitsConfig(new DateTime(2021, 1, 1), new DateTime(2021, 12, 31))
+            };
+            ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 1, 8, 10, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+
+            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 1, 8, 12, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+
+            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 4, 8, 10, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+        }
+
+        [Fact]
+        public void Recurring_Monthly_Next_Execution_Day_Of_Month_31_Correct()
+        {
+            string ExecDescription = "Occurs the day 31 of every 1 months every 2 hours between 10:00 and 12:00 starting on 01/01/2021 to 31/12/2021";
+
+            SchedulerConfigurator schedulerConfig = new()
+            {
+                CurrentDate = new DateTime(2021, 1, 1),
+                Type = ScheduleTypeEnum.Recurring,
+                PeriodType = OccurrencyPeriodEnum.Monthly,
+                OcurrencyPeriod = 1,
+                MonthlyDaySelection = true,
+                MonthlyDay = 31,
+                DailyFrecuency = DailyFrecuencyEnum.Hours,
+                DailyFrecuencyPeriod = 2,
+                DailyLimits = new HourLimitsConfig(new TimeSpan(10, 0, 0), new TimeSpan(12, 0, 0)),
+                DateLimits = new DateLimitsConfig(new DateTime(2021, 1, 1), new DateTime(2021, 12, 31))
+            };
+            ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 1, 31, 10, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+
+            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 1, 31, 12, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+
+            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 2, 28, 10, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+
+            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 2, 28, 12, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+
+            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 3, 31, 10, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+
+            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 3, 31, 12, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+
+            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 4, 30, 10, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+
+            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 4, 30, 12, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+        }
+
+        [Fact]
+        public void Recurring_Monthly_Next_Execution_First_Correct()
+        {
+            string ExecDescription = "Occurs the First Monday of every 2 months every 1 hours between 05:00 and 07:00 starting on 01/01/2021";
+
+            SchedulerConfigurator schedulerConfig = new()
+            {
+                CurrentDate = new DateTime(2021, 1, 1),
+                Type = ScheduleTypeEnum.Recurring,
+                PeriodType = OccurrencyPeriodEnum.Monthly,
+                OcurrencyPeriod = 2,
+                MonthlyDaySelection = false,
+                MonthlyFrecuency = MonthlyFrecuencyEnum.First,
+                MonthlyWeekday = MonthlyDayEnum.Monday,
+                DailyFrecuency = DailyFrecuencyEnum.Hours,
+                DailyFrecuencyPeriod = 1,
+                DailyLimits = new HourLimitsConfig(new TimeSpan(5, 0, 0), new TimeSpan(7, 0, 0)),
+                DateLimits = new DateLimitsConfig(new DateTime(2021, 1, 1), null)
+            };
+            ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 1, 4, 5, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+
+            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 1, 4, 6, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+
+            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 1, 4, 7, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+
+            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 3, 1, 5, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+        }
+
+        [Fact]
+        public void Recurring_Monthly_Next_Execution_Second_Correct()
+        {
+            string ExecDescription = "Occurs the Second Weekday of every 1 months on 12:00 starting on 01/01/2021";
+
+            SchedulerConfigurator schedulerConfig = new()
+            {
+                CurrentDate = new DateTime(2021, 1, 1),
+                Type = ScheduleTypeEnum.Recurring,
+                PeriodType = OccurrencyPeriodEnum.Monthly,
+                OcurrencyPeriod = 2,
+                MonthlyDaySelection = false,
+                MonthlyFrecuency = MonthlyFrecuencyEnum.Second,
+                MonthlyWeekday = MonthlyDayEnum.Weekday,
+                DailyScheduleHour = new TimeSpan(12, 0, 0),
+                DateLimits = new DateLimitsConfig(new DateTime(2021, 1, 1), null)
+            };
+            ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 1, 4, 12, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+
+            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 2, 2, 12, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+
+            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 3, 2, 12, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+        }
+
+        [Fact]
+        public void Recurring_Monthly_Next_Execution_Third_Correct()
+        {
+            string ExecDescription = "Occurs the Third Wednesday of every 4 months on 12:00 starting on 01/01/2021";
+
+            SchedulerConfigurator schedulerConfig = new()
+            {
+                CurrentDate = new DateTime(2021, 1, 1),
+                Type = ScheduleTypeEnum.Recurring,
+                PeriodType = OccurrencyPeriodEnum.Monthly,
+                OcurrencyPeriod = 2,
+                MonthlyDaySelection = false,
+                MonthlyFrecuency = MonthlyFrecuencyEnum.Third,
+                MonthlyWeekday = MonthlyDayEnum.Wednesday,
+                DailyScheduleHour = new TimeSpan(12, 0, 0),
+                DateLimits = new DateLimitsConfig(new DateTime(2021, 1, 1), null)
+            };
+            ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 1, 20, 12, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+
+            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 5, 19, 12, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+
+            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 9, 15, 12, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+        }
+
+        [Fact]
+        public void Recurring_Monthly_Next_Execution_Fourth_Correct()
+        {
+            string ExecDescription = "Occurs the Fourth Day of every 6 months on 12:00 starting on 01/01/2021";
+
+            SchedulerConfigurator schedulerConfig = new()
+            {
+                CurrentDate = new DateTime(2021, 1, 1),
+                Type = ScheduleTypeEnum.Recurring,
+                PeriodType = OccurrencyPeriodEnum.Monthly,
+                OcurrencyPeriod = 2,
+                MonthlyDaySelection = false,
+                MonthlyFrecuency = MonthlyFrecuencyEnum.Fourth,
+                MonthlyWeekday = MonthlyDayEnum.Day,
+                DailyScheduleHour = new TimeSpan(12, 0, 0),
+                DateLimits = new DateLimitsConfig(new DateTime(2021, 1, 1), null)
+            };
+            ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 1, 4, 12, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+
+            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 7, 4, 12, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+
+            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2022, 1, 4, 12, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+        }
+
+        [Fact]
+        public void Recurring_Monthly_Next_Execution_Last_Correct()
+        {
+            string ExecDescription = "Occurs the Last Sunday of every 3 months on 12:00 starting on 01/03/2021";
+
+            SchedulerConfigurator schedulerConfig = new()
+            {
+                CurrentDate = new DateTime(2021, 1, 1),
+                Type = ScheduleTypeEnum.Recurring,
+                PeriodType = OccurrencyPeriodEnum.Monthly,
+                OcurrencyPeriod = 2,
+                MonthlyDaySelection = false,
+                MonthlyFrecuency = MonthlyFrecuencyEnum.Last,
+                MonthlyWeekday = MonthlyDayEnum.Sunday,
+                DailyScheduleHour = new TimeSpan(12, 0, 0),
+                DateLimits = new DateLimitsConfig(new DateTime(2021, 3, 1), null)
+            };
+            ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 3, 28, 12, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+
+            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 6, 27, 12, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+
+            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 9, 26, 12, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+        }
+
+        [Fact]
+        public void Recurring_Monthly_Next_Execution_WeekendDay_Correct()
+        {
+            string ExecDescription = "Occurs the Third Weekend Day of every 3 months on 12:00 starting on 01/01/2021";
+
+            SchedulerConfigurator schedulerConfig = new()
+            {
+                CurrentDate = new DateTime(2021, 1, 1),
+                Type = ScheduleTypeEnum.Recurring,
+                PeriodType = OccurrencyPeriodEnum.Monthly,
+                OcurrencyPeriod = 2,
+                MonthlyDaySelection = false,
+                MonthlyFrecuency = MonthlyFrecuencyEnum.Third,
+                MonthlyWeekday = MonthlyDayEnum.WeekendDay,
+                DailyScheduleHour = new TimeSpan(12, 0, 0),
+                DateLimits = new DateLimitsConfig(new DateTime(2021, 1, 1), null)
+            };
+            ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 1, 9, 12, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+
+            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 4, 10, 12, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+
+            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 7, 10, 12, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+        }
         #endregion
 
         #endregion

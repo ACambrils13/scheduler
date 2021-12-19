@@ -21,11 +21,30 @@ namespace Scheduler.Auxiliary
         internal static string GetScheduleRecurrentDesc(SchedulerConfigurator config)
         {
             string periodString = GetTypeName(config.PeriodType.Value);
-            StringBuilder description = new(string.Format(TextResources.EventDescRecurring, config.OcurrencyPeriod, periodString));
+            StringBuilder description = new(TextResources.EventDescRecurringStart);
+            description.Append(GetMonthlyDesc(config)); 
+            description.Append(string.Format(TextResources.EventDescRecurringEvery, config.OcurrencyPeriod, periodString));
             description.Append(GetWeeklyDesc(config));
             description.Append(GetDailyDesc(config));
             description.Append(AddLimitsDesc(config.DateLimits));
             return description.ToString();
+        }
+
+        private static string GetMonthlyDesc(SchedulerConfigurator config)
+        {
+            StringBuilder monthlyDesc = new();
+            if (config.PeriodType == OccurrencyPeriodEnum.Monthly)
+            {
+                if (config.MonthlyDaySelection == true)
+                {
+                    monthlyDesc.Append(string.Format(TextResources.EventDescDayOfMonth, config.MonthlyDay));
+                }
+                else
+                {
+                    //TODO
+                }
+            }
+            return monthlyDesc.ToString();
         }
 
         private static string GetDailyDesc(SchedulerConfigurator config)

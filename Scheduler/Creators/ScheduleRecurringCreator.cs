@@ -113,6 +113,7 @@ namespace Scheduler.Creators
             {
                 return GetFirstSelectedDayOfWeek(config, currentDate, culture);
             }
+
         }
 
         private static DateTime GetFirstSelectedDayOfWeek(SchedulerConfigurator config, DateTime currentDate, CultureInfo culture)
@@ -127,14 +128,59 @@ namespace Scheduler.Creators
 
         private static DateTime GetNextExecutionMonthly(SchedulerConfigurator config, DateTime nextExec)
         {
+            ScheduleConfigValidator.ValidateMonthlyConfiguration(config);
+            if (config.MonthlyDaySelection.Value == true)
+            {
+                return GetNextExecutionMonthlyExactDay(config, nextExec);
+            }
+            else
+            {
+                return GetNextExecutionMonthlyFrecuency(config, nextExec);
+            }
+
+
+
+
+            //DateTime newDate = CalculateDailyConfigHour(config, nextExec);
+            //while (DateTime.Compare(nextExec, newDate) >= 0)
+            //{
+            //    nextExec = nextExec.AddMonths(config.OcurrencyPeriod.Value).Date;
+            //    newDate = CalculateDailyConfigHour(config, nextExec);
+            //}
+            //return newDate;
+        }
+
+        private static DateTime GetNextExecutionMonthlyExactDay(SchedulerConfigurator config, DateTime nextExec)
+        {
+            nextExec = NextExactDayOfMonth(config, nextExec);
             DateTime newDate = CalculateDailyConfigHour(config, nextExec);
             while (DateTime.Compare(nextExec, newDate) >= 0)
             {
-                nextExec = nextExec.AddMonths(config.OcurrencyPeriod.Value).Date;
+                nextExec = nextExec.ExactDayOfMonth(config.MonthlyDay.Value, config.OcurrencyPeriod);
                 newDate = CalculateDailyConfigHour(config, nextExec);
             }
             return newDate;
         }
+
+        private static DateTime NextExactDayOfMonth(SchedulerConfigurator config, DateTime currentDate)
+        {
+            if (currentDate.Day < config.MonthlyDay.Value.DayOrLastDayOfMonth(currentDate.Month, currentDate.Year))
+            {
+                currentDate = config.MonthlyDay.Value.DayOfMonthOrLastDay(currentDate.Month, currentDate.Year);
+            }
+            else if (currentDate.Day > config.MonthlyDay)
+            {
+                currentDate = currentDate.ExactDayOfMonth(config.MonthlyDay.Value, config.OcurrencyPeriod);
+            }
+            return currentDate;
+        }
+
+        private static DateTime GetNextExecutionMonthlyFrecuency(SchedulerConfigurator config, DateTime nextExec)
+        {
+            return nextExec; //TODO
+        }
+
+
 
         private static DateTime GetNextExecutionYearly(SchedulerConfigurator config, DateTime nextExec)
         {

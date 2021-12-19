@@ -129,11 +129,17 @@
   <data name="EventDescDailyLimits" xml:space="preserve">
     <value>between {0} and {1}</value>
   </data>
+  <data name="EventDescDayOfMonth" xml:space="preserve">
+    <value>the day {0} of </value>
+  </data>
   <data name="EventDescLimitsEnd" xml:space="preserve">
     <value>to {0}</value>
   </data>
   <data name="EventDescLimitsStart" xml:space="preserve">
     <value>starting on {0}</value>
+  </data>
+  <data name="EventDescMonthlyPeriod" xml:space="preserve">
+    <value>the {0} {1} of</value>
   </data>
   <data name="EventDescOnce" xml:space="preserve">
     <value>Occurs once.</value>
@@ -146,6 +152,9 @@
   </data>
   <data name="EventDescRecurringHour" xml:space="preserve">
     <value>at {0}</value>
+  </data>
+  <data name="EventDescRecurringStart" xml:space="preserve">
+    <value>Occurs </value>
   </data>
   <data name="EventDescRecurringWeekly" xml:space="preserve">
     <value>on {0}</value>
@@ -174,6 +183,12 @@
   <data name="ExcLimitsEndBeforeStart" xml:space="preserve">
     <value>End Limit should be after Start Limit. </value>
   </data>
+  <data name="ExcMonthlyDay" xml:space="preserve">
+    <value>The day selected has to be in 1-31</value>
+  </data>
+  <data name="ExcMonthlyTypeConfig" xml:space="preserve">
+    <value>Monthly Configuration selection isn't correct.</value>
+  </data>
   <data name="ExcNoDate" xml:space="preserve">
     <value>{0} should be a Date value.</value>
   </data>
@@ -186,6 +201,9 @@
   <data name="ExcPeriod" xml:space="preserve">
     <value>{0} should be a positive number.</value>
   </data>
+  <data name="First" xml:space="preserve">
+    <value>First</value>
+  </data>
   <data name="Hours" xml:space="preserve">
     <value>hours</value>
   </data>
@@ -197,6 +215,9 @@
   </data>
   <data name="NotDefined" xml:space="preserve">
     <value>Not Defined</value>
+  </data>
+  <data name="Second" xml:space="preserve">
+    <value>Second</value>
   </data>
   <data name="Seconds" xml:space="preserve">
     <value>seconds</value>

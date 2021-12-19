@@ -149,6 +149,36 @@ namespace Scheduler.Validators
             }
         }
 
+        internal static void ValidateMonthlyConfiguration(SchedulerConfigurator config)
+        {
+            if (config.MonthlyDaySelection.HasValue == false)
+            {
+                throw new ValidationException(FormatConfigExcMessage(TextResources.ExcMonthlyTypeConfig));
+            }
+            if (config.MonthlyDaySelection.Value == true)
+            {
+                ValidateDayOfMonth(config.MonthlyDay);
+            }
+            else
+            {
+                ValidateMonthlyPeriod(config);
+            }
+        }
+
+        internal static void ValidateDayOfMonth(int? day)
+        {
+            if (day.HasValue == false || day.Value < 1 || day.Value > 31)
+            {
+                throw new ValidationException(FormatConfigExcMessage(TextResources.ExcMonthlyDay));
+            }
+        }
+
+        internal static void ValidateMonthlyPeriod(SchedulerConfigurator config)
+        {
+            ValidateEnum<MonthlyFrecuencyEnum>(config.MonthlyFrecuency, nameof(config.MonthlyFrecuency));
+            ValidateEnum<MonthlyDayEnum>(config.MonthlyWeekday, nameof(config.MonthlyWeekday));
+        }
+
         internal static string FormatConfigExcMessage(string exc)
         {
             return string.Format(TextResources.ConfError, exc);
