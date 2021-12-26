@@ -124,6 +124,15 @@ namespace Scheduler.Resources {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a the {0} {1} of .
+        /// </summary>
+        public static string EventDescMonthFrecuency {
+            get {
+                return ResourceManager.GetString("EventDescMonthFrecuency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a the {0} {1} of.
         /// </summary>
         public static string EventDescMonthlyPeriod {

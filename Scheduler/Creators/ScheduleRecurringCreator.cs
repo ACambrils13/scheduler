@@ -2,6 +2,7 @@
 using Scheduler.Configuration;
 using Scheduler.Validators;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace Scheduler.Creators
@@ -137,17 +138,6 @@ namespace Scheduler.Creators
             {
                 return GetNextExecutionMonthlyFrecuency(config, nextExec);
             }
-
-
-
-
-            //DateTime newDate = CalculateDailyConfigHour(config, nextExec);
-            //while (DateTime.Compare(nextExec, newDate) >= 0)
-            //{
-            //    nextExec = nextExec.AddMonths(config.OcurrencyPeriod.Value).Date;
-            //    newDate = CalculateDailyConfigHour(config, nextExec);
-            //}
-            //return newDate;
         }
 
         private static DateTime GetNextExecutionMonthlyExactDay(SchedulerConfigurator config, DateTime nextExec)
@@ -177,10 +167,55 @@ namespace Scheduler.Creators
 
         private static DateTime GetNextExecutionMonthlyFrecuency(SchedulerConfigurator config, DateTime nextExec)
         {
-            return nextExec; //TODO
+            nextExec = NextDayOfMonth(config, nextExec);
+            DateTime newDate = CalculateDailyConfigHour(config, nextExec);
+            while (DateTime.Compare(nextExec, newDate) >= 0)
+            {
+                nextExec = nextExec.FirstDayOfSameMonth(config.OcurrencyPeriod);
+                nextExec = ValidDayOfMonth(config, nextExec);
+                newDate = CalculateDailyConfigHour(config, nextExec);
+            }
+            return newDate;
         }
 
+        private static DateTime NextDayOfMonth(SchedulerConfigurator config, DateTime currentDate)
+        {
+            DateTime nextDate = ValidDayOfMonth(config, currentDate);
 
+            if (currentDate.Day < nextDate.Day)
+            {
+                currentDate = nextDate;
+            }
+            else if (currentDate.Day > nextDate.Day)
+            {
+                currentDate = currentDate.AddMonths(config.OcurrencyPeriod.Value);
+                currentDate = ValidDayOfMonth(config, currentDate);
+            }
+            return currentDate;
+        }
+
+        private static DateTime ValidDayOfMonth(SchedulerConfigurator config, DateTime currentDate)
+        {
+            List<DateTime> validDays = new List<DateTime>();
+            DateTime nextDate = currentDate.FirstDayOfSameMonth(0);
+            while (nextDate.Month == currentDate.Month)
+            {
+                if (nextDate.DateIsValid(config.MonthlyWeekday.Value))
+                {
+                    validDays.Add(nextDate);
+                }
+                nextDate = nextDate.NextDay();
+            }
+            return config.MonthlyFrecuency.Value switch
+            {
+                MonthlyFrecuencyEnum.First => validDays[0],
+                MonthlyFrecuencyEnum.Second => validDays[1],
+                MonthlyFrecuencyEnum.Third => validDays[2],
+                MonthlyFrecuencyEnum.Fourth => validDays[3],
+                MonthlyFrecuencyEnum.Last => validDays[^1],
+                _ => currentDate,
+            };
+        }
 
         private static DateTime GetNextExecutionYearly(SchedulerConfigurator config, DateTime nextExec)
         {
@@ -207,7 +242,7 @@ namespace Scheduler.Creators
         {
             DateTime NewDate;
             DateTime StartLimit = execDate.StartDailyLimit(config.DailyLimits?.StartLimit);
-            DateTime EndLimit = execDate.EndDailyLimit(config.DailyLimits?.EndLimit);
+            DateTime? EndLimit = execDate.EndDailyLimit(config.DailyLimits?.EndLimit);
             NewDate = StartLimit;
 
             while (DateTime.Compare(execDate, NewDate) >= 0)
@@ -224,9 +259,9 @@ namespace Scheduler.Creators
                         NewDate = NewDate.AddSeconds(config.DailyFrecuencyPeriod.Value);
                         break;
                 }
-                if (DateTime.Compare(NewDate, EndLimit) > 0)
+                if (EndLimit.HasValue && DateTime.Compare(NewDate, EndLimit.Value) > 0)
                 {
-                    NewDate = EndLimit;
+                    NewDate = EndLimit.Value;
                     break;
                 }
             }

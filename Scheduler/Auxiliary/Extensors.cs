@@ -1,5 +1,6 @@
 ﻿using Scheduler.Resources;
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace Scheduler.Auxiliary
@@ -42,13 +43,13 @@ namespace Scheduler.Auxiliary
             return currentDate.Date;
         }
 
-        public static DateTime EndDailyLimit(this DateTime currentDate, TimeSpan? endDailyLimit)
+        public static DateTime? EndDailyLimit(this DateTime currentDate, TimeSpan? endDailyLimit)
         {
             if (endDailyLimit.HasValue)
             {
                 return currentDate.CalculateSameDayWithHours(endDailyLimit.Value);
             }
-            return currentDate.Date.AddDays(1);
+            return null;
         }
 
         public static int GetWeekOfYear(this DateTime currentDate, CultureInfo culture)
@@ -106,6 +107,56 @@ namespace Scheduler.Auxiliary
             int lastDayOfMonth = DateTime.DaysInMonth(year, month);
             day = day <= lastDayOfMonth ? day : lastDayOfMonth;
             return day;
+        }
+
+        public static DateTime FirstDayOfSameMonth(this DateTime date, int? addMonths)
+        {
+            if (addMonths.HasValue)
+            {
+                date = date.AddMonths(addMonths.Value);
+            }
+            return new DateTime(date.Year, date.Month, 1);
+        }
+
+        public static bool DateIsValid(this DateTime date, MonthlyDayEnum type)
+        {
+            List<DayOfWeek> validDaysOfWeek = type switch
+            {
+                MonthlyDayEnum.Monday => new List<DayOfWeek> { DayOfWeek.Monday },
+                MonthlyDayEnum.Tuesday => new List<DayOfWeek> { DayOfWeek.Tuesday },
+                MonthlyDayEnum.Wednesday => new List<DayOfWeek> { DayOfWeek.Wednesday },
+                MonthlyDayEnum.Thursday => new List<DayOfWeek> { DayOfWeek.Thursday },
+                MonthlyDayEnum.Friday => new List<DayOfWeek> { DayOfWeek.Friday },
+                MonthlyDayEnum.Saturday => new List<DayOfWeek> { DayOfWeek.Saturday },
+                MonthlyDayEnum.Sunday => new List<DayOfWeek> { DayOfWeek.Sunday },
+                MonthlyDayEnum.Day => new List<DayOfWeek> {
+                        DayOfWeek.Monday,
+                        DayOfWeek.Tuesday,
+                        DayOfWeek.Wednesday,
+                        DayOfWeek.Thursday,
+                        DayOfWeek.Friday,
+                        DayOfWeek.Saturday,
+                        DayOfWeek.Sunday
+                        },
+                MonthlyDayEnum.Weekday => new List<DayOfWeek> {
+                        DayOfWeek.Monday,
+                        DayOfWeek.Tuesday,
+                        DayOfWeek.Wednesday,
+                        DayOfWeek.Thursday,
+                        DayOfWeek.Friday
+                        },
+                MonthlyDayEnum.WeekendDay => new List<DayOfWeek> {
+                        DayOfWeek.Saturday,
+                        DayOfWeek.Sunday
+                        },
+                _ => new List<DayOfWeek>(),
+            };
+
+            if (validDaysOfWeek.Contains(date.DayOfWeek))
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

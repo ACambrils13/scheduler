@@ -138,6 +138,9 @@
   <data name="EventDescLimitsStart" xml:space="preserve">
     <value>starting on {0}</value>
   </data>
+  <data name="EventDescMonthFrecuency" xml:space="preserve">
+    <value>the {0} {1} of </value>
+  </data>
   <data name="EventDescMonthlyPeriod" xml:space="preserve">
     <value>the {0} {1} of</value>
   </data>

@@ -41,7 +41,7 @@ namespace Scheduler.Auxiliary
                 }
                 else
                 {
-                    //TODO
+                    monthlyDesc.Append(string.Format(TextResources.EventDescMonthFrecuency, config.MonthlyFrecuency, config.MonthlyWeekday));
                 }
             }
             return monthlyDesc.ToString();
@@ -54,7 +54,7 @@ namespace Scheduler.Auxiliary
             {
                 dailyDesc.Append(string.Concat(" ", string.Format(TextResources.EventDescRecurringHour, config.DailyScheduleHour.Value.ToString(@"hh\:mm"))));
             }
-            else if (config.DailyLimits.HasValue)
+            else if (config.DailyFrecuency.HasValue)
             {
                 switch (config.DailyFrecuency)
                 {
