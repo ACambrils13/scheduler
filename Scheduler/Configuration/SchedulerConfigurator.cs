@@ -24,5 +24,6 @@ namespace Scheduler.Configuration
         public int? MonthlyDay { get; set; }
         public MonthlyFrecuencyEnum? MonthlyFrecuency { get; set; }
         public MonthlyDayEnum? MonthlyWeekday { get; set; }
+        public LanguageEnum? Language { get; set; }
     }
 }

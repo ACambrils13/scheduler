@@ -72,4 +72,11 @@ namespace Scheduler.Auxiliary
         Weekday,
         WeekendDay
     }
+
+    public enum LanguageEnum
+    {
+        EnglishUK,
+        EnglishUS,
+        Spanish
+    }
 }

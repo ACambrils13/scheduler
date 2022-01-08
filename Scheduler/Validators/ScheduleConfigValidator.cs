@@ -12,6 +12,7 @@ namespace Scheduler.Validators
         {
             ValidateDateNullable(properties.CurrentDate, nameof(properties.CurrentDate));
             ValidateEnum<ScheduleTypeEnum>(properties.Type, nameof(properties.Type));
+            ValidateEnum<LanguageEnum>(properties.Language, nameof(properties.Language));
         }
 
         internal static void ValidateOnceSchedule(SchedulerConfigurator properties)

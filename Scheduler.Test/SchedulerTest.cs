@@ -44,6 +44,20 @@ namespace Scheduler.Test
                Scheduler.GetNextExecution(schedulerConfig));
             Assert.Equal(expectedExcMsg, exception.Message);
         }
+
+        [Fact]
+        public void Configuration_Language_Null_Failed()
+        {
+            SchedulerConfigurator schedulerConfig = new()
+            {
+                CurrentDate = DateTime.Now,
+                Type = ScheduleTypeEnum.Once
+            };
+            string expectedExcMsg = string.Format(TextResources.ConfError, string.Format(TextResources.ExcEnumError, nameof(schedulerConfig.Language)));
+            var exception = Assert.Throws<ValidationException>(() =>
+               Scheduler.GetNextExecution(schedulerConfig));
+            Assert.Equal(expectedExcMsg, exception.Message);
+        }
         #endregion
 
         #region Once
@@ -86,6 +100,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = DateTime.Now,
                 Type = ScheduleTypeEnum.Once,
+                Language = LanguageEnum.EnglishUK,
                 ScheduleDate = null
             };
 
@@ -107,6 +122,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = DateTime.Now,
                 Type = ScheduleTypeEnum.Once,
+                Language = LanguageEnum.EnglishUK,
                 ScheduleDate = ScheduleDateEx
             };
             ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
@@ -131,6 +147,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = DateTime.Now,
                 Type = ScheduleTypeEnum.Once,
+                Language = LanguageEnum.EnglishUK,
                 ScheduleDate = ScheduleDateEx,
                 DateLimits = new DateLimitsConfig(DateLimitsStart, null)
             };
@@ -158,6 +175,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = DateTime.Now,
                 Type = ScheduleTypeEnum.Once,
+                Language = LanguageEnum.EnglishUK,
                 ScheduleDate = ScheduleDateEx,
                 DateLimits = new DateLimitsConfig(DateLimitsStart, DateLimitsEnd)
             };
@@ -177,6 +195,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = DateTime.Now.AddDays(-10),
                 Type = ScheduleTypeEnum.Once,
+                Language = LanguageEnum.EnglishUK,
                 ScheduleDate = ScheduleDateEx,
                 DateLimits = new DateLimitsConfig(DateLimitsStart, null)
             };
@@ -199,6 +218,7 @@ namespace Scheduler.Test
                 CurrentDate = DateTime.Now,
                 Type = ScheduleTypeEnum.Once,
                 ScheduleDate = ScheduleDateEx,
+                Language = LanguageEnum.EnglishUK,
                 DateLimits = new DateLimitsConfig(DateLimitsStart, DateLimitsEnd)
             };
 
@@ -253,6 +273,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = DateTime.Now,
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.EnglishUK,
                 PeriodType = OccurrencyPeriodEnum.Daily,
                 DailyScheduleHour = new TimeSpan(DateTime.Now.Hour, 0, 0)
             };
@@ -291,6 +312,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = DateTime.Now,
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.EnglishUK,
                 PeriodType = OccurrencyPeriodEnum.Daily,
                 OcurrencyPeriod = -1,
                 DailyScheduleHour = new TimeSpan(DateTime.Now.Hour, 0, 0)
@@ -313,6 +335,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.EnglishUK,
                 PeriodType = OccurrencyPeriodEnum.Yearly,
                 OcurrencyPeriod = 2,
                 DailyScheduleHour = new TimeSpan(5, 0, 0),
@@ -333,6 +356,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.EnglishUK,
                 PeriodType = OccurrencyPeriodEnum.Yearly,
                 OcurrencyPeriod = 1,
                 DailyFrecuency = DailyFrecuencyEnum.Seconds,
@@ -353,6 +377,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.EnglishUK,
                 PeriodType = OccurrencyPeriodEnum.Daily,
                 OcurrencyPeriod = 1,
                 DailyFrecuency = DailyFrecuencyEnum.Minutes,
@@ -374,6 +399,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.EnglishUK,
                 PeriodType = OccurrencyPeriodEnum.Daily,
                 OcurrencyPeriod = 1,
                 DailyFrecuencyPeriod = -40,
@@ -394,6 +420,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.EnglishUK,
                 PeriodType = OccurrencyPeriodEnum.Daily,
                 OcurrencyPeriod = 1,
                 DailyScheduleHour = new TimeSpan(-5, 0, 0)
@@ -416,6 +443,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.EnglishUK,
                 PeriodType = OccurrencyPeriodEnum.Daily,
                 OcurrencyPeriod = 2,
                 DailyScheduleHour = new TimeSpan(5, 0, 0)
@@ -443,6 +471,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.EnglishUK,
                 PeriodType = OccurrencyPeriodEnum.Daily,
                 OcurrencyPeriod = 2,
                 DailyScheduleHour = new TimeSpan(5, 0, 0),
@@ -472,6 +501,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.EnglishUK,
                 PeriodType = OccurrencyPeriodEnum.Daily,
                 OcurrencyPeriod = 2,
                 DailyScheduleHour = new TimeSpan(5, 0, 0),
@@ -496,6 +526,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.EnglishUK,
                 PeriodType = OccurrencyPeriodEnum.Daily,
                 OcurrencyPeriod = 2,
                 DailyFrecuency = DailyFrecuencyEnum.Hours,
@@ -537,6 +568,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.EnglishUK,
                 PeriodType = OccurrencyPeriodEnum.Daily,
                 OcurrencyPeriod = 5,
                 DailyFrecuency = DailyFrecuencyEnum.Hours,
@@ -694,6 +726,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.EnglishUK,
                 PeriodType = OccurrencyPeriodEnum.Yearly,
                 OcurrencyPeriod = 1,
                 DailyScheduleHour = new TimeSpan(5, 0, 0)
@@ -721,6 +754,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.EnglishUK,
                 PeriodType = OccurrencyPeriodEnum.Yearly,
                 OcurrencyPeriod = 1,
                 DailyScheduleHour = new TimeSpan(5, 0, 0),
@@ -750,6 +784,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.EnglishUK,
                 PeriodType = OccurrencyPeriodEnum.Yearly,
                 OcurrencyPeriod = 1,
                 DailyScheduleHour = new TimeSpan(5, 0, 0),
@@ -784,6 +819,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.EnglishUK,
                 PeriodType = OccurrencyPeriodEnum.Yearly,
                 OcurrencyPeriod = 1,
                 DailyFrecuency = DailyFrecuencyEnum.Seconds,
@@ -820,6 +856,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.EnglishUK,
                 PeriodType = OccurrencyPeriodEnum.Weekly,
                 OcurrencyPeriod = 2,
                 DailyScheduleHour = new TimeSpan(5, 0, 0)
@@ -847,6 +884,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.EnglishUK,
                 PeriodType = OccurrencyPeriodEnum.Weekly,
                 OcurrencyPeriod = 3,
                 DailyScheduleHour = new TimeSpan(5, 0, 0),
@@ -876,6 +914,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.EnglishUK,
                 PeriodType = OccurrencyPeriodEnum.Weekly,
                 OcurrencyPeriod = 1,
                 DailyScheduleHour = new TimeSpan(5, 0, 0),
@@ -905,6 +944,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.EnglishUK,
                 PeriodType = OccurrencyPeriodEnum.Weekly,
                 OcurrencyPeriod = 1,
                 DailyFrecuency = DailyFrecuencyEnum.Minutes,
@@ -939,6 +979,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.EnglishUK,
                 PeriodType = OccurrencyPeriodEnum.Weekly,
                 OcurrencyPeriod = 2,
                 WeeklyDays = new List<DayOfWeek> { DayOfWeek.Tuesday, DayOfWeek.Thursday },
@@ -972,6 +1013,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.EnglishUK,
                 PeriodType = OccurrencyPeriodEnum.Weekly,
                 OcurrencyPeriod = 3,
                 WeeklyDays = new List<DayOfWeek> { DayOfWeek.Friday, DayOfWeek.Saturday, DayOfWeek.Sunday },
@@ -1012,6 +1054,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.EnglishUK,
                 PeriodType = OccurrencyPeriodEnum.Weekly,
                 OcurrencyPeriod = 1,
                 WeeklyDays = new List<DayOfWeek> { DayOfWeek.Wednesday },
@@ -1043,6 +1086,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.EnglishUK,
                 PeriodType = OccurrencyPeriodEnum.Weekly,
                 OcurrencyPeriod = 1,
                 WeeklyDays = new List<DayOfWeek> { DayOfWeek.Sunday },
@@ -1085,6 +1129,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.EnglishUK,
                 PeriodType = OccurrencyPeriodEnum.Weekly,
                 OcurrencyPeriod = 2,
                 WeeklyDays = new List<DayOfWeek> { DayOfWeek.Thursday },
@@ -1107,7 +1152,7 @@ namespace Scheduler.Test
         [Fact]
         public void Recurring_Weekly_Next_Execution_DailyLimits_WeekDays_Culture_GB_Correct()
         {
-            CultureInfo.CurrentCulture = new("en-GB");
+            //CultureInfo.CurrentCulture = new("en-GB");
             DateTime CurrentDateEx = new(2021, 1, 1, 23, 0, 0);
             DateTime ScheduleDateEx = new(2021, 1, 3, 4, 0, 0);
             DateTime ExecScheduleLimitStart = new(2021, 1, 1);
@@ -1118,13 +1163,14 @@ namespace Scheduler.Test
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.Spanish,
                 PeriodType = OccurrencyPeriodEnum.Weekly,
                 OcurrencyPeriod = 1,
                 WeeklyDays = new List<DayOfWeek> { DayOfWeek.Sunday },
                 DailyFrecuency = DailyFrecuencyEnum.Minutes,
                 DailyFrecuencyPeriod = 30,
                 DailyLimits = new HourLimitsConfig(new TimeSpan(4, 0, 0), new TimeSpan(8, 0, 0)),
-                DateLimits = new DateLimitsConfig(ExecScheduleLimitStart, ExecScheduleLimitEnd)
+                DateLimits = new DateLimitsConfig(ExecScheduleLimitStart, ExecScheduleLimitEnd),
             };
             ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
 
@@ -1148,6 +1194,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = new DateTime(2021, 1, 1),
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.EnglishUK,
                 PeriodType = OccurrencyPeriodEnum.Monthly,
                 OcurrencyPeriod = 3,
                 MonthlyDay = 8,
@@ -1167,6 +1214,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = new DateTime(2021, 1, 1),
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.EnglishUK,
                 PeriodType = OccurrencyPeriodEnum.Monthly,
                 OcurrencyPeriod = 3,
                 MonthlyDaySelection = false,
@@ -1187,6 +1235,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = new DateTime(2021, 1, 1),
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.EnglishUK,
                 PeriodType = OccurrencyPeriodEnum.Monthly,
                 OcurrencyPeriod = 3,
                 MonthlyDaySelection = true,
@@ -1208,6 +1257,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = new DateTime(2021, 1, 1),
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.EnglishUK,
                 PeriodType = OccurrencyPeriodEnum.Monthly,
                 OcurrencyPeriod = 3,
                 MonthlyDaySelection = true,
@@ -1228,6 +1278,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = new DateTime(2021, 1, 1),
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.EnglishUK,
                 PeriodType = OccurrencyPeriodEnum.Monthly,
                 OcurrencyPeriod = 3,
                 MonthlyDaySelection = true,
@@ -1248,6 +1299,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = new DateTime(2021, 1, 1),
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.EnglishUK,
                 PeriodType = OccurrencyPeriodEnum.Monthly,
                 OcurrencyPeriod = 3,
                 MonthlyDaySelection = false,
@@ -1268,6 +1320,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = new DateTime(2021, 1, 1),
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.EnglishUK,
                 PeriodType = OccurrencyPeriodEnum.Monthly,
                 OcurrencyPeriod = 3,
                 MonthlyDaySelection = false,
@@ -1290,6 +1343,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = new DateTime(2021, 1, 1),
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.EnglishUK,
                 PeriodType = OccurrencyPeriodEnum.Monthly,
                 OcurrencyPeriod = 3,
                 MonthlyDaySelection = true,
@@ -1324,6 +1378,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = new DateTime(2021, 1, 1),
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.EnglishUK,
                 PeriodType = OccurrencyPeriodEnum.Monthly,
                 OcurrencyPeriod = 1,
                 MonthlyDaySelection = true,
@@ -1383,6 +1438,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = new DateTime(2021, 1, 1),
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.EnglishUK,
                 PeriodType = OccurrencyPeriodEnum.Monthly,
                 OcurrencyPeriod = 2,
                 MonthlyDaySelection = false,
@@ -1423,6 +1479,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = new DateTime(2021, 1, 1),
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.EnglishUK,
                 PeriodType = OccurrencyPeriodEnum.Monthly,
                 OcurrencyPeriod = 1,
                 MonthlyDaySelection = false,
@@ -1456,6 +1513,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = new DateTime(2021, 1, 1),
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.EnglishUK,
                 PeriodType = OccurrencyPeriodEnum.Monthly,
                 OcurrencyPeriod = 4,
                 MonthlyDaySelection = false,
@@ -1489,6 +1547,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = new DateTime(2021, 1, 1),
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.EnglishUK,
                 PeriodType = OccurrencyPeriodEnum.Monthly,
                 OcurrencyPeriod = 6,
                 MonthlyDaySelection = false,
@@ -1522,6 +1581,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = new DateTime(2021, 1, 1),
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.EnglishUK,
                 PeriodType = OccurrencyPeriodEnum.Monthly,
                 OcurrencyPeriod = 3,
                 MonthlyDaySelection = false,
@@ -1555,6 +1615,7 @@ namespace Scheduler.Test
             {
                 CurrentDate = new DateTime(2021, 1, 1),
                 Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.EnglishUK,
                 PeriodType = OccurrencyPeriodEnum.Monthly,
                 OcurrencyPeriod = 3,
                 MonthlyDaySelection = false,

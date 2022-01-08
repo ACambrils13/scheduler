@@ -196,7 +196,7 @@ namespace Scheduler.Creators
 
         private static DateTime ValidDayOfMonth(SchedulerConfigurator config, DateTime currentDate)
         {
-            List<DateTime> validDays = new List<DateTime>();
+            List<DateTime> validDays = new();
             DateTime nextDate = currentDate.FirstDayOfSameMonth(0);
             while (nextDate.Month == currentDate.Month)
             {
