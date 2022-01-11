@@ -37,6 +37,7 @@ namespace Scheduler
                     break;
             }
             CultureInfo.CurrentCulture = culture;
+            CultureInfo.CurrentUICulture = culture;
         }
     }
 }

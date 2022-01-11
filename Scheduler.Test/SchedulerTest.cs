@@ -1,10 +1,9 @@
 using Scheduler.Auxiliary;
 using Scheduler.Configuration;
-using Scheduler.Resources;
+using Scheduler.Language;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Globalization;
 using System.Text;
 using Xunit;
 
@@ -16,7 +15,7 @@ namespace Scheduler.Test
         [Fact]
         public void Limits_Only_EndDate_Failed()
         {
-            string expectedExcMsg = string.Format(TextResources.ConfError, TextResources.ExcLimitsEndBeforeStart);
+            string expectedExcMsg = string.Format(Localize.GetLocalizedText("ConfError"), Localize.GetLocalizedText("ExcLimitsEndBeforeStart"));
             var exception = Assert.Throws<ValidationException>(() =>
                 new DateLimitsConfig(null, DateTime.Now));
             Assert.Equal(expectedExcMsg, exception.Message);
@@ -25,7 +24,7 @@ namespace Scheduler.Test
         [Fact]
         public void Limit_EndDate_Before_StartDate_Failed()
         {
-            string expectedExcMsg = string.Format(TextResources.ConfError, TextResources.ExcLimitsEndBeforeStart);
+            string expectedExcMsg = string.Format(Localize.GetLocalizedText("ConfError"), Localize.GetLocalizedText("ExcLimitsEndBeforeStart"));
             var exception = Assert.Throws<ValidationException>(() =>
                 new DateLimitsConfig(DateTime.Now, DateTime.Now.AddDays(-1)));
             Assert.Equal(expectedExcMsg, exception.Message);
@@ -39,7 +38,7 @@ namespace Scheduler.Test
                 CurrentDate = DateTime.Now,
                 Type = null
             };
-            string expectedExcMsg = string.Format(TextResources.ConfError, string.Format(TextResources.ExcEnumError, nameof(schedulerConfig.Type)));
+            string expectedExcMsg = string.Format(Localize.GetLocalizedText("ConfError"), string.Format(Localize.GetLocalizedText("ExcEnumError"), nameof(schedulerConfig.Type)));
             var exception = Assert.Throws<ValidationException>(() =>
                Scheduler.GetNextExecution(schedulerConfig));
             Assert.Equal(expectedExcMsg, exception.Message);
@@ -53,7 +52,7 @@ namespace Scheduler.Test
                 CurrentDate = DateTime.Now,
                 Type = ScheduleTypeEnum.Once
             };
-            string expectedExcMsg = string.Format(TextResources.ConfError, string.Format(TextResources.ExcEnumError, nameof(schedulerConfig.Language)));
+            string expectedExcMsg = string.Format(Localize.GetLocalizedText("ConfError"), string.Format(Localize.GetLocalizedText("ExcEnumError"), nameof(schedulerConfig.Language)));
             var exception = Assert.Throws<ValidationException>(() =>
                Scheduler.GetNextExecution(schedulerConfig));
             Assert.Equal(expectedExcMsg, exception.Message);
@@ -71,7 +70,7 @@ namespace Scheduler.Test
                 ScheduleDate = DateTime.Now.AddDays(1)
             };
 
-            string expectedExcMsg = string.Format(TextResources.ConfError, string.Format(TextResources.ExcObjectNull, nameof(schedulerConfig.CurrentDate)));
+            string expectedExcMsg = string.Format(Localize.GetLocalizedText("ConfError"), string.Format(Localize.GetLocalizedText("ExcObjectNull"), nameof(schedulerConfig.CurrentDate)));
             var exception = Assert.Throws<ValidationException>(() =>
                Scheduler.GetNextExecution(schedulerConfig));
             Assert.Equal(expectedExcMsg, exception.Message);
@@ -87,7 +86,7 @@ namespace Scheduler.Test
                 ScheduleDate = DateTime.Now.AddDays(1)
             };
 
-            string expectedExcMsg = string.Format(TextResources.ConfError, string.Format(TextResources.ExcDateMaxValue, nameof(schedulerConfig.CurrentDate)));
+            string expectedExcMsg = string.Format(Localize.GetLocalizedText("ConfError"), string.Format(Localize.GetLocalizedText("ExcDateMaxValue"), nameof(schedulerConfig.CurrentDate)));
             var exception = Assert.Throws<ValidationException>(() =>
                Scheduler.GetNextExecution(schedulerConfig));
             Assert.Equal(expectedExcMsg, exception.Message);
@@ -104,7 +103,7 @@ namespace Scheduler.Test
                 ScheduleDate = null
             };
 
-            string expectedExcMsg = string.Format(TextResources.ConfError, string.Format(TextResources.ExcObjectNull, nameof(schedulerConfig.ScheduleDate)));
+            string expectedExcMsg = string.Format(Localize.GetLocalizedText("ConfError"), string.Format(Localize.GetLocalizedText("ExcObjectNull"), nameof(schedulerConfig.ScheduleDate)));
             var exception = Assert.Throws<ValidationException>(() =>
                Scheduler.GetNextExecution(schedulerConfig));
             Assert.Equal(expectedExcMsg, exception.Message);
@@ -116,7 +115,7 @@ namespace Scheduler.Test
             DateTime ScheduleDateEx = DateTime.Now.AddDays(1);
             string ExecScheduleDate = ScheduleDateEx.ToShortDateString();
             string ExecScheduleHour = ScheduleDateEx.ToString("HH:mm");
-            string ExecDescription = string.Concat(TextResources.EventDescOnce, " ", string.Format(TextResources.EventDescSchedule, ExecScheduleDate, ExecScheduleHour));
+            string ExecDescription = string.Concat(Localize.GetLocalizedText("EventDescOnce"), " ", string.Format(Localize.GetLocalizedText("EventDescSchedule"), ExecScheduleDate, ExecScheduleHour));
 
             SchedulerConfigurator schedulerConfig = new()
             {
@@ -140,8 +139,8 @@ namespace Scheduler.Test
             string ExecScheduleHour = ScheduleDateEx.ToString("HH:mm");
             string ExecScheduleLimitStart = DateLimitsStart.ToShortDateString();
             StringBuilder ExecDescription = new();
-            ExecDescription.AppendJoin(" ", TextResources.EventDescOnce, string.Format(TextResources.EventDescSchedule, ExecScheduleDate, ExecScheduleHour),
-                string.Format(TextResources.EventDescLimitsStart, ExecScheduleLimitStart));
+            ExecDescription.AppendJoin(" ", Localize.GetLocalizedText("EventDescOnce"), string.Format(Localize.GetLocalizedText("EventDescSchedule"), ExecScheduleDate, ExecScheduleHour),
+                string.Format(Localize.GetLocalizedText("EventDescLimitsStart"), ExecScheduleLimitStart));
 
             SchedulerConfigurator schedulerConfig = new()
             {
@@ -168,8 +167,8 @@ namespace Scheduler.Test
             string ExecScheduleLimitStart = DateLimitsStart.ToShortDateString();
             string ExecScheduleLimitEnd = DateLimitsEnd.ToShortDateString();
             StringBuilder ExecDescription = new();
-            ExecDescription.AppendJoin(" ", TextResources.EventDescOnce, string.Format(TextResources.EventDescSchedule, ExecScheduleDate, ExecScheduleHour),
-                string.Format(TextResources.EventDescLimitsStart, ExecScheduleLimitStart), string.Format(TextResources.EventDescLimitsEnd, ExecScheduleLimitEnd));
+            ExecDescription.AppendJoin(" ", Localize.GetLocalizedText("EventDescOnce"), string.Format(Localize.GetLocalizedText("EventDescSchedule"), ExecScheduleDate, ExecScheduleHour),
+                string.Format(Localize.GetLocalizedText("EventDescLimitsStart"), ExecScheduleLimitStart), string.Format(Localize.GetLocalizedText("EventDescLimitsEnd"), ExecScheduleLimitEnd));
 
             SchedulerConfigurator schedulerConfig = new()
             {
@@ -200,7 +199,7 @@ namespace Scheduler.Test
                 DateLimits = new DateLimitsConfig(DateLimitsStart, null)
             };
 
-            string expectedExcMsg = string.Format(TextResources.ConfError, TextResources.ExcLimits);
+            string expectedExcMsg = string.Format(Localize.GetLocalizedText("ConfError"), Localize.GetLocalizedText("ExcLimits"));
             var exception = Assert.Throws<ValidationException>(() =>
                Scheduler.GetNextExecution(schedulerConfig));
             Assert.Equal(expectedExcMsg, exception.Message);
@@ -222,7 +221,7 @@ namespace Scheduler.Test
                 DateLimits = new DateLimitsConfig(DateLimitsStart, DateLimitsEnd)
             };
 
-            string expectedExcMsg = string.Format(TextResources.ConfError, TextResources.ExcLimits);
+            string expectedExcMsg = string.Format(Localize.GetLocalizedText("ConfError"), Localize.GetLocalizedText("ExcLimits"));
             var exception = Assert.Throws<ValidationException>(() =>
                Scheduler.GetNextExecution(schedulerConfig));
             Assert.Equal(expectedExcMsg, exception.Message);
@@ -242,7 +241,7 @@ namespace Scheduler.Test
                 DailyScheduleHour = new TimeSpan(DateTime.Now.Hour, 0, 0)
             };
 
-            string expectedExcMsg = string.Format(TextResources.ConfError, string.Format(TextResources.ExcObjectNull, nameof(schedulerConfig.CurrentDate)));
+            string expectedExcMsg = string.Format(Localize.GetLocalizedText("ConfError"), string.Format(Localize.GetLocalizedText("ExcObjectNull"), nameof(schedulerConfig.CurrentDate)));
             var exception = Assert.Throws<ValidationException>(() =>
                Scheduler.GetNextExecution(schedulerConfig));
             Assert.Equal(expectedExcMsg, exception.Message);
@@ -260,7 +259,7 @@ namespace Scheduler.Test
                 DailyScheduleHour = new TimeSpan(DateTime.Now.Hour, 0, 0)
             };
 
-            string expectedExcMsg = string.Format(TextResources.ConfError, string.Format(TextResources.ExcDateMaxValue, nameof(schedulerConfig.CurrentDate)));
+            string expectedExcMsg = string.Format(Localize.GetLocalizedText("ConfError"), string.Format(Localize.GetLocalizedText("ExcDateMaxValue"), nameof(schedulerConfig.CurrentDate)));
             var exception = Assert.Throws<ValidationException>(() =>
                Scheduler.GetNextExecution(schedulerConfig));
             Assert.Equal(expectedExcMsg, exception.Message);
@@ -278,7 +277,7 @@ namespace Scheduler.Test
                 DailyScheduleHour = new TimeSpan(DateTime.Now.Hour, 0, 0)
             };
 
-            string expectedExcMsg = string.Format(TextResources.ConfError, string.Format(TextResources.ExcPeriod, nameof(schedulerConfig.OcurrencyPeriod)));
+            string expectedExcMsg = string.Format(Localize.GetLocalizedText("ConfError"), string.Format(Localize.GetLocalizedText("ExcPeriod"), nameof(schedulerConfig.OcurrencyPeriod)));
             var exception = Assert.Throws<ValidationException>(() =>
                Scheduler.GetNextExecution(schedulerConfig));
             Assert.Equal(expectedExcMsg, exception.Message);
@@ -287,7 +286,7 @@ namespace Scheduler.Test
         [Fact]
         public void Configuration_Recurring_DailyLimits_End_Before_Start_Failed()
         {
-            string expectedExcMsg = string.Format(TextResources.ConfError, TextResources.ExcLimitsEndBeforeStart);
+            string expectedExcMsg = string.Format(Localize.GetLocalizedText("ConfError"), Localize.GetLocalizedText("ExcLimitsEndBeforeStart"));
             var exception = Assert.Throws<ValidationException>(() =>
                new SchedulerConfigurator()
                {
@@ -318,7 +317,7 @@ namespace Scheduler.Test
                 DailyScheduleHour = new TimeSpan(DateTime.Now.Hour, 0, 0)
             };
 
-            string expectedExcMsg = string.Format(TextResources.ConfError, string.Format(TextResources.ExcPeriod, nameof(schedulerConfig.OcurrencyPeriod)));
+            string expectedExcMsg = string.Format(Localize.GetLocalizedText("ConfError"), string.Format(Localize.GetLocalizedText("ExcPeriod"), nameof(schedulerConfig.OcurrencyPeriod)));
             var exception = Assert.Throws<ValidationException>(() =>
                Scheduler.GetNextExecution(schedulerConfig));
             Assert.Equal(expectedExcMsg, exception.Message);
@@ -341,7 +340,7 @@ namespace Scheduler.Test
                 DailyScheduleHour = new TimeSpan(5, 0, 0),
                 DateLimits = new DateLimitsConfig(ExecScheduleLimitStart, ExecScheduleLimitEnd)
             };
-            string expectedExcMsg = string.Format(TextResources.ConfError, TextResources.ExcLimits);
+            string expectedExcMsg = string.Format(Localize.GetLocalizedText("ConfError"), Localize.GetLocalizedText("ExcLimits"));
             var exception = Assert.Throws<ValidationException>(() =>
                Scheduler.GetNextExecution(schedulerConfig));
             Assert.Equal(expectedExcMsg, exception.Message);
@@ -362,7 +361,7 @@ namespace Scheduler.Test
                 DailyFrecuency = DailyFrecuencyEnum.Seconds,
                 DailyLimits = new HourLimitsConfig(new TimeSpan(4, 0, 0), new TimeSpan(8, 0, 0))
             };
-            string expectedExcMsg = string.Format(TextResources.ConfError, TextResources.ExcDailyConfig);
+            string expectedExcMsg = string.Format(Localize.GetLocalizedText("ConfError"), Localize.GetLocalizedText("ExcDailyConfig"));
             var exception = Assert.Throws<ValidationException>(() =>
                Scheduler.GetNextExecution(schedulerConfig));
             Assert.Equal(expectedExcMsg, exception.Message);
@@ -384,7 +383,7 @@ namespace Scheduler.Test
                 DailyFrecuencyPeriod = -40,
                 DailyLimits = new HourLimitsConfig(new TimeSpan(4, 0, 0), new TimeSpan(8, 0, 0))
             };
-            string expectedExcMsg = string.Format(TextResources.ConfError, string.Format(TextResources.ExcPeriod, nameof(schedulerConfig.DailyFrecuencyPeriod)));
+            string expectedExcMsg = string.Format(Localize.GetLocalizedText("ConfError"), string.Format(Localize.GetLocalizedText("ExcPeriod"), nameof(schedulerConfig.DailyFrecuencyPeriod)));
             var exception = Assert.Throws<ValidationException>(() =>
                Scheduler.GetNextExecution(schedulerConfig));
             Assert.Equal(expectedExcMsg, exception.Message);
@@ -405,7 +404,7 @@ namespace Scheduler.Test
                 DailyFrecuencyPeriod = -40,
                 DailyLimits = new HourLimitsConfig(new TimeSpan(4, 0, 0), new TimeSpan(8, 0, 0))
             };
-            string expectedExcMsg = string.Format(TextResources.ConfError, TextResources.ExcDailyConfig);
+            string expectedExcMsg = string.Format(Localize.GetLocalizedText("ConfError"), Localize.GetLocalizedText("ExcDailyConfig"));
             var exception = Assert.Throws<ValidationException>(() =>
                Scheduler.GetNextExecution(schedulerConfig));
             Assert.Equal(expectedExcMsg, exception.Message);
@@ -425,7 +424,7 @@ namespace Scheduler.Test
                 OcurrencyPeriod = 1,
                 DailyScheduleHour = new TimeSpan(-5, 0, 0)
             };
-            string expectedExcMsg = string.Format(TextResources.ConfError, string.Format(TextResources.ExcHoursValue, nameof(schedulerConfig.DailyScheduleHour)));
+            string expectedExcMsg = string.Format(Localize.GetLocalizedText("ConfError"), string.Format(Localize.GetLocalizedText("ExcHoursValue"), nameof(schedulerConfig.DailyScheduleHour)));
             var exception = Assert.Throws<ValidationException>(() =>
                Scheduler.GetNextExecution(schedulerConfig));
             Assert.Equal(expectedExcMsg, exception.Message);
@@ -800,7 +799,7 @@ namespace Scheduler.Test
             Assert.Equal(NextExec.ExecutionDate, new DateTime(2022, 1, 1, 5, 0, 0));
             Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
 
-            string expectedExcMsg = string.Format(TextResources.ConfError, TextResources.ExcLimits);
+            string expectedExcMsg = string.Format(Localize.GetLocalizedText("ConfError"), Localize.GetLocalizedText("ExcLimits"));
             var exception = Assert.Throws<ValidationException>(() =>
                Scheduler.GetNextExecution(schedulerConfig));
             Assert.Equal(expectedExcMsg, exception.Message);
@@ -1080,13 +1079,13 @@ namespace Scheduler.Test
             DateTime ScheduleDateEx = new(2021, 1, 3, 4, 0, 0);
             DateTime ExecScheduleLimitStart = new(2021, 1, 1);
             DateTime ExecScheduleLimitEnd = new(2021, 12, 31);
-            string ExecDescription = "Occurs every 1 weeks on Sunday every 30 minutes between 04:00 and 05:00 starting on 01/01/2021 to 31/12/2021";
+            string ExecDescription = "Occurs every 1 weeks on Sunday every 30 minutes between 04:00 and 05:00 starting on 1/1/2021 to 12/31/2021";
 
             SchedulerConfigurator schedulerConfig = new()
             {
                 CurrentDate = CurrentDateEx,
                 Type = ScheduleTypeEnum.Recurring,
-                Language = LanguageEnum.EnglishUK,
+                Language = LanguageEnum.EnglishUS,
                 PeriodType = OccurrencyPeriodEnum.Weekly,
                 OcurrencyPeriod = 1,
                 WeeklyDays = new List<DayOfWeek> { DayOfWeek.Sunday },
@@ -1150,14 +1149,13 @@ namespace Scheduler.Test
         }
 
         [Fact]
-        public void Recurring_Weekly_Next_Execution_DailyLimits_WeekDays_Culture_GB_Correct()
+        public void Recurring_Weekly_Next_Execution_DailyLimits_WeekDays_Culture_ES_Correct()
         {
-            //CultureInfo.CurrentCulture = new("en-GB");
             DateTime CurrentDateEx = new(2021, 1, 1, 23, 0, 0);
             DateTime ScheduleDateEx = new(2021, 1, 3, 4, 0, 0);
             DateTime ExecScheduleLimitStart = new(2021, 1, 1);
             DateTime ExecScheduleLimitEnd = new(2021, 12, 31);
-            string ExecDescription = "Occurs every 1 weeks on Sunday every 30 minutes between 04:00 and 08:00 starting on 01/01/2021 to 31/12/2021";
+            string ExecDescription = "Ocurre cada 1 semanas el domingo cada 30 minutos entre las 04:00 y las 08:00 comenzando el 1/1/2021 hasta el 31/12/2021";
 
             SchedulerConfigurator schedulerConfig = new()
             {
@@ -1198,10 +1196,10 @@ namespace Scheduler.Test
                 PeriodType = OccurrencyPeriodEnum.Monthly,
                 OcurrencyPeriod = 3,
                 MonthlyDay = 8,
-                DailyScheduleHour = new TimeSpan(12,0,0),
+                DailyScheduleHour = new TimeSpan(12, 0, 0),
             };
 
-            string expectedExcMsg = string.Format(TextResources.ConfError, TextResources.ExcMonthlyTypeConfig);
+            string expectedExcMsg = string.Format(Localize.GetLocalizedText("ConfError"), Localize.GetLocalizedText("ExcMonthlyTypeConfig"));
             var exception = Assert.Throws<ValidationException>(() =>
                Scheduler.GetNextExecution(schedulerConfig));
             Assert.Equal(expectedExcMsg, exception.Message);
@@ -1222,7 +1220,7 @@ namespace Scheduler.Test
                 DailyScheduleHour = new TimeSpan(12, 0, 0),
             };
 
-            string expectedExcMsg = string.Format(TextResources.ConfError, string.Format(TextResources.ExcEnumError, nameof(schedulerConfig.MonthlyFrecuency)));
+            string expectedExcMsg = string.Format(Localize.GetLocalizedText("ConfError"), string.Format(Localize.GetLocalizedText("ExcEnumError"), nameof(schedulerConfig.MonthlyFrecuency)));
             var exception = Assert.Throws<ValidationException>(() =>
                Scheduler.GetNextExecution(schedulerConfig));
             Assert.Equal(expectedExcMsg, exception.Message);
@@ -1244,7 +1242,7 @@ namespace Scheduler.Test
                 DailyScheduleHour = new TimeSpan(12, 0, 0),
             };
 
-            string expectedExcMsg = string.Format(TextResources.ConfError, TextResources.ExcMonthlyDay);
+            string expectedExcMsg = string.Format(Localize.GetLocalizedText("ConfError"), Localize.GetLocalizedText("ExcMonthlyDay"));
             var exception = Assert.Throws<ValidationException>(() =>
                Scheduler.GetNextExecution(schedulerConfig));
             Assert.Equal(expectedExcMsg, exception.Message);
@@ -1265,7 +1263,7 @@ namespace Scheduler.Test
                 DailyScheduleHour = new TimeSpan(12, 0, 0),
             };
 
-            string expectedExcMsg = string.Format(TextResources.ConfError, TextResources.ExcMonthlyDay);
+            string expectedExcMsg = string.Format(Localize.GetLocalizedText("ConfError"), Localize.GetLocalizedText("ExcMonthlyDay"));
             var exception = Assert.Throws<ValidationException>(() =>
                Scheduler.GetNextExecution(schedulerConfig));
             Assert.Equal(expectedExcMsg, exception.Message);
@@ -1286,7 +1284,7 @@ namespace Scheduler.Test
                 DailyScheduleHour = new TimeSpan(12, 0, 0),
             };
 
-            string expectedExcMsg = string.Format(TextResources.ConfError, TextResources.ExcMonthlyDay);
+            string expectedExcMsg = string.Format(Localize.GetLocalizedText("ConfError"), Localize.GetLocalizedText("ExcMonthlyDay"));
             var exception = Assert.Throws<ValidationException>(() =>
                Scheduler.GetNextExecution(schedulerConfig));
             Assert.Equal(expectedExcMsg, exception.Message);
@@ -1303,11 +1301,11 @@ namespace Scheduler.Test
                 PeriodType = OccurrencyPeriodEnum.Monthly,
                 OcurrencyPeriod = 3,
                 MonthlyDaySelection = false,
-                MonthlyWeekday= MonthlyDayEnum.Day,
+                MonthlyWeekday = MonthlyDayEnum.Day,
                 DailyScheduleHour = new TimeSpan(12, 0, 0),
             };
 
-            string expectedExcMsg = string.Format(TextResources.ConfError, string.Format(TextResources.ExcEnumError, nameof(schedulerConfig.MonthlyFrecuency)));
+            string expectedExcMsg = string.Format(Localize.GetLocalizedText("ConfError"), string.Format(Localize.GetLocalizedText("ExcEnumError"), nameof(schedulerConfig.MonthlyFrecuency)));
             var exception = Assert.Throws<ValidationException>(() =>
                Scheduler.GetNextExecution(schedulerConfig));
             Assert.Equal(expectedExcMsg, exception.Message);
@@ -1328,7 +1326,7 @@ namespace Scheduler.Test
                 DailyScheduleHour = new TimeSpan(12, 0, 0),
             };
 
-            string expectedExcMsg = string.Format(TextResources.ConfError, string.Format(TextResources.ExcEnumError, nameof(schedulerConfig.MonthlyWeekday)));
+            string expectedExcMsg = string.Format(Localize.GetLocalizedText("ConfError"), string.Format(Localize.GetLocalizedText("ExcEnumError"), nameof(schedulerConfig.MonthlyWeekday)));
             var exception = Assert.Throws<ValidationException>(() =>
                Scheduler.GetNextExecution(schedulerConfig));
             Assert.Equal(expectedExcMsg, exception.Message);
@@ -1432,7 +1430,7 @@ namespace Scheduler.Test
         [Fact]
         public void Recurring_Monthly_Next_Execution_First_Correct()
         {
-            string ExecDescription = "Occurs the First Monday of every 2 months every 1 hours between 05:00 and 07:00 starting on 01/01/2021";
+            string ExecDescription = "Occurs the first Monday of every 2 months every 1 hours between 05:00 and 07:00 starting on 01/01/2021";
 
             SchedulerConfigurator schedulerConfig = new()
             {
@@ -1473,7 +1471,7 @@ namespace Scheduler.Test
         [Fact]
         public void Recurring_Monthly_Next_Execution_Second_Correct()
         {
-            string ExecDescription = "Occurs the Second Weekday of every 1 months at 12:00 starting on 01/01/2021";
+            string ExecDescription = "Occurs the second weekday of every 1 months at 12:00 starting on 01/01/2021";
 
             SchedulerConfigurator schedulerConfig = new()
             {
@@ -1507,7 +1505,7 @@ namespace Scheduler.Test
         [Fact]
         public void Recurring_Monthly_Next_Execution_Third_Correct()
         {
-            string ExecDescription = "Occurs the Third Wednesday of every 4 months at 12:00 starting on 01/01/2021";
+            string ExecDescription = "Occurs the third Wednesday of every 4 months at 12:00 starting on 01/01/2021";
 
             SchedulerConfigurator schedulerConfig = new()
             {
@@ -1541,7 +1539,7 @@ namespace Scheduler.Test
         [Fact]
         public void Recurring_Monthly_Next_Execution_Fourth_Correct()
         {
-            string ExecDescription = "Occurs the Fourth Day of every 6 months at 12:00 starting on 01/01/2021";
+            string ExecDescription = "Occurs the fourth day of every 6 months at 12:00 starting on 01/01/2021";
 
             SchedulerConfigurator schedulerConfig = new()
             {
@@ -1575,7 +1573,7 @@ namespace Scheduler.Test
         [Fact]
         public void Recurring_Monthly_Next_Execution_Last_Correct()
         {
-            string ExecDescription = "Occurs the Last Sunday of every 3 months at 12:00 starting on 01/03/2021";
+            string ExecDescription = "Occurs the last Sunday of every 3 months at 12:00 starting on 01/03/2021";
 
             SchedulerConfigurator schedulerConfig = new()
             {
@@ -1609,7 +1607,7 @@ namespace Scheduler.Test
         [Fact]
         public void Recurring_Monthly_Next_Execution_WeekendDay_Correct()
         {
-            string ExecDescription = "Occurs the Third WeekendDay of every 3 months every 30 minutes between 18:00 and 19:00 starting on 01/01/2021";
+            string ExecDescription = "Occurs the third weekend day of every 3 months every 30 minutes between 18:00 and 19:00 starting on 01/01/2021";
 
             SchedulerConfigurator schedulerConfig = new()
             {
@@ -1623,7 +1621,7 @@ namespace Scheduler.Test
                 MonthlyWeekday = MonthlyDayEnum.WeekendDay,
                 DailyFrecuency = DailyFrecuencyEnum.Minutes,
                 DailyFrecuencyPeriod = 30,
-                DailyLimits = new HourLimitsConfig(new TimeSpan(18,0,0), new TimeSpan(19,0,0)),
+                DailyLimits = new HourLimitsConfig(new TimeSpan(18, 0, 0), new TimeSpan(19, 0, 0)),
                 DateLimits = new DateLimitsConfig(new DateTime(2021, 1, 1), null)
             };
             ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
@@ -1669,6 +1667,131 @@ namespace Scheduler.Test
             NextExec = Scheduler.GetNextExecution(schedulerConfig);
 
             Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 7, 10, 19, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+        }
+
+        [Fact]
+        public void Recurring_Monthly_Next_Execution_Tuesday_ES_Correct()
+        {
+            string ExecDescription = "Ocurre el segundo martes de cada 5 meses cada 10 horas comenzando el 1/1/2021";
+
+            SchedulerConfigurator schedulerConfig = new()
+            {
+                CurrentDate = new DateTime(2021, 1, 1),
+                Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.Spanish,
+                PeriodType = OccurrencyPeriodEnum.Monthly,
+                OcurrencyPeriod = 5,
+                MonthlyDaySelection = false,
+                MonthlyFrecuency = MonthlyFrecuencyEnum.Second,
+                MonthlyWeekday = MonthlyDayEnum.Tuesday,
+                DailyFrecuency = DailyFrecuencyEnum.Hours,
+                DailyFrecuencyPeriod = 10,
+                DateLimits = new DateLimitsConfig(new DateTime(2021, 1, 1), null)
+            };
+            ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 1, 12, 0, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+
+            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 1, 12, 10, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+
+            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 1, 12, 20, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+
+            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 6, 8, 0, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+
+            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 6, 8, 10, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+
+            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 6, 8, 20, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+
+            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 11, 9, 0, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+
+            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 11, 9, 10, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+
+            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 11, 9, 20, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+
+            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2022, 4, 12, 0, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+
+            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2022, 4, 12, 10, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+
+            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2022, 4, 12, 20, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+
+            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2022, 9, 13, 0, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+        }
+
+        [Fact]
+        public void Recurring_Monthly_Next_Execution_Thursday_ES_Correct()
+        {
+            string ExecDescription = "Ocurre el primer jueves de cada 10 meses cada 12 horas comenzando el 24/1/2021";
+
+            SchedulerConfigurator schedulerConfig = new()
+            {
+                CurrentDate = new DateTime(2021, 1, 1),
+                Type = ScheduleTypeEnum.Recurring,
+                Language = LanguageEnum.Spanish,
+                PeriodType = OccurrencyPeriodEnum.Monthly,
+                OcurrencyPeriod = 10,
+                MonthlyDaySelection = false,
+                MonthlyFrecuency = MonthlyFrecuencyEnum.First,
+                MonthlyWeekday = MonthlyDayEnum.Thursday,
+                DailyFrecuency = DailyFrecuencyEnum.Hours,
+                DailyFrecuencyPeriod = 12,
+                DateLimits = new DateLimitsConfig(new DateTime(2021, 1, 24), null)
+            };
+            ScheduleEvent NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 11, 4, 0, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+
+            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2021, 11, 4, 12, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+
+            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2022, 9, 1, 0, 0, 0));
+            Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
+
+            NextExec = Scheduler.GetNextExecution(schedulerConfig);
+
+            Assert.Equal(NextExec.ExecutionDate, new DateTime(2022, 9, 1, 12, 0, 0));
             Assert.Equal(NextExec.ExecutionDescription, ExecDescription);
         }
         #endregion

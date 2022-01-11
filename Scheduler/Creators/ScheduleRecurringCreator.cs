@@ -56,37 +56,40 @@ namespace Scheduler.Creators
 
         private static DateTime GetNextExecutionDaily(SchedulerConfigurator config, DateTime nextExec)
         {
-            DateTime newDate = CalculateDailyConfigHour(config, nextExec);
-            while (DateTime.Compare(nextExec, newDate) >= 0)
+            DateTime? newDate = CalculateDailyConfigHour(config, nextExec);
+            while (newDate.HasValue == false 
+                || nextExec.CurrentDateAfterNewDate(newDate.Value, config.ScheduleDate))
             {
                 nextExec = nextExec.AddDays(config.OcurrencyPeriod.Value).Date;
                 newDate = CalculateDailyConfigHour(config, nextExec);
             }
-            return newDate;
+            return newDate.Value;
         }
 
         private static DateTime GetNextExecutionWeeklyStandard(SchedulerConfigurator config, DateTime nextExec)
         {
-            DateTime newDate = CalculateDailyConfigHour(config, nextExec);
-            while (DateTime.Compare(nextExec, newDate) >= 0)
+            DateTime? newDate = CalculateDailyConfigHour(config, nextExec);
+            while (newDate.HasValue == false
+                || nextExec.CurrentDateAfterNewDate(newDate.Value, config.ScheduleDate))
             {
                 nextExec = nextExec.AddWeeks(config.OcurrencyPeriod.Value).Date;
                 newDate = CalculateDailyConfigHour(config, nextExec);
             }
-            return newDate;
+            return newDate.Value;
         }
 
         private static DateTime GetNextExecutionWeekly(SchedulerConfigurator config, DateTime nextExec)
         {
             CultureInfo culture = CultureInfo.CurrentCulture;
             nextExec = NextSelectedDay(config, nextExec, culture, false);
-            DateTime newDate = CalculateDailyConfigHour(config, nextExec);
-            while (DateTime.Compare(nextExec, newDate) >= 0)
+            DateTime? newDate = CalculateDailyConfigHour(config, nextExec);
+            while (newDate.HasValue == false
+                || nextExec.CurrentDateAfterNewDate(newDate.Value, config.ScheduleDate))
             {
                 nextExec = NextSelectedDay(config, nextExec, culture, true);
                 newDate = CalculateDailyConfigHour(config, nextExec);
             }
-            return newDate;
+            return newDate.Value;
         }
 
         private static DateTime NextSelectedDay(SchedulerConfigurator config, DateTime currentDate, CultureInfo culture, bool escapeCurrent)
@@ -143,13 +146,14 @@ namespace Scheduler.Creators
         private static DateTime GetNextExecutionMonthlyExactDay(SchedulerConfigurator config, DateTime nextExec)
         {
             nextExec = NextExactDayOfMonth(config, nextExec);
-            DateTime newDate = CalculateDailyConfigHour(config, nextExec);
-            while (DateTime.Compare(nextExec, newDate) >= 0)
+            DateTime? newDate = CalculateDailyConfigHour(config, nextExec);
+            while (newDate.HasValue == false
+                || nextExec.CurrentDateAfterNewDate(newDate.Value, config.ScheduleDate))
             {
                 nextExec = nextExec.ExactDayOfMonth(config.MonthlyDay.Value, config.OcurrencyPeriod);
                 newDate = CalculateDailyConfigHour(config, nextExec);
             }
-            return newDate;
+            return newDate.Value;
         }
 
         private static DateTime NextExactDayOfMonth(SchedulerConfigurator config, DateTime currentDate)
@@ -168,14 +172,15 @@ namespace Scheduler.Creators
         private static DateTime GetNextExecutionMonthlyFrecuency(SchedulerConfigurator config, DateTime nextExec)
         {
             nextExec = NextDayOfMonth(config, nextExec);
-            DateTime newDate = CalculateDailyConfigHour(config, nextExec);
-            while (DateTime.Compare(nextExec, newDate) >= 0)
+            DateTime? newDate = CalculateDailyConfigHour(config, nextExec);
+            while (newDate.HasValue == false
+                || nextExec.CurrentDateAfterNewDate(newDate.Value, config.ScheduleDate))
             {
                 nextExec = nextExec.FirstDayOfSameMonth(config.OcurrencyPeriod);
                 nextExec = ValidDayOfMonth(config, nextExec);
                 newDate = CalculateDailyConfigHour(config, nextExec);
             }
-            return newDate;
+            return newDate.Value;
         }
 
         private static DateTime NextDayOfMonth(SchedulerConfigurator config, DateTime currentDate)
@@ -219,17 +224,18 @@ namespace Scheduler.Creators
 
         private static DateTime GetNextExecutionYearly(SchedulerConfigurator config, DateTime nextExec)
         {
-            DateTime newDate = CalculateDailyConfigHour(config, nextExec);
-            while (DateTime.Compare(nextExec, newDate) >= 0)
+            DateTime? newDate = CalculateDailyConfigHour(config, nextExec);
+            while (newDate.HasValue == false
+                || nextExec.CurrentDateAfterNewDate(newDate.Value, config.ScheduleDate))
             {
                 nextExec = nextExec.AddYears(config.OcurrencyPeriod.Value).Date;
                 newDate = CalculateDailyConfigHour(config, nextExec);
             }
-            return newDate;
+            return newDate.Value;
         }
 
         #region Daily
-        private static DateTime CalculateDailyConfigHour(SchedulerConfigurator config, DateTime execDate)
+        private static DateTime? CalculateDailyConfigHour(SchedulerConfigurator config, DateTime execDate)
         {
             if (config.DailyScheduleHour.HasValue)
             {
@@ -238,34 +244,34 @@ namespace Scheduler.Creators
             return CalculateDailyConfigHourReccurent(config, execDate);
         }
 
-        private static DateTime CalculateDailyConfigHourReccurent(SchedulerConfigurator config, DateTime execDate)
+        private static DateTime? CalculateDailyConfigHourReccurent(SchedulerConfigurator config, DateTime execDate)
         {
-            DateTime NewDate;
-            DateTime StartLimit = execDate.StartDailyLimit(config.DailyLimits?.StartLimit);
-            DateTime? EndLimit = execDate.EndDailyLimit(config.DailyLimits?.EndLimit);
-            NewDate = StartLimit;
+            DateTime startLimit = execDate.StartDailyLimit(config.DailyLimits?.StartLimit);
+            DateTime? endLimit = execDate.EndDailyLimit(config.DailyLimits?.EndLimit);
+            DateTime? newDate = startLimit;
 
-            while (DateTime.Compare(execDate, NewDate) >= 0)
+            while (execDate.CurrentDateAfterNewDate(newDate.Value, config.ScheduleDate))
             {
                 switch (config.DailyFrecuency)
                 {
                     case DailyFrecuencyEnum.Hours:
-                        NewDate = NewDate.AddHours(config.DailyFrecuencyPeriod.Value);
+                        newDate = newDate.Value.AddHours(config.DailyFrecuencyPeriod.Value);
                         break;
                     case DailyFrecuencyEnum.Minutes:
-                        NewDate = NewDate.AddMinutes(config.DailyFrecuencyPeriod.Value);
+                        newDate = newDate.Value.AddMinutes(config.DailyFrecuencyPeriod.Value);
                         break;
                     case DailyFrecuencyEnum.Seconds:
-                        NewDate = NewDate.AddSeconds(config.DailyFrecuencyPeriod.Value);
+                        newDate = newDate.Value.AddSeconds(config.DailyFrecuencyPeriod.Value);
                         break;
                 }
-                if (EndLimit.HasValue && DateTime.Compare(NewDate, EndLimit.Value) > 0)
+                if (endLimit.HasValue && DateTime.Compare(newDate.Value, endLimit.Value) > 0
+                    || DateTime.Compare(newDate.Value, startLimit.AddDays(1).Date) >= 0)
                 {
-                    NewDate = EndLimit.Value;
+                    newDate = null;
                     break;
                 }
             }
-            return NewDate;
+            return newDate;
         }
         #endregion
     }

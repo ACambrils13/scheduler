@@ -1,4 +1,4 @@
-﻿using Scheduler.Resources;
+﻿using Scheduler.Language;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -52,6 +52,17 @@ namespace Scheduler.Auxiliary
             return null;
         }
 
+        public static bool CurrentDateAfterNewDate(this DateTime currentDate, DateTime newDate, DateTime? previousDate)
+        {
+            if (DateTime.Compare(currentDate, newDate) > 0
+                || (DateTime.Compare(currentDate, newDate) == 0 && previousDate.HasValue
+                && DateTime.Compare(currentDate, previousDate.Value) == 0))
+            {
+                return true;
+            }
+            return false;
+        }
+
         public static int GetWeekOfYear(this DateTime currentDate, CultureInfo culture)
         {
             Calendar calendar = culture.Calendar;
@@ -82,7 +93,7 @@ namespace Scheduler.Auxiliary
             int lastPeriod = joinedText.LastIndexOf(",");
             if (lastPeriod >= 0)
             {
-                joinedText = joinedText.Remove(lastPeriod, 1).Insert(lastPeriod, string.Concat(" ", TextResources.And));
+                joinedText = joinedText.Remove(lastPeriod, 1).Insert(lastPeriod, string.Concat(" ", Localize.GetLocalizedText("And")));
             }
             return joinedText;
         }
