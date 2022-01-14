@@ -1,4 +1,4 @@
-﻿using Scheduler.Language;
+﻿using Scheduler.Resources;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -93,7 +93,7 @@ namespace Scheduler.Auxiliary
             int lastPeriod = joinedText.LastIndexOf(",");
             if (lastPeriod >= 0)
             {
-                joinedText = joinedText.Remove(lastPeriod, 1).Insert(lastPeriod, string.Concat(" ", Localize.GetLocalizedText("And")));
+                joinedText = joinedText.Remove(lastPeriod, 1).Insert(lastPeriod, string.Concat(" ", LanguageManager.GetStringResource("And")));
             }
             return joinedText;
         }

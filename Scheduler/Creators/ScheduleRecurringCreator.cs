@@ -57,7 +57,7 @@ namespace Scheduler.Creators
         private static DateTime GetNextExecutionDaily(SchedulerConfigurator config, DateTime nextExec)
         {
             DateTime? newDate = CalculateDailyConfigHour(config, nextExec);
-            while (newDate.HasValue == false 
+            while (newDate.HasValue == false
                 || nextExec.CurrentDateAfterNewDate(newDate.Value, config.ScheduleDate))
             {
                 nextExec = nextExec.AddDays(config.OcurrencyPeriod.Value).Date;

@@ -1,6 +1,6 @@
 ﻿using Scheduler.Auxiliary;
 using Scheduler.Configuration;
-using Scheduler.Language;
+using Scheduler.Resources;
 using System;
 using System.ComponentModel.DataAnnotations;
 
@@ -37,14 +37,14 @@ namespace Scheduler.Validators
                 {
                     if (DateTime.Compare(date, limits.Value.EndLimit.Value) > 0)
                     {
-                        throw new ValidationException(FormatConfigExcMessage(Localize.GetLocalizedText("ExcLimits")));
+                        throw new ValidationException(FormatConfigExcMessage(LanguageManager.GetStringResource("ExcLimits")));
                     }
                 }
                 if (validateBefore && limits.Value.StartLimit.HasValue)
                 {
                     if (DateTime.Compare(date, limits.Value.StartLimit.Value) < 0)
                     {
-                        throw new ValidationException(FormatConfigExcMessage(Localize.GetLocalizedText("ExcLimits")));
+                        throw new ValidationException(FormatConfigExcMessage(LanguageManager.GetStringResource("ExcLimits")));
                     }
                 }
             }
@@ -63,7 +63,7 @@ namespace Scheduler.Validators
             }
             else
             {
-                throw new ValidationException(FormatConfigExcMessage(Localize.GetLocalizedText("ExcDailyConfig")));
+                throw new ValidationException(FormatConfigExcMessage(LanguageManager.GetStringResource("ExcDailyConfig")));
             }
         }
 
@@ -71,7 +71,7 @@ namespace Scheduler.Validators
         {
             if (date.HasValue == false)
             {
-                throw new ValidationException(FormatConfigExcMessage(string.Format(Localize.GetLocalizedText("ExcObjectNull"), propertyName)));
+                throw new ValidationException(FormatConfigExcMessage(string.Format(LanguageManager.GetStringResource("ExcObjectNull"), propertyName)));
             }
             ValidateDate(date.Value, propertyName);
         }
@@ -81,7 +81,7 @@ namespace Scheduler.Validators
 
             if (date == DateTime.MaxValue)
             {
-                throw new ValidationException(FormatConfigExcMessage(string.Format(Localize.GetLocalizedText("ExcDateMaxValue"), propertyName)));
+                throw new ValidationException(FormatConfigExcMessage(string.Format(LanguageManager.GetStringResource("ExcDateMaxValue"), propertyName)));
             }
         }
         internal static void ValidateHourOfDay(TimeSpan hour, string propertyName)
@@ -90,7 +90,7 @@ namespace Scheduler.Validators
             TimeSpan MidNigth = new(23, 59, 59);
             if (hour < Zero || hour > MidNigth)
             {
-                throw new ValidationException(FormatConfigExcMessage(string.Format(Localize.GetLocalizedText("ExcHoursValue"), propertyName)));
+                throw new ValidationException(FormatConfigExcMessage(string.Format(LanguageManager.GetStringResource("ExcHoursValue"), propertyName)));
             }
         }
 
@@ -98,7 +98,7 @@ namespace Scheduler.Validators
         {
             if (enumValue == null || Enum.IsDefined(typeof(TEnum), enumValue) == false)
             {
-                throw new ValidationException(FormatConfigExcMessage(string.Format(Localize.GetLocalizedText("ExcEnumError"), propertyName)));
+                throw new ValidationException(FormatConfigExcMessage(string.Format(LanguageManager.GetStringResource("ExcEnumError"), propertyName)));
             }
         }
 
@@ -106,7 +106,7 @@ namespace Scheduler.Validators
         {
             if (period.HasValue == false || period.Value < 0)
             {
-                throw new ValidationException(FormatConfigExcMessage(string.Format(Localize.GetLocalizedText("ExcPeriod"), propertyName)));
+                throw new ValidationException(FormatConfigExcMessage(string.Format(LanguageManager.GetStringResource("ExcPeriod"), propertyName)));
             }
         }
 
@@ -114,7 +114,7 @@ namespace Scheduler.Validators
         {
             if (start.HasValue == false && end.HasValue)
             {
-                throw new ValidationException(FormatConfigExcMessage(Localize.GetLocalizedText("ExcLimitsEndBeforeStart")));
+                throw new ValidationException(FormatConfigExcMessage(LanguageManager.GetStringResource("ExcLimitsEndBeforeStart")));
             }
             else if (start.HasValue)
             {
@@ -124,7 +124,7 @@ namespace Scheduler.Validators
                     ValidateDate(end.Value, nameof(end));
                     if (DateTime.Compare(start.Value, end.Value) >= 0)
                     {
-                        throw new ValidationException(FormatConfigExcMessage(Localize.GetLocalizedText("ExcLimitsEndBeforeStart")));
+                        throw new ValidationException(FormatConfigExcMessage(LanguageManager.GetStringResource("ExcLimitsEndBeforeStart")));
                     }
                 }
             }
@@ -134,7 +134,7 @@ namespace Scheduler.Validators
         {
             if (start.HasValue == false && end.HasValue)
             {
-                throw new ValidationException(FormatConfigExcMessage(Localize.GetLocalizedText("ExcLimitsEndBeforeStart")));
+                throw new ValidationException(FormatConfigExcMessage(LanguageManager.GetStringResource("ExcLimitsEndBeforeStart")));
             }
             else if (start.HasValue)
             {
@@ -144,7 +144,7 @@ namespace Scheduler.Validators
                     ValidateHourOfDay(end.Value, nameof(end));
                     if (TimeSpan.Compare(start.Value, end.Value) >= 0)
                     {
-                        throw new ValidationException(FormatConfigExcMessage(Localize.GetLocalizedText("ExcLimitsEndBeforeStart")));
+                        throw new ValidationException(FormatConfigExcMessage(LanguageManager.GetStringResource("ExcLimitsEndBeforeStart")));
                     }
                 }
             }
@@ -154,7 +154,7 @@ namespace Scheduler.Validators
         {
             if (config.MonthlyDaySelection.HasValue == false)
             {
-                throw new ValidationException(FormatConfigExcMessage(Localize.GetLocalizedText("ExcMonthlyTypeConfig")));
+                throw new ValidationException(FormatConfigExcMessage(LanguageManager.GetStringResource("ExcMonthlyTypeConfig")));
             }
             if (config.MonthlyDaySelection.Value == true)
             {
@@ -170,7 +170,7 @@ namespace Scheduler.Validators
         {
             if (day.HasValue == false || day.Value < 1 || day.Value > 31)
             {
-                throw new ValidationException(FormatConfigExcMessage(Localize.GetLocalizedText("ExcMonthlyDay")));
+                throw new ValidationException(FormatConfigExcMessage(LanguageManager.GetStringResource("ExcMonthlyDay")));
             }
         }
 
@@ -182,7 +182,7 @@ namespace Scheduler.Validators
 
         internal static string FormatConfigExcMessage(string exc)
         {
-            return string.Format(Localize.GetLocalizedText("ConfError"), exc);
+            return string.Format(LanguageManager.GetStringResource("ConfError"), exc);
         }
     }
 }

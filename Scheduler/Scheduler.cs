@@ -1,6 +1,7 @@
 ﻿using Scheduler.Auxiliary;
 using Scheduler.Configuration;
 using Scheduler.Creators;
+using Scheduler.Resources;
 using Scheduler.Validators;
 using System.Globalization;
 
@@ -10,32 +11,25 @@ namespace Scheduler
     {
         public static ScheduleEvent GetNextExecution(SchedulerConfigurator config)
         {
+            AsignCulture(config.Language);
+            LanguageManager.GenerateResources(config);
             ScheduleConfigValidator.ValidateBasicProperties(config);
-
             ScheduleEventCreator eventCreator = config.Type switch
             {
                 ScheduleTypeEnum.Once => new ScheduleOnceCreator(),
                 ScheduleTypeEnum.Recurring => new ScheduleRecurringCreator()
             };
-            AsignCulture(config.Language.Value);
             return eventCreator.GetNextExecution(config);
         }
 
-        internal static void AsignCulture(LanguageEnum language)
+        internal static void AsignCulture(LanguageEnum? language)
         {
-            CultureInfo culture = CultureInfo.CurrentCulture;
-            switch (language)
+            CultureInfo culture = language switch
             {
-                case LanguageEnum.EnglishUK:
-                    culture = new CultureInfo("en-GB");
-                    break;
-                case LanguageEnum.EnglishUS:
-                    culture = new CultureInfo("en-US");
-                    break;
-                case LanguageEnum.Spanish:
-                    culture = new CultureInfo("es");
-                    break;
-            }
+                LanguageEnum.EnglishUS => new CultureInfo("en-US"),
+                LanguageEnum.Spanish => new CultureInfo("es"),
+                _ => new CultureInfo("en-GB"),
+            };
             CultureInfo.CurrentCulture = culture;
             CultureInfo.CurrentUICulture = culture;
         }
